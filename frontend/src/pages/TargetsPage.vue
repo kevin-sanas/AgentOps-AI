@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { onMounted,onUnmounted,ref,watch } from 'vue'
 import { api,hasRole } from '../api'
-import { usePageBounds,useLoad,time } from '../composables'
+import { useNavigation } from '../stores/navigation'
+import { useRestoreScroll,usePageBounds,useLoad,time } from '../composables'
 import type { Target,Page } from '../types'
 import PageState from '../components/PageState.vue'
 import PaginationBar from '../components/PaginationBar.vue'
 import AppIcon from '../components/AppIcon.vue'
 import FilterToolbar from '../components/FilterToolbar.vue'
 import LiveIndicator from '../components/LiveIndicator.vue'
-const page=ref(0),query=ref(''),sort=ref('created_desc'),{data,loading,error,load}=useLoad(()=>api<Page<Target>>('/workspace/targets?'+new URLSearchParams({page:String(page.value),size:'20',q:query.value,sort:sort.value})))
-usePageBounds(data,page,load)
+const navigation=useNavigation(),{page,query,sort}=navigation.listState('/targets',{page:0,query:'',sort:'created_desc'})
+const {data,loading,error,load}=useLoad(()=>api<Page<Target>>('/workspace/targets?'+new URLSearchParams({page:String(page.value),size:'20',q:query.value,sort:sort.value})))
+usePageBounds(data,page,load);useRestoreScroll(data)
 let debounce:ReturnType<typeof setTimeout>|undefined
 watch(query,()=>{clearTimeout(debounce);debounce=setTimeout(()=>{page.value=0;void load()},250)});watch(sort,()=>{page.value=0;void load()})
 onMounted(load);const timer=setInterval(()=>{if(!document.hidden&&!loading.value)void load()},30000);onUnmounted(()=>{clearTimeout(debounce);clearInterval(timer)})

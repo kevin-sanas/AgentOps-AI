@@ -1,6 +1,7 @@
 import { createRouter,createWebHistory } from 'vue-router'
 import { auth,clearSession,hasRole } from './api'
-export const router=createRouter({history:createWebHistory(),routes:[
+import { useNavigation } from './stores/navigation'
+export const router=createRouter({history:createWebHistory(),scrollBehavior(to,from,saved){if(saved)return saved;const anchor=to.hash?document.getElementById(to.hash.slice(1)):null;if(anchor)return {el:anchor,top:96};if(to.path===from.path&&to.hash)return false;return useNavigation().positions[to.fullPath]||{top:0}},routes:[
  {path:'/login',component:()=>import('./pages/LoginPage.vue'),meta:{public:true,title:'登录'}},
  {path:'/',redirect:'/overview'},{path:'/overview',component:()=>import('./pages/OverviewPage.vue'),meta:{title:'运维总览'}},
  {path:'/targets',component:()=>import('./pages/TargetsPage.vue'),meta:{title:'服务监控'}},
@@ -14,7 +15,7 @@ export const router=createRouter({history:createWebHistory(),routes:[
  {path:'/runbooks/:id',component:()=>import('./pages/RunbookDetailPage.vue'),meta:{title:'知识与版本'}},
  {path:'/agent-runs/:id',component:()=>import('./pages/AgentRunPage.vue'),meta:{title:'诊断工作台'}},
  {path:'/admin/users',component:()=>import('./pages/UsersPage.vue'),meta:{title:'用户与角色',admin:true}},
- {path:'/:pathMatch(.*)*',redirect:'/overview'},
+ {path:'/:pathMatch(.*)*',component:()=>import('./pages/NotFoundPage.vue'),meta:{title:'页面不存在'}},
 ]})
-router.beforeEach(to=>{if(auth.token&&Date.parse(auth.expiresAt)<=Date.now())clearSession('登录已过期，请重新登录。');if(!to.meta.public&&!auth.token)return '/login';if(to.meta.admin&&!hasRole('OPS_ADMIN'))return '/overview';if(to.path==='/login'&&auth.token&&auth.user)return '/overview'})
+router.beforeEach((to,from)=>{if(auth.user&&!from.meta.public)useNavigation().positions[from.fullPath]={top:window.scrollY,left:window.scrollX};if(auth.token&&Date.parse(auth.expiresAt)<=Date.now())clearSession('登录已过期，请重新登录。');if(!to.meta.public&&!auth.token)return {path:'/login',query:{redirect:to.fullPath}};if(to.meta.admin&&!hasRole('OPS_ADMIN'))return '/overview';if(to.path==='/login'&&auth.token&&auth.user)return '/overview'})
 router.afterEach(to=>{document.title=`${to.meta.title||'工作台'} · AgentOps AI`})

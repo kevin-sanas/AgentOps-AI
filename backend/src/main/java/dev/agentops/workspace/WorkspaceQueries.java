@@ -22,7 +22,7 @@ public class WorkspaceQueries {
     public WorkspaceQueries(JdbcTemplate db){this.db=db;}
     public record IncidentRow(UUID id,UUID targetId,String targetName,String status,String severity,String summary,Instant openedAt,Instant lastFailureAt,Instant recoveredAt,Instant resolvedAt,Instant closedAt,long version){}
     public record BookRow(UUID id,UUID targetId,String targetName,String title,long revision,int latestVersion,boolean enabled,boolean hasUnpublishedChanges,Instant createdAt){}
-    public record RunRow(UUID id,UUID incidentId,UUID targetId,String targetName,UUID requestedBy,String status,String modelName,String graphVersion,Instant createdAt,Instant completedAt,String approvalStatus,String deliveryState,String errorCode,int attempts){}
+    public record RunRow(UUID id,UUID incidentId,UUID targetId,String targetName,UUID requestedBy,String status,String modelName,String graphVersion,Instant createdAt,Instant completedAt,String approvalStatus,String deliveryState,String errorCode,int attempts,boolean canOperate){}
     public record SearchItem(String kind,UUID id,String title,String subtitle,String path){}
     public record SearchResult(List<SearchItem> items,int perCategoryLimit){}
     public record ActivityPoint(Instant time,long count){}
@@ -57,7 +57,8 @@ public class WorkspaceQueries {
         boolean reportRole=c.roles().contains("ON_CALL")||c.roles().contains("AUDITOR");
         var values=args(c.isAdmin(),c.userId(),reportRole,c.userId(),p,p,q.status(),q.status(),q.fromText(),q.fromText(),q.toText(),q.toText());
         String order=q.order(Map.of("created_desc","r.created_at DESC,r.id","created_asc","r.created_at ASC,r.id","name_asc","t.name ASC,r.id"),"r.created_at DESC,r.id");
-        var items=db.query("SELECT r.*,t.name target_name,ap.status approval_status,o.state delivery_state,o.attempts"+RUNS+" ORDER BY "+order+" LIMIT ? OFFSET ?",(r,n)->new RunRow(r.getObject("id",UUID.class),r.getObject("incident_id",UUID.class),r.getObject("target_id",UUID.class),r.getString("target_name"),r.getObject("requested_by",UUID.class),r.getString("status"),r.getString("model_name"),r.getString("graph_version"),instant(r,"created_at"),instant(r,"completed_at"),r.getString("approval_status"),r.getString("delivery_state"),r.getString("error_code"),r.getInt("attempts")),paging(values,q));
+        var itemArgs=args(c.roles().contains("ON_CALL"),c.userId());itemArgs.addAll(values);
+        var items=db.query("SELECT r.*,t.name target_name,ap.status approval_status,o.state delivery_state,o.attempts,(? AND EXISTS(SELECT 1 FROM target_access a WHERE a.target_id=t.id AND a.user_id=? AND a.can_read AND a.can_operate)) can_operate"+RUNS+" ORDER BY "+order+" LIMIT ? OFFSET ?",(r,n)->new RunRow(r.getObject("id",UUID.class),r.getObject("incident_id",UUID.class),r.getObject("target_id",UUID.class),r.getString("target_name"),r.getObject("requested_by",UUID.class),r.getString("status"),r.getString("model_name"),r.getString("graph_version"),instant(r,"created_at"),instant(r,"completed_at"),r.getString("approval_status"),r.getString("delivery_state"),r.getString("error_code"),r.getInt("attempts"),r.getBoolean("can_operate")),paging(itemArgs,q));
         return new PageResult<>(items,db.queryForObject("SELECT count(*)"+RUNS,Long.class,values.toArray()),q.page(),q.size());
     }
     SearchResult search(Caller c,String text){

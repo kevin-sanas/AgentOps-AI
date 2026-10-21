@@ -179,3 +179,5 @@ G3评审补充：`GET /admin/agent-deliveries?page=0&size=20` 仅OPS_ADMIN，返
 from/to为ISO Instant，双边同时提供时要求from<to且最多31天；activity缺省最近24小时并总是验证双边。time边界包含。大于2天以日聚合，否则按小时；首尾桶是部分时间桶。全局搜索不受时间范围限制。图表由成功聚合响应补零桶，失败不补零。
 
 任务查询/全局搜索额外要求ON_CALL或AUDITOR，或requestedBy为调用人，并仍须目标可读；纯OPS_ADMIN、OBSERVER不会借列表访问他人报告。写入、人审、幂等、审计与原有GET报告约束完全沿用。
+
+导航修正补充（2026-10-21）：`GET /workspace/agent-runs` 的每条任务新增只读布尔 `canOperate`，按**当前调用人有ON_CALL角色且目标ACL同时can_read/can_operate**计算，与事件详情一致。授权授予/撤销对后续查询立即生效；OPS_ADMIN不会绕过该判定。前端据此将操作文案区分为“立即审阅/回填处理结果”或“查看审阅记录”；真正提交仍由原写API再次鉴权。没有迁移或新写端点。

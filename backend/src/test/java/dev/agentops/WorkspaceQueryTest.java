@@ -68,6 +68,11 @@ class WorkspaceQueryTest {
         assertThat(get("/agent-runs",reader).path("total").asInt()).isZero();
         assertThat(get("/agent-runs",admin).path("total").asInt()).isZero();
         var data=get("/agent-runs?status=QUEUED",operator);assertThat(data.path("total").asInt()).isEqualTo(1);assertThat(data.toString()).doesNotContain(HIDDEN.toString());
+        assertThat(data.path("items").get(0).path("canOperate").asBoolean()).isFalse();
+        db.update("UPDATE target_access SET can_operate=true WHERE target_id=? AND user_id=?",VISIBLE,OPERATOR);
+        assertThat(get("/agent-runs",operator).path("items").get(0).path("canOperate").asBoolean()).isTrue();
+        db.update("UPDATE target_access SET can_operate=false WHERE target_id=? AND user_id=?",VISIBLE,OPERATOR);
+        assertThat(get("/agent-runs",operator).path("items").get(0).path("canOperate").asBoolean()).isFalse();
     }
     String range(){return "from="+Instant.now().minusSeconds(3600)+"&to="+Instant.now();}
     @Test void timeFilteringAndEventAggregationUseAllVisibleRows()throws Exception{

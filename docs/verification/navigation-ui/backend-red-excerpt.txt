@@ -1,0 +1,16 @@
+[ERROR] Tests run: 5, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 13.99 s <<< FAILURE! -- in dev.agentops.WorkspaceQueryTest
+[ERROR] dev.agentops.WorkspaceQueryTest.taskIndexNeverExpandsReportPermissionsForAdminOrObserver -- Time elapsed: 0.172 s <<< FAILURE!
+org.opentest4j.AssertionFailedError:
+
+Expecting value to be true but was false
+	at dev.agentops.WorkspaceQueryTest.taskIndexNeverExpandsReportPermissionsForAdminOrObserver(WorkspaceQueryTest.java:73)
+
+[INFO]
+[INFO] Results:
+[INFO]
+[ERROR] Failures:
+[ERROR]   WorkspaceQueryTest.taskIndexNeverExpandsReportPermissionsForAdminOrObserver:73
+Expecting value to be true but was false
+[INFO]
+[ERROR] Tests run: 5, Failures: 1, Errors: 0, Skipped: 0
+[INFO]

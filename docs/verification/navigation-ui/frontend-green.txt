@@ -1,0 +1,12 @@
+✔ reauthentication returns to the exact internal detail including query and anchor (0.6831ms)
+✔ detail tabs preserve their caller and do not duplicate on anchor or query changes (0.2188ms)
+✔ closing another tab leaves the current diagnosis open and home is pinned (0.1068ms)
+✔ primary task action follows actual workflow and authorization (0.1061ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 119.1027

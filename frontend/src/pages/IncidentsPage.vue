@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import Select from '../components/ui/Select.vue'
 import { onMounted,onUnmounted,ref,watch } from 'vue'
 import { api,ApiProblem,hasRole } from '../api'
-import { usePageBounds,useLoad,time,shortId } from '../composables'
+import { useRestoreScroll,usePageBounds,useLoad,time,shortId } from '../composables'
 import type { Page,Incident,PendingAlert } from '../types'
 import StatusBadge from '../components/StatusBadge.vue'
 import PageState from '../components/PageState.vue'
@@ -11,7 +12,8 @@ import AgentDeliveryPanel from '../components/AgentDeliveryPanel.vue'
 import FilterToolbar from '../components/FilterToolbar.vue'
 import LiveIndicator from '../components/LiveIndicator.vue'
 import { useWorkspace } from '../stores/workspace'
-const workspace=useWorkspace(),query=ref(''),sort=ref('created_desc'),page=ref(0),status=ref(''),pendingPage=ref(0),updatedAt=ref<string|null>(null)
+import { useNavigation } from '../stores/navigation'
+const workspace=useWorkspace(),navigation=useNavigation(),{query,sort,page,status,pendingPage}=navigation.listState('/incidents',{query:'',sort:'created_desc',page:0,status:'',pendingPage:0}),updatedAt=ref<string|null>(null)
 const {data,loading,error,load}=useLoad(()=>api<Page<Incident>>(`/workspace/incidents?page=${page.value}&size=20&q=${encodeURIComponent(query.value)}&sort=${sort.value}&${workspace.windowQuery()}${status.value?'&status='+status.value:''}`))
 const {data:pendingData,loading:pendingLoading,error:pendingError,load:loadPending}=useLoad(async()=>{
   try{return await api<Page<PendingAlert>>(`/incidents/pending-alerts?page=${pendingPage.value}&size=10`)}
@@ -19,7 +21,7 @@ const {data:pendingData,loading:pendingLoading,error:pendingError,load:loadPendi
 })
 async function refresh(){await Promise.all([load(),loadPending()]);if(!error.value&&!pendingError.value)updatedAt.value=new Date().toISOString()}
 function poll(){if(!document.hidden&&!loading.value&&!pendingLoading.value)void refresh()}
-usePageBounds(data,page,load)
+usePageBounds(data,page,load);useRestoreScroll(data)
 let debounce:ReturnType<typeof setTimeout>|undefined
 watch(query,()=>{clearTimeout(debounce);debounce=setTimeout(()=>{page.value=0;void load()},250)})
 watch([status,sort,()=>workspace.range],()=>{page.value=0;void load()})
@@ -47,9 +49,9 @@ const statuses=[['OPEN','待确认'],['ACKNOWLEDGED','已确认'],['INVESTIGATIN
     </template></PageState>
   </section>
   <section class="panel">
-    <FilterToolbar v-model:query="query" v-model:sort="sort" placeholder="搜索服务、摘要或事件编号"><label class="compact-label">事件状态<select v-model="status"><option value="">全部状态</option><option v-for="s in statuses" :key="s[0]" :value="s[0]">{{ s[1] }}</option></select></label><LiveIndicator :seconds="5" :loading="loading" :updated="updatedAt" /></FilterToolbar><div class="panel-footnote">{{ workspace.rangeLabel }} · 上方待达阈值异常为当前状态，不受时间筛选限制。</div>
+    <FilterToolbar v-model:query="query" v-model:sort="sort" placeholder="搜索服务、摘要或事件编号"><label class="compact-label">事件状态<Select v-model="status" aria-label="事件状态" :options="[{value:'',label:'全部状态'},...statuses.map(s=>({value:s[0],label:s[1]}))]" /></label><LiveIndicator :seconds="5" :loading="loading" :updated="updatedAt" /></FilterToolbar><div class="panel-footnote">{{ workspace.rangeLabel }} · 上方待达阈值异常为当前状态，不受时间筛选限制。</div>
     <PageState :loading="loading&&!data" :error="error" :empty="!!data&&!data.items.length" title="当前范围没有事故" description="异常达到连续失败阈值后会自动进入队列；未达阈值的异常显示在上方，也可切换状态查看历史。" @retry="load">
-      <template v-if="data"><div class="table-scroll"><table><thead><tr><th>事故 / 目标</th><th>等级</th><th>状态</th><th>首次发现</th><th>最近失败</th><th><span class="sr-only">操作</span></th></tr></thead><tbody><tr v-for="i in data.items" :key="i.id"><td><RouterLink :to="'/incidents/'+i.id" class="row-title">{{ i.targetName }}</RouterLink><small class="cell-note incident-summary">{{ i.summary }}</small><small class="cell-note mono">{{ shortId(i.id) }}</small></td><td><span class="severity">{{ i.severity }}</span></td><td><StatusBadge :value="i.status" /></td><td class="timestamp">{{ time(i.openedAt) }}</td><td class="timestamp">{{ time(i.lastFailureAt) }}</td><td><RouterLink :to="'/incidents/'+i.id" class="text-link">处理详情<AppIcon name="chevron" :size="15" /></RouterLink></td></tr></tbody></table></div><PaginationBar :page="page" :size="20" :total="data.total" :loading="loading" @change="p=>{page=p;load()}" /></template>
+      <template v-if="data"><div class="table-scroll"><table><thead><tr><th>事故 / 目标</th><th>等级</th><th>状态</th><th>首次发现</th><th>最近失败</th><th><span class="sr-only">操作</span></th></tr></thead><tbody><tr v-for="i in data.items" :key="i.id"><td><RouterLink :to="'/incidents/'+i.id" class="row-title">{{ i.targetName }}</RouterLink><small class="cell-note incident-summary">{{ i.summary }}</small><small class="cell-note mono">{{ shortId(i.id) }}</small></td><td><span class="severity">{{ i.severity }}</span></td><td><StatusBadge :value="i.status" /></td><td class="timestamp">{{ time(i.openedAt) }}</td><td class="timestamp">{{ time(i.lastFailureAt) }}</td><td><RouterLink :to="'/incidents/'+i.id" class="btn small primary">处理事件<AppIcon name="chevron" :size="15" /></RouterLink></td></tr></tbody></table></div><PaginationBar :page="page" :size="20" :total="data.total" :loading="loading" @change="p=>{page=p;load()}" /></template>
     </PageState>
   </section>
   <AgentDeliveryPanel v-if="hasRole('OPS_ADMIN')" />

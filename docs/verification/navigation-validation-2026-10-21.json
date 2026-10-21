@@ -1,0 +1,264 @@
+{
+  "date": "2026-10-21",
+  "timezone": "Asia/Shanghai",
+  "baseCommit": "96b4b9a",
+  "scope": "Administrator incident handling and navigation repair",
+  "runtime": {
+    "fixture": "UiPreview: independent temporary PostgreSQL, real Python mock and Java backend; synthetic users/data only",
+    "frontendPort": 5186,
+    "backendPort": 65046,
+    "userServicesRestarted": false,
+    "userDatabaseMigrated": false,
+    "newDependencies": false,
+    "newMigrations": false
+  },
+  "checks": {
+    "backend": {
+      "command": ".\\scripts\\backend.ps1 verify",
+      "result": "PASS",
+      "finishedAt": "2026-10-21T20:11:57+08:00",
+      "duration": "1m51s",
+      "totals": {
+        "tests": 128,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "suites": [
+        {
+          "name": "dev.agentops.agent.AgentClientTest",
+          "tests": "4",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "1.806"
+        },
+        {
+          "name": "dev.agentops.AgentApiTest",
+          "tests": "14",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "21.524"
+        },
+        {
+          "name": "dev.agentops.AgentIntegrationTest",
+          "tests": "1",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "18.36"
+        },
+        {
+          "name": "dev.agentops.AgentOutboxTest",
+          "tests": "5",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "8.097"
+        },
+        {
+          "name": "dev.agentops.BootstrapTest",
+          "tests": "1",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "6.672"
+        },
+        {
+          "name": "dev.agentops.FoundationTest",
+          "tests": "19",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "11.206"
+        },
+        {
+          "name": "dev.agentops.KumaApiTest",
+          "tests": "10",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "9.384"
+        },
+        {
+          "name": "dev.agentops.KumaClientTest",
+          "tests": "6",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.407"
+        },
+        {
+          "name": "dev.agentops.monitoring.SafeHttpProbeTest",
+          "tests": "7",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "1.241"
+        },
+        {
+          "name": "dev.agentops.monitoring.TlsProbeTest",
+          "tests": "2",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.96"
+        },
+        {
+          "name": "dev.agentops.MonitoringApiTest",
+          "tests": "23",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "13.773"
+        },
+        {
+          "name": "dev.agentops.targets.PrivateNetworkPolicyTest",
+          "tests": "5",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.013"
+        },
+        {
+          "name": "dev.agentops.TargetUrlPolicyTest",
+          "tests": "26",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.059"
+        },
+        {
+          "name": "dev.agentops.WorkspaceQueryTest",
+          "tests": "5",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "9.06"
+        }
+      ],
+      "includes": "Python real PostgreSQL integration (11 scenarios) nested in one Java test"
+    },
+    "frontend": {
+      "commands": [
+        "npm --prefix frontend run test",
+        "npm --prefix frontend run typecheck",
+        "npm --prefix frontend run build"
+      ],
+      "result": "PASS",
+      "tests": 10,
+      "navigationTests": 4,
+      "failureBeforeImplementation": [
+        "Navigation module missing: frontend red test",
+        "RunRow canOperate missing: 1 of 5 WorkspaceQueryTest failed"
+      ],
+      "buildWarning": "Existing ECharts overview chunk about 562.51 kB (gzip 191.83 kB); not a performance benchmark",
+      "licenseNoticePackages": 96
+    },
+    "independentReview": {
+      "passes": 1,
+      "critical": 0,
+      "important": 1,
+      "finding": "Incident #timeline watch(data) scrolls to the heading on every 15s poll",
+      "resolution": "Only scroll on first ready data or hash change; browser remained scrollY=1321 and timelineTop=-762.609375 across subsequent polling",
+      "followUpIndependentReview": false
+    },
+    "browser": [
+      "Dark time range and task status popups, light task status popup: readable themed surfaces and selected marker",
+      "ArrowDown opens Select, Enter selects, Escape closes Select and review dialog",
+      "Incident list keyword=订单, status=OPEN, sort=created_asc preserved after detail and browser Back; Forward returns same incident",
+      "Admin+ON_CALL+ACL: ACK -> INVESTIGATE -> new Java/Python mock diagnosis -> WAITING_HUMAN -> APPROVED_FOR_MANUAL -> NOT_EXECUTED manual report -> COMPLETED; incident still INVESTIGATING",
+      "Header action changes from 立即审阅 to 回填处理结果; actual server record drives report, six nodes and approval",
+      "Review #review-heading browser Back closes dialog; Forward reopens; top button and sidebar enter same review",
+      "Sidebar current service history and current incident timeline open actual target/incident; friendly detail work tabs do not duplicate on hash changes",
+      "Closing active service work tab returns prior incident; closing another work tab leaves current diagnosis unchanged",
+      "Reload/relogin returns exact incident detail with #timeline; unsafe/unknown login destinations fall back to overview",
+      "15s incident polling after scrolling down does not reset timeline reading position (scrollY=1321 before/after)",
+      "390x844 mobile list and incident: document clientWidth=scrollWidth=375; table scrolls internally; mobile grouped menu enters current incident",
+      "Observer: no admin user/network/ACL/Kuma menus or diagnosis-start/incident-action buttons; previous identity tabs and context cleared",
+      "OPS_ADMIN-only: report list empty, existing recovery metadata and permitted retry interface retained",
+      "Normal final console warn/error entries: 0"
+    ],
+    "notRun": [
+      "Standalone Python 59-unit suite this round",
+      "Linux image rebuild this round",
+      "Compose redeployment this round",
+      "Remote CI",
+      "Real model quality",
+      "Performance benchmark",
+      "New external dependency audit"
+    ]
+  },
+  "knownLimits": [
+    "UI tabs/list filters/positions are memory-only and clear on refresh/logout or identity change; login resumes allowed detail URL",
+    "Unsubmitted forms are not persisted across page switches",
+    "This is a local verified development checkpoint, not a production release"
+  ],
+  "cleanup": {
+    "ownedBrowserTab": "logged out and closed; viewport reset",
+    "ownedFixtureProcesses": "not listening at ports 5186/65046 on final check; recorded Java3512/PostgreSQL15164 absent",
+    "temporaryFiles": "DONE: own .cache/navigation-work, fixture credential/stop files, navigation logs/classpath files, own synthetic PostgreSQL/Tomcat directories and Python fixture log removed; embedded-PG binaries and formal test reports retained"
+  },
+  "sourceSha256": {
+    "backend/src/main/java/dev/agentops/workspace/WorkspaceQueries.java": "6f0c319785fbec8878897134bdb93e53f7933314fdd8e120c660613e751f6c71",
+    "backend/src/test/java/dev/agentops/WorkspaceQueryTest.java": "8f0c663e7188fb05e1ce24ec0501b90dbf8b352b274fa94731e095555be62bf2",
+    "frontend/src/App.vue": "93eb8181dbcf4388ff45c67c64db9119fae9009df933653c75e34a7d37c47dad",
+    "frontend/src/components/AccessPanel.vue": "8d411bbd3fcf776a7f285d69ad7d264c645ab2d41c2363488215427ed05e44e5",
+    "frontend/src/components/AgentDeliveryPanel.vue": "b9f79813849532c922314bcd8a91fbfef3d2d71325236394c900dcba7f10c432",
+    "frontend/src/components/AgentReviewPanel.vue": "160165fc0428c89e8ca3fdbd4ba0b53b7254e1d706923f587e8f3f134e9b300d",
+    "frontend/src/components/AgentRunsPanel.vue": "3ef35921663a788794542aef3dfdac0969c34cf4cd6a602542aa8cf40ba74f30",
+    "frontend/src/components/AppIcon.vue": "28102c001cadc2e37c61ecd61d97ad9eb239b976ccbdbb84f8af696e4a69859b",
+    "frontend/src/components/BackLink.vue": "31be2114f8fd2ce9f003a6286418c3d1e196d3a795e639948b44987c371968ab",
+    "frontend/src/components/CheckEditor.vue": "ee460bfeee50644720cad2512ab8f42e2cc90ed699d353441838bd44e77d0a73",
+    "frontend/src/components/ChecksPanel.vue": "bcf2d300dba49a2f061528e78010c834b4da099bc936394c87e801474cbd5a5f",
+    "frontend/src/components/DataChart.vue": "8c9538f26c59d73875af4b8a98e33ec3643c7f15517099fdbae0c915d0f096ee",
+    "frontend/src/components/FilterToolbar.vue": "b1164f28c744718f179adae1378ae3bc21bd00f26a47c462bee6e4a960e17c32",
+    "frontend/src/components/GlobalSearch.vue": "c12fbbfdc610d915a7c1998cd0a233b9bdd65de8fbd3bcb57330ec586fc223fc",
+    "frontend/src/components/HistoryPanel.vue": "9d8c01c6f406b86e83eaf8a08ae7aea2ae15c8ccc4d27de1a623554510d32d27",
+    "frontend/src/components/KumaPanel.vue": "cadc74d837bb12ac363246c5dfa35a21e0258f9a510af893cc968db78ac3c8a7",
+    "frontend/src/components/LiveIndicator.vue": "663142610ba58ca40de8bde41371d1d81d334ef3d2fe43cdb30178e35298ded2",
+    "frontend/src/components/NetworkPanel.vue": "a980be3af4a457767f1572366d977e6ead49feb0b31366d291941bd4e396a69c",
+    "frontend/src/components/PageState.vue": "82b9a2cee34c7ed2d886783cab25feaec925eb52e2d6ae65106a08536ff58a13",
+    "frontend/src/components/PaginationBar.vue": "00572561a57009c44e8a6501c0b4911e07b43b1aa830db1fa782e3cc3851984f",
+    "frontend/src/components/SidebarNav.vue": "d9139d809c18d698360aa21ab3f304f9e7e85128cbe01569f1cdcdc22ab74c21",
+    "frontend/src/components/StartDiagnosisButton.vue": "f1526f03bce0847c81ec11f4bf136417f279e95fb5a9971ec80de20f7757e317",
+    "frontend/src/components/StatusBadge.vue": "51e4149994eefd9aed3378e952e8dbf07e87f9d27cd72c745f150db16cfdc13f",
+    "frontend/src/components/ui/Badge.vue": "6542c4860bb6faa80e9e7f0e062fdb7c91509d3c4ff8baf239c8558eb4fc6ff7",
+    "frontend/src/components/ui/Button.vue": "cbed76e9de5dc9dd55b72f71a73834c15aae2d0a1859d81202c94e618f0016eb",
+    "frontend/src/components/ui/Dialog.vue": "edb06ff5b43c0ceef623aafe51d20d95c26399f09932d7f703a1bfee7b525b39",
+    "frontend/src/components/ui/Input.vue": "a1a34e4f81f1f56ab7ef112df45e2d6d077489144c0187fabf0b817c5e423a4f",
+    "frontend/src/components/ui/Select.vue": "df2b6df03bd59d423ecf60a46ae88f7821c471c64970a6ea5bdeaecc379e9398",
+    "frontend/src/composables.ts": "3c4037403cfc8a31e7501cb912e99fc9b998e52e28c9f095aeebc3726548f9b8",
+    "frontend/src/navigation-model.ts": "57fa1e92c3e15a8b2bf0be7d1ccb0c160c184237e304a366db83ff9827d06350",
+    "frontend/src/pages/AgentCenterPage.vue": "d1ca803d94464f79ad878a947a4bc189a2702b17f53fc68c09a34e335e064944",
+    "frontend/src/pages/AgentRunPage.vue": "f1f2d1d238dd3ad7e3415af0f034a9828890ee7ba9a75b34522eb735c1fdb08e",
+    "frontend/src/pages/CreateTargetPage.vue": "c43c5dca2f5f8b13d7b6900978901180522190ee55dcb046531f468b84d87bce",
+    "frontend/src/pages/IncidentDetailPage.vue": "d530ce2e90137febc799eebd924dad27d3c4a991282817ccc583adce90aa39b3",
+    "frontend/src/pages/IncidentsPage.vue": "fcac35594c7bbc72d911a6d0400a6e08b7aa48f43df1cca657dd58a44c6347ba",
+    "frontend/src/pages/LoginPage.vue": "682b09557b22b7443ffb5b0054fbb4fadc9c7a83533228b886c61342ed67f04a",
+    "frontend/src/pages/NotFoundPage.vue": "3afaad466fb3bb127b39facaa1f31abef1cccea56ac0a77cf84e0b624e7e1156",
+    "frontend/src/pages/OverviewPage.vue": "e40cb2f48776c441cbfb14c3d47e881f80b7aacbdf53364dae86cd5989360c1b",
+    "frontend/src/pages/RunbookDetailPage.vue": "04bfa46f944c83d6363226704439213fe55b6771318586bce153a043dbbd9c60",
+    "frontend/src/pages/RunbooksPage.vue": "07fe86125f71a7ce9f911e81f2a331c39aaf6d6177cc323cd96687dbd1b4be06",
+    "frontend/src/pages/TargetDetailPage.vue": "6fbabaab5a9a80f9cee428d44930a5df6c952fac32285db1911f2eccb5035bc1",
+    "frontend/src/pages/TargetsPage.vue": "483681e54a744f63eebf61033cef91540013f44a6c9c22b6e53603170a9e6ed3",
+    "frontend/src/pages/UsersPage.vue": "ab8bb3d3623699d8572f821d15b5b2f776149055b9944bcb06a2395d83827b29",
+    "frontend/src/router.ts": "078caa011fc779f15c63932cd0fa358867bf532efc8f9b77c36ca853f84738d9",
+    "frontend/src/stores/navigation.ts": "cfdec7f3790520a9ba7fe5173d95cce7b594591bd799f7614f01e78b2fb84f48",
+    "frontend/src/style.css": "3cd2785b44778f6aac25c879d0320ecf4b9063136b78b2919c11dadd84c69e33",
+    "frontend/tests/navigation.test.mjs": "30dfb0c290af2a4a8c6e2129ee4bbc9c6e7235fd53dd6b3d3b268ba303697a75"
+  },
+  "screenshotSha256": {
+    "admin-workspace.png": "ea755683522f1ffdeaa4916543cf6ca6d3ed7a1f593056505185fbcbbb33b224",
+    "diagnosis-actions.png": "adc8b831a72efedcdb204825ab33a46af0cb04694e139e7372f6b653fa032acc",
+    "mobile-incident-actions.png": "50f067368d934084d8611d50c9a7784fc7476d18e27a358a280f06f817badaeb",
+    "mobile-submenus.png": "5593ffbbffd48b3ce84877181ada31a75b408bf18f000fd47800a900b81ea21e",
+    "observer-readonly.png": "ee1a6bc781f38f266f4dee3c8c108763e49bf6b1e61c49ef3791abc41f223bfe",
+    "review-select-dark.png": "d2fbce61b46094c28c834417759d2fcedf3025c8d8e199cefda1f11260b49642",
+    "status-select-dark.png": "8a6842512970d9a5d825c6aa30a816c235795dbfe96d767f2d63d015b3133e4b",
+    "status-select-light.png": "6dbc81088f174e35e89aef8a996fa4676ae9ea171efc94e33ea7ec20a4c638c9",
+    "time-select-dark.png": "9e218eb1aa62ad4fe11673c8e686373a3d755654a051a26a4bcc95ce13676218",
+    "timeline-scroll-preserved.png": "d7abe052785535280f324e1a8cfa8ff852c11bed6d7f6920add9826b8313261f"
+  }
+}

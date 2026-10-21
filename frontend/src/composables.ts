@@ -1,9 +1,15 @@
-import { onScopeDispose, ref, shallowRef, watch, type Ref } from 'vue'
+import { nextTick,onScopeDispose, ref, shallowRef, watch, type Ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { useNavigation } from './stores/navigation'
 import { errorText } from './api'
 import { pageAfterRefresh } from './presentation'
 
 export function usePageBounds(data:Ref<{total:number;page:number;size:number}|null>,page:Ref<number>,load:()=>Promise<unknown>) {
   watch(data,result=>{if(!result||result.page!==page.value)return;const corrected=pageAfterRefresh(page.value,result.size,result.total);if(corrected!==page.value){page.value=corrected;void load()}})
+}
+export function useRestoreScroll(data:Ref<unknown>){
+  const route=useRoute(),navigation=useNavigation();let restored=false
+  watch(data,async value=>{if(!value||restored)return;restored=true;const position=navigation.positions[route.fullPath];await nextTick();if(position)window.scrollTo(position)},{flush:'post'})
 }
 
 export function useLoad<T>(fetcher: () => Promise<T>) {

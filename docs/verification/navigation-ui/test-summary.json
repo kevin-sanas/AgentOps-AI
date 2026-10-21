@@ -1,0 +1,126 @@
+{
+  "backend": {
+    "tests": 128,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "name": "dev.agentops.agent.AgentClientTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.806"
+    },
+    {
+      "name": "dev.agentops.AgentApiTest",
+      "tests": "14",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "21.524"
+    },
+    {
+      "name": "dev.agentops.AgentIntegrationTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "18.36"
+    },
+    {
+      "name": "dev.agentops.AgentOutboxTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "8.097"
+    },
+    {
+      "name": "dev.agentops.BootstrapTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "6.672"
+    },
+    {
+      "name": "dev.agentops.FoundationTest",
+      "tests": "19",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "11.206"
+    },
+    {
+      "name": "dev.agentops.KumaApiTest",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "9.384"
+    },
+    {
+      "name": "dev.agentops.KumaClientTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.407"
+    },
+    {
+      "name": "dev.agentops.monitoring.SafeHttpProbeTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.241"
+    },
+    {
+      "name": "dev.agentops.monitoring.TlsProbeTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.96"
+    },
+    {
+      "name": "dev.agentops.MonitoringApiTest",
+      "tests": "23",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "13.773"
+    },
+    {
+      "name": "dev.agentops.targets.PrivateNetworkPolicyTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.013"
+    },
+    {
+      "name": "dev.agentops.TargetUrlPolicyTest",
+      "tests": "26",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.059"
+    },
+    {
+      "name": "dev.agentops.WorkspaceQueryTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "9.06"
+    }
+  ],
+  "frontendTests": 10,
+  "frontendNavigationTests": 4,
+  "typecheck": "PASS",
+  "productionBuild": "PASS"
+}
