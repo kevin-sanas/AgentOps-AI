@@ -56,3 +56,43 @@ jobs:
         with:
           name: frontend-dist
           path: frontend/dist/
+  compose:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      COMPOSE_PROJECT_NAME: agentops-ci
+      BACKEND_PORT: '18184'
+      FRONTEND_PORT: '5184'
+      AGENT_ENABLED: 'true'
+      AGENT_LLM_PROVIDER: mock
+      AGENT_MODEL_NAME: mock
+      KUMA_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate isolated CI credentials
+        shell: python
+        run: |
+          import os, secrets
+          names = ['DB_PASSWORD','SESSION_TOKEN_PEPPER','AGENT_INTERNAL_TOKEN','BOOTSTRAP_ADMIN_PASSWORD','CHECKPOINT_OWNER_PASSWORD','CHECKPOINT_PASSWORD']
+          with open(os.environ['GITHUB_ENV'], 'a') as output:
+              for name in names:
+                  value = secrets.token_hex(24)
+                  print('::add-mask::' + value)
+                  output.write(name + '=' + value + '\n')
+      - name: Validate and start isolated mock stack
+        run: |
+          docker compose config --quiet
+          docker compose up --build -d --wait --wait-timeout 180
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:18184/actuator/health | python -c 'import json,sys;assert json.load(sys.stdin)["status"]=="UP"'; then break; fi
+            if [ "$attempt" = 60 ]; then exit 1; fi
+            sleep 2
+          done
+          curl --fail --silent http://127.0.0.1:5184/login > /dev/null
+          curl --fail --silent http://127.0.0.1:5184/healthz
+      - name: Isolated PostgreSQL dump and restore drill
+        shell: pwsh
+        run: ./scripts/recovery-drill.ps1
+      - name: Remove only this job's containers and volumes
+        if: always()
+        run: docker compose down --volumes --remove-orphans

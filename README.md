@@ -1,6 +1,6 @@
 # B｜AgentOps AI 智能运维平台
 
-> 当前已实现至 G4：监控事故闭环、运行手册、持久化只读诊断、人工审阅和线下结果回填，支持默认 mock 与显式配置的模型 HTTP 接口。真实模型效果、Kuma、完整容器部署和容量/性能仍待验证。
+> 当前推进至 G5：在 G4 监控、诊断和人审闭环上增加可选 Kuma Push、完整 Compose 和隔离恢复演练。默认 mock、Kuma 关闭；真实模型效果、远端 CI 与容量/性能仍待验证。实际证据见阶段测试文档。
 
 **在你的电脑上启动项目，请直接看 [IDEA 启动与验收指南](IDEA启动与验收指南.md)。** 该指南随启动配置和项目验收流程同步维护。
 
@@ -18,7 +18,7 @@
 - GET/HEAD 检查、64 KiB 响应上限、绝对超时；数据库租约、全局/域名配额、结果历史和过期结果拒绝。
 - 同目标唯一活动事故、冻结检查快照、连续失败/恢复阈值；确认、排查、观察、解决、关闭以及审计时间线。
 - Vue 登录、概览、目标/检查/网络/授权、事故与用户管理；会话仅内存保存，窄屏布局和权限视图。
-- 独立内部服务 token、公共存活检查、Flyway V1–V5、后端容器与前后端 CI 配置。
+- 独立内部服务 token、公共存活检查、Flyway V1–V6、完整应用容器与 CI 配置。
 - 运行手册草稿、乐观锁、发布不可变版本/段落 UUID 与 SHA-256；停用不破坏旧引用。
 - AgentRun + 事务 Outbox、租约/有限重试/DEAD 明确重试、Python LangGraph + 独立 PostgreSQL checkpoint；同 runId 恢复，Java 二次核验引用。
 - 报告区分观测、推断和未知，提供稳定手册引用；默认 mock，可显式配置模型 HTTP 接口，无运维写工具。
@@ -54,7 +54,7 @@ mvn -B -ntp -f backend/pom.xml verify
 
 ## 本地启动
 
-**已有 IDEA 后端时：** 保留原运行配置，确认数据库属于本项目并在升级前备份；首次运行新代码会执行尚未应用的迁移至 V5。IDEA 设置 `PORT=18080`；完整步骤见根目录启动指南。本轮开发没有重启你的 IDEA 服务或迁移你的数据库。
+**已有 IDEA 后端时：** 保留原运行配置，确认数据库属于本项目并在升级前备份；首次运行新代码会执行尚未应用的迁移至 V6。IDEA 设置 `PORT=18080`；完整步骤见根目录启动指南。本轮开发没有重启你的 IDEA 服务或迁移你的数据库。
 
 在项目根的 PowerShell 中启动工作台（Node 22.12+，推荐本轮使用的 24.22.0）：
 
@@ -70,9 +70,9 @@ npm run dev
 
 `npm run build` 同时执行类型检查并输出 `frontend/dist`。生产需同源反向代理 `/api`、SPA history fallback 和 HTTPS；当前没有前端生产容器，`npm run preview` 仅预览静态产物，不提供开发 API 代理。
 
-当前 `compose.yaml` 仅包含已实现的 `postgres`、`backend`，还不是完整 MVP。镜像标签和 digest 已固定；容器镜像拉取/构建和启动尚待网络可达时验证。
+当前 `compose.yaml` 包含业务 PostgreSQL、独立 checkpoint PostgreSQL、Java、Python、Vue 静态服务，以及 `--profile kuma` 可选服务。镜像固定版本和摘要。不要同时占用已有 IDEA 的端口；默认数据库使用独立 Compose 数据卷。
 
-1. 将 `.env.example` 复制为 `.env`，在本地自行设置数据库密码、两个彼此不同且至少 32 字符的随机 secret，以及至少 12 字符、至多 72 UTF-8 字节的管理员密码。不要提交 `.env`。
+1. 将 `.env.example` 复制为 `.env`，在本地自行设置数据库密码、两个彼此不同且至少 32 字符的随机 secret、checkpoint owner/application 两个不同密码，以及至少 12 字符、至多 72 UTF-8 字节的管理员密码。启用诊断时设置 `AGENT_ENABLED=true`，保持 mock；不要提交 `.env`。
 2. 在确认使用本项目新数据库卷后执行 `docker compose up --build`。只会在空用户表且明确配置 bootstrap 凭据时建立首个 `OPS_ADMIN`；已有账户不会重置。
 3. API 默认 [http://127.0.0.1:18080](http://127.0.0.1:18080)，公共存活检查 [health](http://127.0.0.1:18080/actuator/health)。数据库没有宿主机端口。
 4. `POST /api/v1/auth/login` 获取 token，仅由客户端内存保存；后续请求使用 `Authorization: Bearer ...`，退出时调用 `POST /api/v1/auth/logout`。
@@ -100,7 +100,7 @@ npm run dev
 | `GET /audit-events?actorId=...&subjectId=...` | AUDITOR 查看操作元数据，不返回目标正文或秘密 |
 | `GET /internal/v1/health` | 独立内部 token；用户会话不能访问 |
 
-OPS_ADMIN 不自动拥有 ON_CALL/AUDITOR。bootstrap 管理员需要显式授予相应角色和目标操作权限，才能承担相应职责。创建检查、手册、诊断必须带 `Idempotency-Key`；具体请求体及已实现的人工审阅/线下回填 API 见 docs/07。Kuma 集成仍待实现。
+OPS_ADMIN 不自动拥有 ON_CALL/AUDITOR。bootstrap 管理员需要显式授予相应角色和目标操作权限，才能承担相应职责。创建检查、手册、诊断必须带 `Idempotency-Key`；具体请求体及人工审阅/线下回填、Kuma 管理 API 见 docs/07。
 
 ## G3 本地只读诊断
 
@@ -126,7 +126,7 @@ OPS_ADMIN 不自动拥有 ON_CALL/AUDITOR。bootstrap 管理员需要显式授�
    ```
 
    默认只绑定 127.0.0.1，内部接口需要 token 和 `X-Request-Id`，浏览器不能直接使用；不加载根 `.env`，也不保存 DSN。不要将实际 token/DSN 提交到仓库。
-3. IDEA 原运行配置保留数据库及两个 secret，另加 `PORT=18080`、`AGENT_ENABLED=true`、`AGENT_SERVICE_ORIGIN=http://127.0.0.1:8090`。备份本项目数据库后由你重启 Java 应用迁移至当前 V5。默认 `AGENT_ENABLED=false` 表示暂停分发；发起的任务会持久化排队，直到启用。
+3. IDEA 原运行配置保留数据库及两个 secret，另加 `PORT=18080`、`AGENT_ENABLED=true`、`AGENT_SERVICE_ORIGIN=http://127.0.0.1:8090`。备份本项目数据库后由你重启 Java 应用迁移至当前 V6。默认 `AGENT_ENABLED=false` 表示暂停分发；发起的任务会持久化排队，直到启用。
 4. 工作台“运行手册”选择故障目标 → 新建草稿 → 填理由发布 → 事故详情“发起诊断” → 报告查看 6 节点、观测/推断/未知及引用。值班角色 + 目标操作授权才能发起；运行手册写入仅管理员。手册按 Markdown 标题分段最多 5 段、每段 6,000 字；草稿与发布版分别保存。
 
 网络/服务短暂错误有限退避重试，最多 5 次后进入 DEAD；符合重试条件时，管理员修复配置后填写理由“重新加入队列”，相同 runId 恢复 checkpoint。格式/引用错误不自动重试。G4 已实现可配置 provider、人工审批与线下结果回填；模型结果不确定时禁止同任务重发，详见 G4 章节。30 场景人工标注评测和性能基准尚未执行。
@@ -190,3 +190,11 @@ Agent 只整理已有证据、检索授权运行手册并生成诊断/行动建�
 模型请求前先持久化调用记录，已验证的结果先写入独立checkpoint库，再交给图继续。进程在图检查点提交前崩溃时可复用原模型结果。如果响应超时、进程退出或数据库故障导致调用是否完成不确定，任务返回 `AGENT_MODEL_OUTCOME_UNKNOWN`，停止自动重试，管理员也不能强制将同一任务重发。先核对模型服务的调用记录，需要重新诊断时再从事故详情明确发起新任务。已知的连接失败或HTTP 429/5xx仍按有界策略重试；不宣称与远端服务能组成跨系统的 exactly-once 事务。
 
 开发检查：`scripts/agent.ps1 Test`（图、HTTP适配和30个合成场景），`scripts/backend.ps1 verify`（含独立临时PG与Java→Python闭环），`npm --prefix frontend run build`。合成回归不等于人工评分、真实模型准确率或性能基准。
+
+## G5：可选 Kuma 与容器交付
+
+管理员在“目标详情 → Kuma 推送”配置已预建 Monitor 的映射，先测试通过再启用。后端只保存环境变量 secret reference；实际 token、请求 URL 和远端正文不进入 API、审计或投递记录。部署 origin、HTTP/私网 CIDR 单独批准；Kuma 使用独立 DNS 池，重新校验全部地址并固定连接 IP，拒绝重定向。
+
+后台独立轮询已提交的检查样本，不参与核心检查/事故事务。按集成串行租约和检查样本唯一键处理，领取时再次验证最新有效样本；UNKNOWN/过期样本不推送。临时故障有界重试，旧待发送样本被新状态替代；Kuma Push 是至少一次投递，不宣称远端 exactly-once。
+
+完整启动、可选 Kuma 的变量与验收见 [专属启动指南第 8 节](IDEA启动与验收指南.md#8-g5-新增kuma-与-compose按需使用)。`scripts/recovery-drill.ps1` 只在无网络临时容器验证合成备份恢复，不操作用户库。日常停止 Compose 保留数据卷，不使用 `down --volumes`。

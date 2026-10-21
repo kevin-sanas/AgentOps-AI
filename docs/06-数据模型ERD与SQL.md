@@ -210,3 +210,5 @@ CREATE INDEX ix_audit_subject_time ON audit_event(subject_type,subject_id,create
 - 运行手册版本不可变；每个发布版本的 section 有稳定 UUID，`sectionId` 只在该版本内有效。编辑生成新版本/新 section ID，旧 AgentRun 引用继续可查。
 - `integration_delivery` 以 `(integration_id,check_run_id)` 幂等，attempt 子表保存每次状态码/脱敏错误；不得保存 token URL。
 
+G5已落地的DDL以不可变迁移 `V6__kuma_delivery.sql` 为准：config按target唯一、含version/smoke_passed/集成租约与轮询游标；secret_ref限定env:KUMA_PUSH_TOKEN_*，不存token。delivery区分CHECK/SMOKE，CHECK引用check_run并唯一，SMOKE不引用检查；状态PENDING/DELIVERED/DEAD/SUPERSEDED，含available_at与有界attempts。每集成只允许一个待发送smoke；attempt子表保存每次已完成尝试，不记录正文。上述概念DDL用于设计说明，不应手工执行替代Flyway。
+

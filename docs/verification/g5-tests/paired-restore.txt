@@ -1,0 +1,8 @@
+PASS: paired business/checkpoint dumps restored into NEW databases after quiescing both applications
+incident=1
+agent_run=3
+approval_request=3
+runbook_version=1
+check_run=5
+integration_delivery=3
+PASS: restored real LangGraph checkpoint WAITING_HUMAN -> resume/APPROVED_FOR_MANUAL; model journal count unchanged

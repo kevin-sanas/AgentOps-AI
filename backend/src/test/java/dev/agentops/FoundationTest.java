@@ -251,7 +251,7 @@ class FoundationTest {
 
     @Test void secondFlywayMigrationRunIsANoop() {
         assertThat(flyway.migrate().migrationsExecuted).isZero();
-        assertThat(db.queryForList("SELECT version FROM flyway_schema_history WHERE success ORDER BY installed_rank", String.class)).containsExactly("1","2","3","4","5");
+        assertThat(db.queryForList("SELECT version FROM flyway_schema_history WHERE success ORDER BY installed_rank", String.class)).containsExactly("1","2","3","4","5","6");
     }
 
     @Test void userIdempotencyDoesNotExposeAnUnkeyedPasswordVerifier() throws Exception {

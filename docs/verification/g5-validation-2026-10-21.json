@@ -1,0 +1,613 @@
+{
+  "stage": "G5",
+  "date": "2026-10-21",
+  "timezone": "Asia/Shanghai",
+  "backend": {
+    "command": "scripts/backend.ps1 verify",
+    "completedAt": "2026-10-21T17:47:08+08:00",
+    "tests": 123,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "name": "dev.agentops.agent.AgentClientTest",
+        "tests": "4",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "dev.agentops.AgentApiTest",
+        "tests": "14",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "dev.agentops.AgentIntegrationTest",
+        "tests": "1",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "dev.agentops.AgentOutboxTest",
+        "tests": "5",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "dev.agentops.BootstrapTest",
+        "tests": "1",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "dev.agentops.FoundationTest",
+        "tests": "19",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "dev.agentops.KumaApiTest",
+        "tests": "10",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "dev.agentops.KumaClientTest",
+        "tests": "6",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "dev.agentops.monitoring.SafeHttpProbeTest",
+        "tests": "7",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "dev.agentops.monitoring.TlsProbeTest",
+        "tests": "2",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "dev.agentops.MonitoringApiTest",
+        "tests": "23",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "dev.agentops.targets.PrivateNetworkPolicyTest",
+        "tests": "5",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "dev.agentops.TargetUrlPolicyTest",
+        "tests": "26",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      }
+    ]
+  },
+  "python": {
+    "unit": 59,
+    "realPostgres": 11,
+    "note": "11 PG cases are inside one Java integration test, not added to Java count"
+  },
+  "frontend": {
+    "typecheckBuild": "PASS",
+    "modules": 86,
+    "desktop": "PASS",
+    "mobile390": {
+      "clientWidth": 382,
+      "scrollWidth": 382
+    },
+    "observerKumaLinks": 0,
+    "consoleWarningsErrors": 0
+  },
+  "compose": {
+    "build": "PASS; three application images",
+    "firstBoot": "PASS; business PG + checkpoint PG + Java + Python + frontend + optional Kuma",
+    "project": "agentops-g5-verify",
+    "userServicesTouched": false,
+    "ports": {
+      "backend": 18184,
+      "frontend": 5184,
+      "kuma": 3301
+    }
+  },
+  "e2e": {
+    "realKumaContract": [
+      "UP 200 ok=true",
+      "DOWN 200 ok=true",
+      "invalid token 404"
+    ],
+    "pythonRestart": "WAITING_HUMAN -> APPROVED_FOR_MANUAL -> NOT_EXECUTED/COMPLETED; incident OPEN",
+    "kumaPause": "KUMA_TIMEOUT/PENDING; incident retained; new graph WAITING_HUMAN",
+    "kumaRecovery": {
+      "sameDelivery": true,
+      "attempts": 4
+    },
+    "firstRunFinding": "Generic Kuma 404 was terminal; changed to bounded retry after failing test",
+    "ports": {
+      "backend": 18184,
+      "frontend": 5184,
+      "kuma": 3301
+    }
+  },
+  "restore": {
+    "businessCounts": [
+      "incident=1",
+      "agent_run=3",
+      "approval_request=3",
+      "runbook_version=1",
+      "check_run=5",
+      "integration_delivery=3"
+    ],
+    "checkpoint": "Actual LangGraph checkpoint restored, read WAITING_HUMAN, resumed APPROVED_FOR_MANUAL; model journal count unchanged",
+    "quiescedBeforeDump": true,
+    "restoreTargets": "Two new databases inside this run only; no source overwritten"
+  },
+  "review": {
+    "rounds": 1,
+    "critical": 0,
+    "important": 2,
+    "resolved": [
+      "Independent bounded Kuma DNS pool, uninterruptible resolver injection",
+      "Revalidate latest sample while claiming under integration lock"
+    ],
+    "redGreen": true,
+    "additionalRuntimeFinding": "Kuma generic 404 needs bounded retry; failing regression then final full verify green"
+  },
+  "secretScan": {
+    "runtimeLogMatches": [],
+    "realCredentialsUsed": false
+  },
+  "notRun": [
+    "Remote GitHub CI",
+    "Hosted real model and human-scored quality",
+    "Capacity/performance benchmarks",
+    "Production deployment or user database migration",
+    "Fresh complete container vulnerability/transitive license scan"
+  ],
+  "sourceSnapshot": [
+    {
+      "path": "agent-service/agentops_agent/__init__.py",
+      "sha256": "12e1f283ac58329f60a3dcb784b97a73526c3fa7aa87ada1cda15a8a662d29b3"
+    },
+    {
+      "path": "agent-service/agentops_agent/app.py",
+      "sha256": "fb077da73193f1346c93ffadbeec41430cdca714cc26b2057eda1e3e8dccf0fe"
+    },
+    {
+      "path": "agent-service/agentops_agent/graph.py",
+      "sha256": "34e18cf0c2413d0389b10432e145a604ec5d0fa603b60bbc4707f9dd6582c327"
+    },
+    {
+      "path": "agent-service/agentops_agent/model_calls.py",
+      "sha256": "e01b969f114fc1bfb2e628bb4599f93fa74e4ccbfe1f55a53ee05bad5a48966e"
+    },
+    {
+      "path": "agent-service/agentops_agent/models.py",
+      "sha256": "8eb7c9602be6ba45da5623fd685aa8f63552c7ca5fb0970e133ef20cc22a7311"
+    },
+    {
+      "path": "agent-service/agentops_agent/provider.py",
+      "sha256": "7926d133f6733849a224e6776d4041c206e6843e7a64b521696c9d6ac845d1cf"
+    },
+    {
+      "path": "agent-service/agentops_agent/safety.py",
+      "sha256": "8d3f28df1695dcc8635cb6b11406297cad040fc572a37afbbdf77446788c3f00"
+    },
+    {
+      "path": "agent-service/agentops_agent/store.py",
+      "sha256": "7e9f9548694ace6a5a7c47bee0832c26431f732afc7d52f2aab9c8f30ee970e9"
+    },
+    {
+      "path": "agent-service/Dockerfile",
+      "sha256": "6969bd63a28cd88b50a0bc189222a13946106cae232a5cc520588b419969441f"
+    },
+    {
+      "path": "backend/Dockerfile",
+      "sha256": "4ceb7bc5ee15099f362491c0ea63436e5c524ac6bdf59b5025fb714756b31cd1"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/access/Caller.java",
+      "sha256": "6efd3edc45cc9bb71561811bb42409595ff340a0cc8075302561f504cc6ca803"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/access/SecurityConfiguration.java",
+      "sha256": "bbd411bca08419192797c517b36090ec78429d5f47934d1bf6a295249688714d"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/access/SecuritySettings.java",
+      "sha256": "5a3b5406d6e7f8883cf0c636aca6d1f9045922efdad1d02017022dd13f4e6048"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/agent/AgentClient.java",
+      "sha256": "ca0dd138b539e2bb2c993f52eb7b7bad22a6ea927c6b057cdc2ff9d2f4f96c6c"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/agent/AgentContracts.java",
+      "sha256": "c3edbeb72858040251e7ae459b7d34b0e21fdf66cb361383807f0df0701a9bf6"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/agent/AgentController.java",
+      "sha256": "79c266f3acd6dfc5cd5b3b1ab0d141cc19364f8e5af9cfe9e220f05e0179ce34"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/agent/AgentDispatcher.java",
+      "sha256": "f8eb9c020bdc2c16c2bab7494be6740a9566b5416566fc8cfd3d443097aa9615"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/agent/AgentOutbox.java",
+      "sha256": "c3571b1b8b09e9718a34021759f113fec872dce83f971c820dc022bb6f0188a2"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/agent/AgentService.java",
+      "sha256": "76c94996d48d88c4da30d0ba62313febfb579fa28e8db9b8297b1c6d99c6a131"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/agent/ApprovalService.java",
+      "sha256": "7f7b283c382c1c50c7ae69b172efa4726b7043b0fd27339202b524db987630e3"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/AgentOpsApplication.java",
+      "sha256": "03c0ea302c8320f0d60c9b48918c9abb74949942001d4cc45f32757de212cbf1"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/audit/AuditController.java",
+      "sha256": "e7eadfc9f673698c83911a108d6147e4214cff813f731a0e6f6c25cba1167a2c"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/audit/AuditService.java",
+      "sha256": "a6542a560447faca6590442502f304d5d9274baf444b83ec713eb07ac1a6daa0"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/identity/AuthController.java",
+      "sha256": "e85ccb52897eaa4b56a3f1bd30fcbaad07948f265e3655bd517776221cfc8032"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/identity/BootstrapAdmin.java",
+      "sha256": "3535bdeb4313da7deadea0622721df922405a5b56846ab823009401905c50234"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/identity/SessionService.java",
+      "sha256": "5687c349745537dc47037edf97e2c3939077f734f921108598e9d80b80883a7f"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/identity/UserAdministration.java",
+      "sha256": "3bceec470460d4898b767e8fd0ddc986ae6e9746fd9d8c32b12979542d339674"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/identity/UserController.java",
+      "sha256": "d51f8a6b31ee709b5cc61a57aceecae13f7afbb71e2f7071f6edb81cedeeca9a"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/incidents/IncidentController.java",
+      "sha256": "4bd06bd57a019f9fd7f50e19c9cc687d839213b0f6f24fdd33030b4f7427a0c5"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/incidents/IncidentService.java",
+      "sha256": "3ecdb54e4a4f4b62b52c7b80c29e5435d450155e8a7df20af4efc045e727ad4e"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/integrations/KumaController.java",
+      "sha256": "4598d3999867c9f9ed3ebf64d5efb09d0086081cbc9d4aad69c402636a714092"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/integrations/KumaDeliveryStore.java",
+      "sha256": "b3a441431bda2c387c23d3436cf60f8ec5afbb5458debc18b9fc37e060bc02de"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/integrations/KumaDispatcher.java",
+      "sha256": "9c3d16b2793f2a1f8ffdc7834d07a2a7f5c45a8e4ccf9067fa8fab279e72c403"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/integrations/KumaEndpointPolicy.java",
+      "sha256": "d5181286964b7cf0b49d54df19978ac218ebca3a59973366f843a3e12888d473"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/integrations/KumaService.java",
+      "sha256": "ccb92e5374138734a7ba7e5baae5edd45a42baa4403bd10740e798ff9634e5b7"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/integrations/UptimeKumaPushAdapter.java",
+      "sha256": "c352a032cf3bec5457e04fde34d513c2adafaeda22d2648a05cedc27e7bb1f5c"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/monitoring/CheckController.java",
+      "sha256": "77d28811ebbf240c926f7a47ff5a24f053f2b948de4c762dfc9ac5ba7159584c"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/monitoring/CheckService.java",
+      "sha256": "7d3bb57d570ee685c14c9a4783cf1e68223bf6673389b43ed9fa7ab695f629d1"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/monitoring/IncidentAggregator.java",
+      "sha256": "76edf4facea4334903184d64e1d5182e3ad3791722ebd0f062d6380985110c4c"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/monitoring/LeaseSupport.java",
+      "sha256": "a5e7f94be3f022b9e7c643bed28aca4ff9eda7fb122bf24690e85c910d585ed2"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/monitoring/MonitoringScheduler.java",
+      "sha256": "6438adac1f33fb2786b90baaef632954a664bb35595c05c2b5309d5af7f5f5b5"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/monitoring/MonitoringStore.java",
+      "sha256": "bcae020de1efaedbe5ba4c1c3cbbe98e5205a6448fdc74210180b0c1d3c8c2bb"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/monitoring/OverviewController.java",
+      "sha256": "c6f388b3f5b0f8de99aa0ff7131fcd46201b693a66bf520d11c4f2b61cbb43f5"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/monitoring/ProbeResult.java",
+      "sha256": "ddad0a02e840dfd1c39ddea987e1005d7f0d396915f0aa2d0f886573013ca068"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/monitoring/SafeHttpProbe.java",
+      "sha256": "897966d3885adb051d03cf6df8acd0be814f544f817b9c7f4242660285986ef9"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/monitoring/TargetGuard.java",
+      "sha256": "731339801ec32387b133a6ca5aab3d221e56d06b39d5b585d2f4d1028b053562"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/runbooks/RunbookController.java",
+      "sha256": "1383965c4816cc98386a235eff7bf0c6eb6e9fdf3f20817ca226ecfcb14f0b93"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/runbooks/RunbookService.java",
+      "sha256": "72a25442b7174fce5b28633f335b87ccda7cd88cd9a5d9943e448a441e11b7e6"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/shared/ApiError.java",
+      "sha256": "9beafe7937ac674da0b5bc32d8705ab1ff24bcc184c661d18c553cafb30dda98"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/shared/ApiExceptionHandler.java",
+      "sha256": "87e95aaa3df6e5c7b0fc69d289b9a887ed45b097f4d06509071f9765595e2eba"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/shared/Idempotency.java",
+      "sha256": "6a4e3207a7a354490772652e6e7e3fb9cd8b81119c1a0d754aeaef2ad51fcf04"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/shared/PageResult.java",
+      "sha256": "6e4b7afccc21446c9014d70a73a39ef70ef72bff054df3d9b286fcfa74d1ae3a"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/shared/Problems.java",
+      "sha256": "5c621745f2771b19a338e95739c997703aa1aa0ddac34d79e77cf18a384ee200"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/shared/RequestIds.java",
+      "sha256": "5961211ae2bb6565f34f5a1ca09d91606b2bdc5c1831e4e5c0223de40912bdad"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/targets/Cidr.java",
+      "sha256": "4b7cb1b5d817ca93dffc70e12d3a566f2cdb104df7918c7c6ca7a735e2013cfc"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/targets/NetworkPolicyController.java",
+      "sha256": "fd3ba716569e8f3566da42684a37c0b5bdf6bd113c462ead8459ac1dcee6a9b0"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/targets/SafeDns.java",
+      "sha256": "1ff9c4d2b39bc8a02e21a2110cf909b50a56f89673179f922281bc113f177638"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/targets/TargetController.java",
+      "sha256": "1fa593213c3cbfd72a37d2800c49ba067d93a8ff53cb0aab0c037a55da34e506"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/targets/TargetService.java",
+      "sha256": "8ccc771d6a6407173f61eab628c299daad74ea4b0023bf85a99807af5b0dc6e3"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/targets/TargetUrlPolicy.java",
+      "sha256": "b62ca62e189ebde37b966804d90c2c2f5be2d0e951c088d0323c9423210f4884"
+    },
+    {
+      "path": "backend/src/main/resources/application.yml",
+      "sha256": "4c756b492c0529a822f317d29acb0783aad2c1b8cd101acd41b774e916019268"
+    },
+    {
+      "path": "compose.yaml",
+      "sha256": "2f66a0da9df207bfcca4e5ec7c0d69fd42831b9b2c090e6aead1debb1b4da996"
+    },
+    {
+      "path": "db/migration/V1__identity_and_audit.sql",
+      "sha256": "2ff996a3f6b42bd91d781719d375f2b536e35237ffe1e236737bc2be34fa1444"
+    },
+    {
+      "path": "db/migration/V2__targets_and_idempotency.sql",
+      "sha256": "87a4c29812bea269d4616c30f87a0c29390e52db02cf82ad701c8e001f320992"
+    },
+    {
+      "path": "db/migration/V3__monitoring_and_incidents.sql",
+      "sha256": "5bed815846e23ce4dacbd6366a2d8fb7e17215bd026bb65bc769b1f44ff31152"
+    },
+    {
+      "path": "db/migration/V4__runbooks_and_agent_runs.sql",
+      "sha256": "b10190a00ab5d0eb4514e99c64dd56e2a9db75c662be2f38cab8facb29863d98"
+    },
+    {
+      "path": "db/migration/V5__agent_human_review.sql",
+      "sha256": "c3c7a0b6dfeb670003d7dbc2ef040542fcb010904eb0f2c42525ff6f4b1a7e54"
+    },
+    {
+      "path": "db/migration/V6__kuma_delivery.sql",
+      "sha256": "f20a779937b8f2db701476443b3b7e169777d137910342038dad4bbb22469231"
+    },
+    {
+      "path": "deploy/agent-entrypoint.py",
+      "sha256": "485ac87213df56cda23ed9e394055c0849ceec07107cac32e5b99ee02404b626"
+    },
+    {
+      "path": "deploy/checkpoint-init.sh",
+      "sha256": "6dc7d98e6f985baa2319ce87cb32486ceda9e4fb0ba15d7db189cf0c60339e25"
+    },
+    {
+      "path": "frontend/Dockerfile",
+      "sha256": "1c872a4917b75477c95c4a72b25a800dc007d9ce3e16715fde1e7680af289981"
+    },
+    {
+      "path": "frontend/nginx.conf",
+      "sha256": "01ea85544c05f993ec842e87daeb7853daa38084fa59adf8156b8fdf5d95bde9"
+    },
+    {
+      "path": "frontend/src/api.ts",
+      "sha256": "ec9eff6e7ece8d3202b718acaaa7ce3c4ff90424bb3291c4b890b7acadde1d5a"
+    },
+    {
+      "path": "frontend/src/App.vue",
+      "sha256": "7e50c34ea159a74938951b40851886acd8c58cebffe361ed66e3af4fe03c1213"
+    },
+    {
+      "path": "frontend/src/components/AccessPanel.vue",
+      "sha256": "46e15e4cb2f67c960ba3c2f9fbb450ec87d249fb3e39d18db71785b2d6fa521b"
+    },
+    {
+      "path": "frontend/src/components/AgentDeliveryPanel.vue",
+      "sha256": "b9f79813849532c922314bcd8a91fbfef3d2d71325236394c900dcba7f10c432"
+    },
+    {
+      "path": "frontend/src/components/AgentReviewPanel.vue",
+      "sha256": "4b961da0452ec2da7c8f36fc2faaefff31de2e08d650a9f66174bd6ae2bbfc97"
+    },
+    {
+      "path": "frontend/src/components/AgentRunsPanel.vue",
+      "sha256": "57735e894c49818359f4808c79768c82b5b85f6b9caca929befd73976b7e7044"
+    },
+    {
+      "path": "frontend/src/components/AppIcon.vue",
+      "sha256": "d3ae729bff7321bde9d491a1c4b4aa8c256494e1165668b18630a7fe010a8348"
+    },
+    {
+      "path": "frontend/src/components/CheckEditor.vue",
+      "sha256": "ebbc86513f1f610c3b150a2d9a3f1186170829e30c343e18459a57992ea99700"
+    },
+    {
+      "path": "frontend/src/components/ChecksPanel.vue",
+      "sha256": "bcf2d300dba49a2f061528e78010c834b4da099bc936394c87e801474cbd5a5f"
+    },
+    {
+      "path": "frontend/src/components/HistoryPanel.vue",
+      "sha256": "a9cc2d11b49de0203f0d73a1f918d838ce9949f130332d8e5791b7215ea0c04a"
+    },
+    {
+      "path": "frontend/src/components/KumaPanel.vue",
+      "sha256": "cadc74d837bb12ac363246c5dfa35a21e0258f9a510af893cc968db78ac3c8a7"
+    },
+    {
+      "path": "frontend/src/components/NetworkPanel.vue",
+      "sha256": "a980be3af4a457767f1572366d977e6ead49feb0b31366d291941bd4e396a69c"
+    },
+    {
+      "path": "frontend/src/components/PageState.vue",
+      "sha256": "82b9a2cee34c7ed2d886783cab25feaec925eb52e2d6ae65106a08536ff58a13"
+    },
+    {
+      "path": "frontend/src/components/PaginationBar.vue",
+      "sha256": "00572561a57009c44e8a6501c0b4911e07b43b1aa830db1fa782e3cc3851984f"
+    },
+    {
+      "path": "frontend/src/components/StatusBadge.vue",
+      "sha256": "51e4149994eefd9aed3378e952e8dbf07e87f9d27cd72c745f150db16cfdc13f"
+    },
+    {
+      "path": "frontend/src/composables.ts",
+      "sha256": "a1f9a904edf10581cf73ca90bdd74ea187f9b683ac1bc08c3fd1fba535870df1"
+    },
+    {
+      "path": "frontend/src/diagnosis.ts",
+      "sha256": "714760260b84d8a19a5b555bc974c8cf0312ae5457a49c67c1e70981da6e57a1"
+    },
+    {
+      "path": "frontend/src/main.ts",
+      "sha256": "04a5a769a09873b326fc912de8f22464e326cfa8349e8806b78768ffe6437a99"
+    },
+    {
+      "path": "frontend/src/pages/AgentRunPage.vue",
+      "sha256": "8d64f9b7e21c36cfaf3dbb0bf81f4240201f972664e0e3859b63fee14ff86b7c"
+    },
+    {
+      "path": "frontend/src/pages/CreateTargetPage.vue",
+      "sha256": "c43c5dca2f5f8b13d7b6900978901180522190ee55dcb046531f468b84d87bce"
+    },
+    {
+      "path": "frontend/src/pages/IncidentDetailPage.vue",
+      "sha256": "dfe002174fbca91ce38637122ccf7f795ec4e6f8c0bc819c9774476002ccd9e0"
+    },
+    {
+      "path": "frontend/src/pages/IncidentsPage.vue",
+      "sha256": "79f8463f4dd95a5e67558a1312169e21d386224bd152288ec3db8d9049f39088"
+    },
+    {
+      "path": "frontend/src/pages/LoginPage.vue",
+      "sha256": "caaa03ed7141dc1718d70fd4508c79e33f137e161e2de1ff92d9709b3bf354ac"
+    },
+    {
+      "path": "frontend/src/pages/OverviewPage.vue",
+      "sha256": "f3f2226d2f3f4786d183f0c838b28425477a8fe70ec4d9774d6667e7c731557f"
+    },
+    {
+      "path": "frontend/src/pages/RunbookDetailPage.vue",
+      "sha256": "0fcc97355a9285a67cfd32423558559c3eb2b9309ec7d9c0e9f38613126f05b9"
+    },
+    {
+      "path": "frontend/src/pages/RunbooksPage.vue",
+      "sha256": "75de89b0f1c7cc6a78df2282c37b52fb0a3e4cfb13af65cdeade993860356cc0"
+    },
+    {
+      "path": "frontend/src/pages/TargetDetailPage.vue",
+      "sha256": "b1cedacf0595591b0ec30ab59f67fe282ac2d7f601afbe46f449f58d46838e6d"
+    },
+    {
+      "path": "frontend/src/pages/TargetsPage.vue",
+      "sha256": "9a76d3013c9f6cb6ea3362ab196a048f7cacc85996b143f48ccd26c3064485dd"
+    },
+    {
+      "path": "frontend/src/pages/UsersPage.vue",
+      "sha256": "ab8bb3d3623699d8572f821d15b5b2f776149055b9944bcb06a2395d83827b29"
+    },
+    {
+      "path": "frontend/src/router.ts",
+      "sha256": "a51403cc22f780375d222cae18b61fff9133f94b74987009470d304daeaae0b9"
+    },
+    {
+      "path": "frontend/src/style.css",
+      "sha256": "d7faeee015d9e71b286aabf9c8af636607496864d597874492a62acb00635314"
+    },
+    {
+      "path": "frontend/src/types.ts",
+      "sha256": "270a2d3240c2a945ebd82e160a02ac9602d5a41b24fed874608c35cd1f0c42be"
+    },
+    {
+      "path": "scripts/recovery-drill.ps1",
+      "sha256": "3cf7fd8486adb98e12995697e6dd300038ddd9f954c353b936558dbdc7ed0502"
+    }
+  ],
+  "cleanup": {
+    "testContainersNetworksVolumes": "removed",
+    "userServicesTouched": false
+  }
+}

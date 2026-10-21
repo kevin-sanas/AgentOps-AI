@@ -22,7 +22,7 @@ public class TargetUrlPolicy {
         this.resolver=resolver;this.envelope=deploymentCidrs.stream().map(Cidr::parse).toList();
         if(envelope.stream().anyMatch(c->!c.isPrivate()))throw new IllegalArgumentException("Private egress envelope must contain private CIDRs only");
     }
-    @Autowired public TargetUrlPolicy(SafeDns dns,@Value("${agentops.monitoring.allowed-private-cidrs:}") String cidrs){
+    @Autowired public TargetUrlPolicy(@org.springframework.beans.factory.annotation.Qualifier("safeDns") SafeDns dns,@Value("${agentops.monitoring.allowed-private-cidrs:}") String cidrs){
         this(dns,Arrays.stream(cidrs.split(",")).map(String::trim).filter(s->!s.isEmpty()).toList());
     }
     public record Endpoint(URI uri,InetAddress[] addresses){

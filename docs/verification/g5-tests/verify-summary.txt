@@ -1,0 +1,17 @@
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.265 s -- in dev.agentops.agent.AgentClientTest
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 36.37 s -- in dev.agentops.AgentApiTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 22.50 s -- in dev.agentops.AgentIntegrationTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.698 s -- in dev.agentops.AgentOutboxTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.930 s -- in dev.agentops.BootstrapTest
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 15.42 s -- in dev.agentops.FoundationTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.66 s -- in dev.agentops.KumaApiTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.536 s -- in dev.agentops.KumaClientTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.309 s -- in dev.agentops.monitoring.SafeHttpProbeTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.115 s -- in dev.agentops.monitoring.TlsProbeTest
+[INFO] Tests run: 23, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 17.31 s -- in dev.agentops.MonitoringApiTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s -- in dev.agentops.targets.PrivateNetworkPolicyTest
+[INFO] Tests run: 26, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.110 s -- in dev.agentops.TargetUrlPolicyTest
+[INFO] Tests run: 123, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+[INFO] Total time:  02:16 min
+[INFO] Finished at: 2026-10-21T17:47:08+08:00

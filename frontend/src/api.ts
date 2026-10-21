@@ -6,6 +6,9 @@ export const auth = reactive({ token: '', expiresAt: '', user: null as User | nu
 export const hasRole = (role: string) => auth.user?.roles.includes(role) ?? false
 export function clearSession(reason = '') { auth.token = ''; auth.expiresAt = ''; auth.user = null; auth.reason = reason }
 const messages: Record<string, string> = {
+  KUMA_DISABLED:'后端尚未启用 Kuma，请由部署管理员配置 KUMA_ENABLED 和服务地址后重启后端。',
+  KUMA_SMOKE_REQUIRED:'请先启用后端 Kuma 配置，并完成一次成功的测试推送。',KUMA_ORIGIN_BLOCKED:'此地址不在后端允许范围内，请核对部署配置；不能粘贴含 token 的 Push URL。',
+  KUMA_SECRET_REFERENCE_INVALID:'请填写 env:KUMA_PUSH_TOKEN_ 开头的环境变量引用。',KUMA_MAPPING_EXISTS:'此目标已有 Kuma 配置，请刷新查看。',KUMA_VERSION_CONFLICT:'配置已变化，请刷新后重新操作。',
   AGENT_MODEL_OUTCOME_UNKNOWN:'模型调用是否完成暂时无法确认，为避免重复调用，此任务不能重试。请先核对服务商调用记录；需要新诊断时，从事故详情明确发起。',
   APPROVAL_VERSION_CONFLICT:'审阅版本已变化，请刷新最新报告后重新核对。',APPROVAL_ALREADY_DECIDED:'此任务已经审阅或取消，请刷新查看结果。',APPROVAL_EXPIRED:'已超过24小时审阅时限，请从事故详情发起新任务。',REVIEW_NOT_AVAILABLE:'当前任务不能审阅，请刷新状态。',MANUAL_REPORT_NOT_AVAILABLE:'只有已批准且同步完成的任务可以回填一次线下结果。',
   RUNBOOK_VERSION_CONFLICT:'手册已被更新，请刷新最新内容后重新编辑。', RUNBOOK_SECTION_LIMIT:'正文最多 5 个标题段落，每段不超过 6,000 字。', RUNBOOK_DISABLED:'手册已停用，请先启用再发布。', RUNBOOK_ALREADY_PUBLISHED:'当前内容已经发布。',AGENT_NOT_RETRYABLE:'任务状态已变化，只有 DEAD 任务可明确重试。',AGENT_SCHEMA_INVALID:'诊断结果未通过结构或引用校验，请联系管理员。',

@@ -285,3 +285,61 @@ Ruling: 审批测试复用已有AgentApiTest的独立PG/HTTP fixture，不另建
 用户要求提供适合本机中文 IDEA 的启动 Markdown，并随项目更新，随后用 Git 保存当前版本。新增根目录 `IDEA启动与验收指南.md`，覆盖本机路径、Java/Python/Vue 启动、环境变量、Read-Host 分步输入、独立 checkpoint 库及 G4 验收；项目 `AGENTS.md` 登记启动相关变更须同步维护指南。README 修正至 G4/V5 并增加指南入口。指南不写入实际密码、token 或带凭据 DSN。
 
 本任务仅修改文档与维护约定，核对实际配置、路径和 Git 暂存内容后保存本地初始版本；不推送、不重启用户服务、不执行用户数据库迁移。G4 测试沿用既有归档记录，文档任务不声称重新运行完整应用回归。
+
+## G5 可选集成与交付 Implementation Plan（2026-10-21）
+
+**Goal:** 按已批准的 docs/11–14 实现可关闭的 Kuma Push、全服务 Compose、CI 配置及独立测试环境恢复验证。
+**Architecture:** Java 独立投递队列轮询已提交的 CheckRun，推送失败不进入检查/事故事务；部署设置唯一 Kuma origin、HTTP/私网许可与环境变量 secret reference，后台每次解析并固定 IP。Vue 在目标详情提供管理员集成面板。Compose 使用独立 checkpoint PostgreSQL，Python 不公开端口，前端同源代理。
+**Tech Stack:** 沿用 Java21/Spring/JDBC/HttpClient5、Python3.13 与 Vue3；不增加运行库。增量 V6，不修改 V1–V5。
+**Spec:** docs/06、07、09、11、12、13；用户“继续下一阶段开发”授权沿既定 G5 规格实施。当前功能分支继续本地实现，由本代理执行，末尾一次独立评审。
+
+### 约束与 Review Focus
+
+- 不重启用户服务、不迁移用户业务库、不调用用户已有 Kuma、外部模型或推送远端；所有故障注入使用随机端口/独立临时 PG。
+- 默认 KUMA_ENABLED=false，关闭时不发网络请求。配置只保存 env:KUMA_PUSH_TOKEN_* 引用，不返回或审计真实 token。
+- Kuma origin 由部署设置，API 不得引入任意地址；DNS 每次校验全部结果，拒绝 metadata/loopback/混合地址和重定向，响应大小/绝对时间受限。
+- 一个目标映射一个预建 monitor，多检查时只转发最新已提交样本；UNKNOWN 不伪装 UP。按集成串行投递，旧待发送样本被新样本取代，过期工作者不能提交。
+- 配置版本变更/禁用、角色撤销、审计失败不得留下半写；推送失败保留事故，日志/投递记录不得含 URL/token/远端正文。
+- 重启与备份恢复只针对测试数据。开始时 Docker daemon 不可用；用户随后明确启动 Docker，本轮可验证独立容器。远端 CI 未执行仍须保留 NOT RUN。
+
+### Task L：Kuma 后端与隔离验证
+
+Files: 新增 `db/migration/V6__kuma_delivery.sql`、`backend/src/main/java/dev/agentops/integrations/`、`KumaApiTest`/`KumaClientTest`；修改 application.yml/env.example。
+Interfaces: `KumaService` 管理版本化配置/手工 smoke 排队/分页投递；`KumaDeliveryStore` 提供 enqueue/claim/complete；`UptimeKumaPushAdapter` 返回稳定脱敏结果；`KumaEndpointPolicy` 提供固定 DNS endpoint。
+- [x] 先写并观察失败：配置权限/审计/版本/秘密不回显、UP/DOWN/UNKNOWN、禁用/503隔离、同样本去重/租约恢复/陈旧拒绝、顺序与新样本替代。
+- [x] 实现 V6、部署 origin/secret reference 校验、异步 smoke 和调度，运行专项至通过。
+- [x] 先写并观察 HTTP 契约失败：POST字段、ok=false/无效token、redirect、响应过大、超时/持续trickle、DNS/私网/保留地址；实现适配器并验证。
+
+### Task M：完整 Compose 与恢复路径
+
+Files: compose.yaml、agent-service/Dockerfile、frontend/Dockerfile/静态服务、deploy/ 独立 checkpoint 初始化、scripts/ 恢复工具与测试、.github/workflows/backend.yml。
+Interfaces: 后端继续8080/宿主18080，前端宿主5174同源代理，Python仅app内网8090；独立checkpoint库受限应用角色；Kuma可选profile。
+- [x] 固定现有运行时版本与依赖锁；补全无root应用镜像/健康检查/可选Kuma，默认不启用外部投递。
+- [x] 使用非敏感临时环境运行 compose config；能运行容器才记录运行证据，不能则不启动用户Docker或冒称完成。
+- [x] 在独立临时PG验证持久化队列重领/恢复；提供仅针对无网络临时容器的恢复 drill，另验证真实测试 checkpoint 配对恢复，避免通用脚本误操作用户库。
+- [x] CI补Compose构建配置/恢复测试；远端执行未发生则明确区分配置与实跑。
+
+### Task N：管理界面、文档与最终质量
+
+Files: frontend/src/components/KumaPanel.vue、TargetDetailPage.vue、现有API/部署/测试/依赖文档、README、IDEA启动与验收指南。
+- [x] 沿用现有管理表单样式，管理员可配置secret引用、启停、测试投递和查看脱敏状态，非管理员不展示入口；构建/浏览器实际验收。
+- [x] 完整Java/Python回归、前端构建；一次独立评审，重要缺陷测试先行修复；更新结果/未运行项并清理本轮临时服务。
+- [x] 启动指南同步V6、可选Kuma配置和验收；保留G4账户、端口与原启动方式。
+
+Ruling: 使用已有执行指南承载计划与记录，避免新增重复交接文档。Kuma关闭时不影响现有日常启动；配置与投递HTTP严格分离，核心检查提交不依赖集成可用性。
+
+
+### G5 完成记录（2026-10-21）
+
+Task L/M/N: complete — V6与Kuma管理面板、独立队列/lease/attempt、独立DNS池和领取时最新样本复核；全服务固定镜像Compose与隔离checkpoint角色；CI Compose job与恢复drill。Kuma默认关闭，IDEA原端口/账户不变，启动指南已同步。
+
+最终verify于17:47:08 BUILD SUCCESS，123项0失败0错误0跳过，2分16秒；Python单元59项、真实PG11项；前端86模块类型/构建通过。一次独立评审0 Critical/2 Important，DNS共享资源与陈旧DOWN重领均先RED后GREEN。真实Kuma故障试验另发现通用404过早终止，补失败测试并按固定镜像源码改成有界重试，最终全套通过；无第二轮独立评审。
+
+Docker29.8.2/Compose5.6.0实际构建Java/Python/Vue镜像并启动两个PG与可选Kuma2.3.0。前端代理登录、角色/ACL/手册、Java→Python→WAITING、人审与NOT_EXECUTED闭环；Python容器重启后恢复。真实Kuma up/down、无效token、异步smoke启用、暂停后核心诊断继续/OPEN事故保留、同投递恢复第4次送达均验证。桌面/390窄屏382/382、观察员无管理入口、控制台无warn/error，证据g5-ui。
+
+无网络PG17.11 drill通过；实际Compose合成数据停写后配对dump/恢复到两个新库，真实checkpoint可读WAITING并resume到APPROVED_FOR_MANUAL，模型journal数量不增加。初次新恢复库owner不正确被明确拒绝，仅修正该测试库owner后通过；恢复权限注意事项已写入启动指南。没有恢复/迁移用户库。
+
+Ruling: 仅提供固定隔离恢复drill而不引入通用覆盖恢复脚本 — 用户库的切换与丢失checkpoint修复需另行授权和设计；RECOVERY_REQUIRED专门状态未实现。
+Ruling: 用户启动Docker后，测试使用独立agentops-g5-verify/18184/5184/3301和一次性Kuma内的合成Monitor — 不操作用户已有监控，产品不自动创建Monitor/不使用Socket.IO。前端内部网络无法实际发布端口的问题经RED观察后增加独立edge网络。
+
+正式证据g5-validation-2026-10-21.json、g5-tests、g5-ui；四服务日志随机秘密匹配0。测试容器/网络/合成卷已清理，未更改用户服务或Docker全局设置。远端CI、外部模型质量、性能、完整镜像OS漏洞/许可扫描仍NOT RUN，G5本地功能完成不等于正式发布或完整G0通过。

@@ -1,6 +1,6 @@
 # 你的 AgentOps AI：IDEA 启动与验收指南
 
-更新日期：2026-10-21。适用版本：G4（人工审阅、线下结果回填），业务库迁移至 V5。本文按你的 Windows、中文 IDEA 和项目位置编写；以后修改启动配置、端口或验收流程时同步更新本文。
+更新日期：2026-10-21。适用版本：G5（可选 Kuma 推送、完整 Compose 与恢复验证），业务库迁移至 V6。本文按你的 Windows、中文 IDEA 和项目位置编写；以后修改启动配置、端口或验收流程时同步更新本文。
 
 ## 1. 先记住这些位置
 
@@ -30,7 +30,7 @@
 
 使用现有数据库工具连接本项目实例，能看到 `agentops` 和 `agentops_checkpoint`。沿用现有用户名、密码和端口；不要重复建库。
 
-**本次从旧版本升级到 G4 前，先备份本项目业务库。** 随后首次启动新版 Java 时，Flyway 自动执行尚未应用的迁移至 V5；无需手工重复执行迁移 SQL。
+**本次从旧版本升级到 G5 前，先备份本项目业务库。** 随后首次启动新版 Java 时，Flyway 自动执行尚未应用的迁移至 V6；无需手工重复执行迁移 SQL。Python 独立 checkpoint 库也应配套备份。
 
 ### 第二步：启动 Python
 
@@ -256,9 +256,51 @@ CREATE DATABASE agentops_checkpoint OWNER agentops_checkpoint;
 npm --prefix frontend run build
 ```
 
-后端验证使用独立临时 PostgreSQL，不接入日常业务库。G4 已归档结果为 Java 107 项、Python 单元 59 项及真实 PostgreSQL 11 项通过，前端类型检查与构建通过，详见 [验证记录](docs/verification/g4-validation-2026-10-21.json)。这些是开发阶段记录，不代表每次阅读本文都重新执行了测试。真实外部模型效果、性能、完整 Compose 和 Kuma 尚未验收。
+后端验证使用独立临时 PostgreSQL，不接入日常业务库。G5 已归档结果为 Java 123 项、Python 单元59项及真实PostgreSQL11项通过，前端类型检查/构建、完整Compose、真实Kuma Push及故障恢复通过，详见 [验证记录](docs/verification/g5-validation-2026-10-21.json)。这些是开发阶段记录，不代表每次阅读本文都重新执行了测试。真实外部模型效果、性能和远端CI尚未验收。
 
-## 8. 本文以后怎么跟着项目更新
+## 8. G5 新增：Kuma 与 Compose（按需使用）
+
+**继续使用 IDEA 时，前面四步启动顺序不变。** Kuma 默认关闭，不妨碍登录、监控、事故和诊断。升级 V6 后，管理员可在“服务目标 → 目标详情 → Kuma 推送”看到新面板。
+
+### 8.1 可选 Kuma 配置与验收
+
+先在 Kuma 自己的界面建立 **Push 类型 Monitor**。为每个目标使用独立 Monitor/token，不使用 Kuma 登录密码。将 token 仅配置到 Java 环境变量，例如 `KUMA_PUSH_TOKEN_DEMO`；界面只填 `env:KUMA_PUSH_TOKEN_DEMO`，不要粘贴完整 Push URL。
+
+IDEA 后端还需以下环境变量，修改后重启后端：
+
+| 变量 | 内容 |
+|---|---|
+| `KUMA_ENABLED` | `true`；默认 `false`，关闭时不发推送 |
+| `KUMA_BASE_URL` | 唯一允许的 origin，例如 `https://你的Kuma域名`，可含明确端口；不带路径、query 或尾部斜杠 |
+| `KUMA_ALLOW_HTTP` | 仅明确使用 HTTP 时设 `true` |
+| `KUMA_ALLOWED_PRIVATE_CIDRS` | 私网 Kuma 的精确许可范围，逗号分隔；不与目标检查的许可混用 |
+| `KUMA_PUSH_TOKEN_DEMO` | 上面预建 Monitor 的实际 Push token，仅留在本地环境 |
+
+默认安全规则禁止 IP 地址形式、回环、metadata 和混合不安全 DNS 结果。因此 IDEA 连接 Kuma 时应使用已批准、可到达的域名地址；不要填写 `localhost`、`127.0.0.1` 或直接照抄 Compose 容器域名。已有目标的 HTTP/CIDR 批准不会自动批准 Kuma。
+
+在新面板中填写与部署配置完全相同的服务地址、令牌引用和理由，保存为停用状态 → 填理由“测试推送” → 刷新至“测试已通过／已送达” → 再填写理由并启用推送。**测试会发送一条测试 UP**，请先在专用演示 Monitor 验收。
+
+之后只推送该目标最新、当前配置且未过期的有效 UP/DOWN 样本；UNKNOWN 不当作 UP。查看“最近 20 条投递”了解尝试次数、HTTP 状态和脱敏错误。Kuma 不可用不会改变本地检查结果或事故，临时失败最多尝试 5 次；新样本替代旧待投递样本。401/403 停止重试；Kuma 2.3.0 通用 404 也可能代表处理异常，因此有界重试。终止的旧记录保留，新检查样本会形成新投递。
+
+### 8.2 可选完整 Compose 启动
+
+这是 IDEA 日常启动之外的另一种运行方式。先停止本项目 IDEA 后端和两个应用终端，避免 18080/5174 冲突；不要停止其他项目。
+
+1. 根目录复制 `.env.example` 为 `.env`，填写业务库密码、pepper、内部 token、首次管理员密码，以及不同的 `CHECKPOINT_OWNER_PASSWORD` 和 `CHECKPOINT_PASSWORD`。设置 `AGENT_ENABLED=true`；模型保持 `mock`，Kuma 初次仍关闭。
+2. 执行 `docker compose up --build -d --wait`。首次会创建本项目的两个独立 PostgreSQL 数据卷，保留原本 IDEA 使用的数据库。
+3. 打开 5174 登录；新 Compose 数据库首次初始化的账号密码取自该 `.env`，不会复制 IDEA 数据库的账号。数据库与 Python 没有宿主机端口。
+4. 需要 Kuma 时执行 `docker compose --profile kuma up -d`，在 `http://127.0.0.1:3001` 建立自己的用户和 Push Monitor。容器中的后端可以使用 `http://kuma.agentops.test:3001`；设置 `KUMA_ALLOW_HTTP=true` 并核对 Kuma 容器实际私网 IP 的精确 CIDR。容器重建后 IP 可能变化，不能抄用开发验收地址。
+5. 更新 `.env` 后用 `docker compose up -d backend` 重建后端配置；映射表单使用相同 origin 和 `env:KUMA_PUSH_TOKEN_DEMO`。不要以 `restart` 代替环境变量重建。
+
+日常停止使用 `docker compose --profile kuma stop`，下次 `docker compose --profile kuma up -d`。需要移除容器时 `down` 默认保留卷；**不要添加 `--volumes` 删除自己的数据**。前端为同源静态服务，仍需在正式环境配置 HTTPS。
+
+### 8.3 恢复验证与边界
+
+`powershell -File .\scripts\recovery-drill.ps1`（或 PowerShell 中 `.\scripts\recovery-drill.ps1`）只会创建一个无网络、无端口映射的临时 PostgreSQL 容器，用合成数据测试备份恢复到两个新数据库，结束清理该测试容器。它不会备份、恢复或改动你的现有数据库。
+
+自己的备份需要在停止 Java/Python 写入后，配套备份业务库与完整 checkpoint 库，并保留匹配的代码版本和环境 secret。恢复后的 checkpoint 库仍应由受限应用角色拥有，否则 schema 初始化会因 CREATE 权限被拒绝。先恢复到新库核对 runId、事故、审批和模型调用记录，再决定切换；不能把临时测试脚本当作生产恢复工具，也不能在 checkpoint 丢失时盲目重发结果不确定的模型任务。
+
+## 9. 本文以后怎么跟着项目更新
 
 后续开发只要改变启动命令、目录、依赖版本、端口、环境变量、数据库迁移、模型配置或验收入口，就在同一次改动中更新本文和 README 中相关内容。仓库 [AGENTS.md](AGENTS.md) 已登记这个维护要求。
 

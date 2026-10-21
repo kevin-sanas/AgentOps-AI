@@ -1,0 +1,19 @@
+
+> agentops-workbench@0.2.0 build
+> node scripts/notices.mjs && npm run typecheck && vite build
+
+Third-party notices generated for 47 installed packages.
+
+> agentops-workbench@0.2.0 typecheck
+> vue-tsc --noEmit
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 86 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.50 kB │ gzip:  0.36 kB
+dist/assets/index-CRs9pge8.css   25.73 kB │ gzip:  6.24 kB
+dist/assets/index-Bxb99AMI.js   190.12 kB │ gzip: 65.60 kB
+
+✓ built in 1.32s

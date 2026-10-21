@@ -29,6 +29,11 @@ management:
     health:
       show-details: never
 agentops:
+  kuma:
+    enabled: ${KUMA_ENABLED:false}
+    base-url: ${KUMA_BASE_URL:}
+    allow-http: ${KUMA_ALLOW_HTTP:false}
+    allowed-private-cidrs: ${KUMA_ALLOWED_PRIVATE_CIDRS:}
   agent:
     enabled: ${AGENT_ENABLED:false}
     origin: ${AGENT_SERVICE_ORIGIN:http://127.0.0.1:8090}

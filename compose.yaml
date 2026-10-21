@@ -27,6 +27,14 @@ services:
       SESSION_DURATION: ${SESSION_DURATION:-PT30M}
       MONITORING_ENABLED: ${MONITORING_ENABLED:-true}
       MONITOR_ALLOWED_PRIVATE_CIDRS: ${MONITOR_ALLOWED_PRIVATE_CIDRS:-}
+      AGENT_ENABLED: ${AGENT_ENABLED:-true}
+      AGENT_SERVICE_ORIGIN: http://agent-service:8090
+      AGENT_MODEL_NAME: ${AGENT_MODEL_NAME:-mock}
+      KUMA_ENABLED: ${KUMA_ENABLED:-false}
+      KUMA_BASE_URL: ${KUMA_BASE_URL:-}
+      KUMA_ALLOW_HTTP: ${KUMA_ALLOW_HTTP:-false}
+      KUMA_ALLOWED_PRIVATE_CIDRS: ${KUMA_ALLOWED_PRIVATE_CIDRS:-}
+      KUMA_PUSH_TOKEN_DEMO: ${KUMA_PUSH_TOKEN_DEMO:-}
       BOOTSTRAP_ADMIN_USERNAME: ${BOOTSTRAP_ADMIN_USERNAME:-admin}
       BOOTSTRAP_ADMIN_PASSWORD: ${BOOTSTRAP_ADMIN_PASSWORD:?Set BOOTSTRAP_ADMIN_PASSWORD in .env}
     ports:
@@ -34,10 +42,73 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    networks: [data, app]
+      agent-service:
+        condition: service_healthy
+    networks: [data, app, egress]
+  checkpoint-db:
+    image: postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826
+    environment:
+      POSTGRES_USER: checkpoint_owner
+      POSTGRES_PASSWORD: ${CHECKPOINT_OWNER_PASSWORD:?Set CHECKPOINT_OWNER_PASSWORD}
+      CHECKPOINT_PASSWORD: ${CHECKPOINT_PASSWORD:?Set CHECKPOINT_PASSWORD}
+    volumes:
+      - checkpoint-data:/var/lib/postgresql/data
+      - ./deploy/checkpoint-init.sh:/docker-entrypoint-initdb.d/10-checkpoint.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U checkpoint_owner -d agentops_checkpoint"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [checkpoint]
+  agent-service:
+    build:
+      context: .
+      dockerfile: agent-service/Dockerfile
+    command: ["python", "/app/compose-entrypoint.py"]
+    environment:
+      CHECKPOINT_PASSWORD: ${CHECKPOINT_PASSWORD:?Set CHECKPOINT_PASSWORD}
+      AGENT_INTERNAL_TOKEN: ${AGENT_INTERNAL_TOKEN:?Set AGENT_INTERNAL_TOKEN}
+      AGENT_LLM_PROVIDER: ${AGENT_LLM_PROVIDER:-mock}
+      AGENT_MODEL_NAME: ${AGENT_MODEL_NAME:-mock}
+      AGENT_LLM_BASE_URL: ${AGENT_LLM_BASE_URL:-}
+      AGENT_LLM_API_KEY: ${AGENT_LLM_API_KEY:-}
+      AGENT_ALLOW_LOCAL_MODEL_HTTP: ${AGENT_ALLOW_LOCAL_MODEL_HTTP:-false}
+    depends_on:
+      checkpoint-db:
+        condition: service_healthy
+    networks: [checkpoint, app, egress]
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-5174}:8080"
+    depends_on:
+      backend:
+        condition: service_started
+    networks: [app, edge]
+  kuma:
+    image: louislam/uptime-kuma:2.3.0@sha256:a8e5e69ce185d5425fcbf2ab14ddf808df5651fb2747a46a17cecf8ed5fd1af2
+    profiles: [kuma]
+    environment:
+      UPTIME_KUMA_DB_TYPE: sqlite
+    ports:
+      - "127.0.0.1:${KUMA_PORT:-3001}:3001"
+    volumes:
+      - kuma-data:/app/data
+    networks:
+      egress:
+        aliases: [kuma.agentops.test]
 networks:
   data:
     internal: true
-  app: {}
+  checkpoint:
+    internal: true
+  app:
+    internal: true
+  egress: {}
+  edge: {}
 volumes:
   postgres-data: {}
+  checkpoint-data: {}
+  kuma-data: {}

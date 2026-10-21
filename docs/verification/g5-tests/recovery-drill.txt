@@ -1,0 +1,2 @@
+PASS: PostgreSQL 17.11 custom dumps restored into two NEW databases; incident, expired Outbox lease, V6 and paired marker retained.
+Scope: synthetic SQL backup/restore only. Real LangGraph checkpoint and worker takeover are verified by backend tests.

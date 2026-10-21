@@ -25,6 +25,11 @@
 | `GET /runbooks/{id}/versions/{version}` | 目标可读 | 返回稳定 section ID 与内容 |
 | `POST /integrations/uptime-kuma` | OPS_ADMIN | 配置 base URL、target mapping、secret ref，不回显 token |
 | `POST /integrations/uptime-kuma/{id}/test` | OPS_ADMIN | 对预建 Push Monitor 做一次脱敏 smoke push |
+| `GET /integrations/uptime-kuma?targetId={id}` | OPS_ADMIN | 查询该目标映射，不返回secret reference/token |
+| `PUT /integrations/uptime-kuma/{id}` | OPS_ADMIN | version + enabled + reason；smoke成功且部署启用后才能启用 |
+| `GET /integrations/uptime-kuma/{id}/deliveries?page=0&size=20` | OPS_ADMIN | 分页投递状态/次数/HTTP码/稳定错误码，不包含请求URL或远端正文 |
+
+G5 Kuma创建请求为 `{targetId,baseUrl,secretRef,reason}`，201返回默认停用的 `{id,targetId,baseUrl,enabled,smokePassed,version}`；同目标重复映射409。`secretRef`仅接受`env:KUMA_PUSH_TOKEN_*`且不回显。测试请求`{reason}`返回202和`{deliveryId,state:"PENDING"}`，不会在API事务内发送HTTP；成功smoke前启用返回409。状态修改`{version,enabled,reason}`，旧版本409，禁用使旧租约失效。错误码包括`KUMA_DISABLED/KUMA_SMOKE_REQUIRED/KUMA_ORIGIN_BLOCKED/KUMA_SECRET_REFERENCE_INVALID/KUMA_VERSION_CONFLICT`。
 
 ## Agent 内部 DTO
 
