@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-21T18:53:25.4905079+08:00",
+  "baseCommit": "22b696f",
+  "phase": "G5 plus enterprise UI/UX workspace",
+  "backend": {
+    "pythonUnit": "59 unit tests not separately rerun in this UI phase",
+    "duration": "02:19",
+    "pythonPg": "11 nested Python PG checks via one Java integration test",
+    "tests": 128,
+    "workspaceQueryTests": 5,
+    "command": ".\\scripts\\backend.ps1 verify",
+    "skipped": 0,
+    "newQueryInitialResult": "5 HTTP 404 failures before implementation",
+    "errors": 0,
+    "fixtureCorrection": "Two expectations initially lacked outbox fixture rows; corrected fixture, all five passed",
+    "failures": 0,
+    "finishedAt": "2026-10-21T18:34:59+08:00"
+  },
+  "frontend": {
+    "npmAudit": {
+      "result": "0 known vulnerabilities",
+      "allSeverities": 0,
+      "source": "official npm audit"
+    },
+    "tests": 6,
+    "warning": "Overview ECharts chunk approximately 562.5 kB before gzip; no performance benchmark",
+    "productionBuild": "PASS",
+    "linuxFixedImageBuild": "PASS",
+    "noticesPackages": 96,
+    "modules": 3248,
+    "node": "24.22.0",
+    "failures": 0,
+    "typecheck": "PASS"
+  },
+  "browser": {
+    "mobile": {
+      "requestedWidth": 390,
+      "height": 844,
+      "documentClientWidths": [
+        375,
+        390
+      ],
+      "scrollWidthEqualsClientWidth": true
+    },
+    "checks": [
+      "Login and token remains only in memory; reload returns to login",
+      "Dark/light switch and theme persists after reload",
+      "Ctrl+K input focus; Shift+Tab and Tab trap; ArrowDown/Enter navigate; Escape restores focus",
+      "Global search respects target/report ACL; unauthorized service yields no matches",
+      "Overview real aggregation, UNKNOWN kept separate, real bounded latency samples and empty state",
+      "Service name search and server sort",
+      "Knowledge draft and immutable publication v1 via UI",
+      "Real Java Outbox -> Python mock -> WAITING_HUMAN -> approval -> APPROVED_FOR_MANUAL -> NOT_EXECUTED report -> COMPLETED",
+      "Frozen evidence anchors exist; hash navigation preserves unsent manual report note",
+      "21 waiting tasks page two shrinks to 20 on decision; polling returns to page one",
+      "Monitoring fixture adds new actual DOWN result and incident; overview and event list show second incident",
+      "Observer has no admin navigation, no other-user diagnostic index, direct report access produces real error state",
+      "Mobile overview, task table, event list/detail and diagnosis have no document horizontal overflow"
+    ],
+    "screenshots": "docs/verification/ui-workspace/",
+    "environment": "UiPreview disposable random-port PostgreSQL plus real mock Python and Vite 5184",
+    "console": "No Vue/page warn/error on final normal path; earlier deliberate denied report tested separately",
+    "desktop": {
+      "height": 1000,
+      "width": 1440
+    }
+  },
+  "review": {
+    "critical": 0,
+    "regression": "New regression module first failed on missing exports, then all six tests passed; live 21-to-20 browser scenario passed",
+    "additionalBrowserCorrections": [
+      "Evidence ID prefix anchors and hash-only navigation form preservation",
+      "Mobile header wrapping and table positioning"
+    ],
+    "fixed": [
+      "Scoped chart responses to target and range; old data hidden during new selection",
+      "Clamp live list page to current total and reload"
+    ],
+    "important": 2,
+    "independentPasses": 1
+  },
+  "sourceSha256": {
+    "frontend/src/api.ts": "ec9eff6e7ece8d3202b718acaaa7ce3c4ff90424bb3291c4b890b7acadde1d5a",
+    "frontend/src/App.vue": "903b214ff69c4287ddd897aca1a3e61d9e6e88003828c853eaee1bc14852aa1f",
+    "frontend/src/composables.ts": "8730fdb33f4228767a71760743d6929120cf65bba93429304d71da406c47b961",
+    "frontend/src/diagnosis.ts": "714760260b84d8a19a5b555bc974c8cf0312ae5457a49c67c1e70981da6e57a1",
+    "frontend/src/main.ts": "1eadc7b436b3551857d1cdd125afb84ac7a63d5214072f43d623c8ef35f85b33",
+    "frontend/src/presentation.ts": "790de51a24cb8a4aa602a84e9b60d25bad73bf80e241bb7893ea4772b6baf9bd",
+    "frontend/src/router.ts": "985f4bcd6135ebdb71c9e4fee39bcd205dae27514c91dfd428ccda276f3be70f",
+    "frontend/src/style.css": "8d7a9b31053bdb4e2e04fc87334f1da3ca0b7e45bb5be61ca328d7765add4280",
+    "frontend/src/types.ts": "270a2d3240c2a945ebd82e160a02ac9602d5a41b24fed874608c35cd1f0c42be",
+    "frontend/src/components/AccessPanel.vue": "46e15e4cb2f67c960ba3c2f9fbb450ec87d249fb3e39d18db71785b2d6fa521b",
+    "frontend/src/components/AgentDeliveryPanel.vue": "b9f79813849532c922314bcd8a91fbfef3d2d71325236394c900dcba7f10c432",
+    "frontend/src/components/AgentReviewPanel.vue": "4b961da0452ec2da7c8f36fc2faaefff31de2e08d650a9f66174bd6ae2bbfc97",
+    "frontend/src/components/AgentRunsPanel.vue": "57735e894c49818359f4808c79768c82b5b85f6b9caca929befd73976b7e7044",
+    "frontend/src/components/AppIcon.vue": "28102c001cadc2e37c61ecd61d97ad9eb239b976ccbdbb84f8af696e4a69859b",
+    "frontend/src/components/CheckEditor.vue": "ebbc86513f1f610c3b150a2d9a3f1186170829e30c343e18459a57992ea99700",
+    "frontend/src/components/ChecksPanel.vue": "bcf2d300dba49a2f061528e78010c834b4da099bc936394c87e801474cbd5a5f",
+    "frontend/src/components/DataChart.vue": "8c9538f26c59d73875af4b8a98e33ec3643c7f15517099fdbae0c915d0f096ee",
+    "frontend/src/components/FilterToolbar.vue": "770002b1c18de0c13e163612fe89c00e98d8c0761b649d4a7e8342ead84420c1",
+    "frontend/src/components/GlobalSearch.vue": "c12fbbfdc610d915a7c1998cd0a233b9bdd65de8fbd3bcb57330ec586fc223fc",
+    "frontend/src/components/HistoryPanel.vue": "a9cc2d11b49de0203f0d73a1f918d838ce9949f130332d8e5791b7215ea0c04a",
+    "frontend/src/components/KumaPanel.vue": "cadc74d837bb12ac363246c5dfa35a21e0258f9a510af893cc968db78ac3c8a7",
+    "frontend/src/components/LiveIndicator.vue": "663142610ba58ca40de8bde41371d1d81d334ef3d2fe43cdb30178e35298ded2",
+    "frontend/src/components/NetworkPanel.vue": "a980be3af4a457767f1572366d977e6ead49feb0b31366d291941bd4e396a69c",
+    "frontend/src/components/PageState.vue": "82b9a2cee34c7ed2d886783cab25feaec925eb52e2d6ae65106a08536ff58a13",
+    "frontend/src/components/PaginationBar.vue": "00572561a57009c44e8a6501c0b4911e07b43b1aa830db1fa782e3cc3851984f",
+    "frontend/src/components/StatusBadge.vue": "51e4149994eefd9aed3378e952e8dbf07e87f9d27cd72c745f150db16cfdc13f",
+    "frontend/src/components/ui/Badge.vue": "6542c4860bb6faa80e9e7f0e062fdb7c91509d3c4ff8baf239c8558eb4fc6ff7",
+    "frontend/src/components/ui/Button.vue": "cbed76e9de5dc9dd55b72f71a73834c15aae2d0a1859d81202c94e618f0016eb",
+    "frontend/src/components/ui/Dialog.vue": "edb06ff5b43c0ceef623aafe51d20d95c26399f09932d7f703a1bfee7b525b39",
+    "frontend/src/components/ui/Input.vue": "a1a34e4f81f1f56ab7ef112df45e2d6d077489144c0187fabf0b817c5e423a4f",
+    "frontend/src/lib/utils.ts": "00708463d307471ed1a3ac36642e9c00a766730d7be61e2351f283a580017ea6",
+    "frontend/src/pages/AgentCenterPage.vue": "757c6ee787f3fb3f6ec77a15441f647acfe99436dfbea2cee87fb58d3be372ea",
+    "frontend/src/pages/AgentRunPage.vue": "097ca759be9c1bd807ef039e4fd9033e8757f016729508a0693da276f9beeec4",
+    "frontend/src/pages/CreateTargetPage.vue": "c43c5dca2f5f8b13d7b6900978901180522190ee55dcb046531f468b84d87bce",
+    "frontend/src/pages/IncidentDetailPage.vue": "4682935f19b001c58c151ecb0d24e4541bb895ce9414187fb138e2fd893ebd1e",
+    "frontend/src/pages/IncidentsPage.vue": "5c2219b400b2ccbde4173715c3498bad6b30c2f02b99ee61c57d1d033bf5cf4e",
+    "frontend/src/pages/LoginPage.vue": "caaa03ed7141dc1718d70fd4508c79e33f137e161e2de1ff92d9709b3bf354ac",
+    "frontend/src/pages/OverviewPage.vue": "5a910b460517bd5c31e65334175f01404b63b958720b9b5100b32a50d988088c",
+    "frontend/src/pages/RunbookDetailPage.vue": "e0aec278ba247090e46ebe5bc6108d48dbb597c79921bf34953ab2e897ae88ce",
+    "frontend/src/pages/RunbooksPage.vue": "78ee40efa04255d6a2c7d4f2673a7bf144602b5ef4815a3fff0e3f242f5fba2c",
+    "frontend/src/pages/TargetDetailPage.vue": "b1cedacf0595591b0ec30ab59f67fe282ac2d7f601afbe46f449f58d46838e6d",
+    "frontend/src/pages/TargetsPage.vue": "eb76cf320ccdaf47a57fb53f44c1b1261a5f6546ee1ade0577caeba6527a982a",
+    "frontend/src/pages/UsersPage.vue": "ab8bb3d3623699d8572f821d15b5b2f776149055b9944bcb06a2395d83827b29",
+    "frontend/src/stores/workspace.ts": "945f23fb7e2156860bcd4c58d370fd413597bfe5af6696331dc8d5020f3c861d",
+    "backend/src/main/java/dev/agentops/workspace/WorkspaceController.java": "b23bba869f8a990f2717b39795d3aed4c79afc38e6ee27d782bc0f8e3b5abe17",
+    "backend/src/main/java/dev/agentops/workspace/WorkspaceQueries.java": "f36c190108ca2ec80a425e3024ee6830d1a296102a9e5cc7b55a883db581a37a",
+    "backend/src/main/java/dev/agentops/workspace/WorkspaceQuery.java": "edc846754ebcfb9f2fbe79d7474274503ec954742b7152fa6edf6f4fbc5b706b",
+    "frontend/package.json": "0a4d4322cb1e0b7f17c13d304437a23397925289119feb3c3a0793fc570ab22c",
+    "frontend/package-lock.json": "1bf198394327b8e350141afd945a7394d49e8fbada501615b4443812ccd2ab58",
+    "frontend/vite.config.ts": "9e329f3aacfe27d567cd85d193bbddf2c6732c4657decce5c1b3a40573c7cc40",
+    "frontend/tsconfig.json": "70304b45233f1bf77e396aaefa419d77ccb99da4f9a3634ef674767752d4ab44",
+    "frontend/index.html": "ec3e83701ca801a352b65941d2a0d2a1ddd9c02c44e26b2caa71b939eabc0e29",
+    "frontend/components.json": "a8e7edcf7bdb14dc2e1de48ed81c5310de15e81704ef28c7e2a1548df30fbd3b",
+    ".github/workflows/backend.yml": "6e81a6cfb5e3e6374bce7e472f409611ea919c0a7c3f1d3b1ec63eaa258c7fbd",
+    "backend/src/test/java/dev/agentops/WorkspaceQueryTest.java": "7a62ae56e09ccbf310711b3cafa24fc88360a5c75870cc5e5d4610abbecc7197",
+    "frontend/tests/live-queries.test.mjs": "b465ea8c8de9badf6ce2adae3c8991d8368bfd623bd3f254e9c8201e4779125f",
+    "frontend/tests/presentation.test.mjs": "164db316f0f8720d89330e4b18ce06c02821161eab376dd083f130b4ef08f94c"
+  },
+  "notRun": [
+    "Remote GitHub CI",
+    "Full stack Compose repeat in this UI phase; Linux frontend image build only",
+    "External hosted model quality",
+    "Performance benchmarks",
+    "Full OS/native/container license and vulnerability scan",
+    "Fresh OSV query"
+  ],
+  "cleanup": "PASS: UiPreview exited 0 and removed credential/stop/command files; owned Vite 5184 stopped; temporary ui-work directory/log/classpath files removed; owned verification image tag removed; browser tab closed and viewport reset; formal tests/screenshots retained",
+  "userServices": "Not restarted; user databases not migrated; no remote push"
+}

@@ -160,3 +160,22 @@ G3评审补充：`GET /admin/agent-deliveries?page=0&size=20` 仅OPS_ADMIN，返
 - 内部 resume/cancel 已实现并复用Bearer、X-Request-Id、未知字段400与64KiB限制。resume按approvalRequestId/decision/decisionHash完整匹配幂等，不同决定409；取消可重放，已完成或已有决策409。终态回复携带原报告，Java再次核验身份、冻结引用和结果hash。
 - Outbox增加INVOKE/RESUME/CANCEL阶段，沿用同run唯一行及90秒租约；60秒对账/发送共用截止，旧token不能提交。RESUME对账见WAITING仍须发送resume，不将旧等待误认为完成。DEAD重试保留phase、报告与已记录决定。
 - Python模型调用增加持久化model_call记录。已保存的COMPLETED模型结果可在analyze checkpoint丢失后直接复用；遗留STARTED或响应完成不明时，invoke返回409 `{code:"MODEL_OUTCOME_UNKNOWN"}`。Java记录不可自动重试的 `AGENT_MODEL_OUTCOME_UNKNOWN`；管理员retry也409同码，不能隐式再次计费。用户核实服务商记录后可明确创建新run。明确连接失败/HTTP失败保持可恢复退避。
+
+## UI 工作空间只读查询（2026-10-21）
+
+新增 `/api/v1/workspace`，四种已登录角色可访问，逐条应用目标读取 ACL；保留原API与业务操作契约。无数据库迁移。
+
+| GET路径 | 查询参数 | 返回 |
+|---|---|---|
+| `/search` | `q`，去空格2–100字符 | `{items:[{kind,id,title,subtitle,path}],perCategoryLimit:8}`，每类最多8项，跨全部可见记录查询 |
+| `/targets` | q、sort、page、size | 原Target分页，q匹配名称/代码/团队 |
+| `/incidents` | q、status、from、to、sort、page、size | Incident分页，q匹配服务/摘要/编号，时间按openedAt |
+| `/runbooks` | q、targetId、sort、page、size | 手册元数据分页，含targetName，不返回全文；q匹配标题/服务 |
+| `/agent-runs` | q、status、from、to、sort、page、size | 任务/审批状态元数据分页，时间按createdAt |
+| `/activity` | from、to | `{from,to,bucket,points:[{time,count}],total}`，按UTC小时/日聚合全部可见事件首次发现时间 |
+
+列表q最长100字符，`%`、`_`、`!`按字面查询；page从0开始，size默认20/上限100，计数与列表同过滤条件。sort仅允许各端点枚举：目标created_desc/created_asc/name_asc/name_desc；事件created_desc/created_asc/name_asc/severity；手册created_desc/name_asc/name_desc；任务created_desc/created_asc/name_asc。所有排序含id稳定次序。非法排序/状态/分页/搜索返回400。
+
+from/to为ISO Instant，双边同时提供时要求from<to且最多31天；activity缺省最近24小时并总是验证双边。time边界包含。大于2天以日聚合，否则按小时；首尾桶是部分时间桶。全局搜索不受时间范围限制。图表由成功聚合响应补零桶，失败不补零。
+
+任务查询/全局搜索额外要求ON_CALL或AUDITOR，或requestedBy为调用人，并仍须目标可读；纯OPS_ADMIN、OBSERVER不会借列表访问他人报告。写入、人审、幂等、审计与原有GET报告约束完全沿用。

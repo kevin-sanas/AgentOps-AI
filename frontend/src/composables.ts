@@ -1,5 +1,10 @@
-import { onScopeDispose, ref, shallowRef } from 'vue'
+import { onScopeDispose, ref, shallowRef, watch, type Ref } from 'vue'
 import { errorText } from './api'
+import { pageAfterRefresh } from './presentation'
+
+export function usePageBounds(data:Ref<{total:number;page:number;size:number}|null>,page:Ref<number>,load:()=>Promise<unknown>) {
+  watch(data,result=>{if(!result||result.page!==page.value)return;const corrected=pageAfterRefresh(page.value,result.size,result.total);if(corrected!==page.value){page.value=corrected;void load()}})
+}
 
 export function useLoad<T>(fetcher: () => Promise<T>) {
   const data = shallowRef<T | null>(null), loading = ref(false), error = ref('')

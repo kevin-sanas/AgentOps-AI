@@ -1,0 +1,114 @@
+[
+  {
+    "name": "dev.agentops.agent.AgentClientTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": "1.896"
+  },
+  {
+    "name": "dev.agentops.AgentApiTest",
+    "tests": 14,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": "41.223"
+  },
+  {
+    "name": "dev.agentops.AgentIntegrationTest",
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": "18.743"
+  },
+  {
+    "name": "dev.agentops.AgentOutboxTest",
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": "9.537"
+  },
+  {
+    "name": "dev.agentops.BootstrapTest",
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": "7.363"
+  },
+  {
+    "name": "dev.agentops.FoundationTest",
+    "tests": 19,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": "13.177"
+  },
+  {
+    "name": "dev.agentops.KumaApiTest",
+    "tests": 10,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": "8.844"
+  },
+  {
+    "name": "dev.agentops.KumaClientTest",
+    "tests": 6,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": "0.434"
+  },
+  {
+    "name": "dev.agentops.monitoring.SafeHttpProbeTest",
+    "tests": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": "1.268"
+  },
+  {
+    "name": "dev.agentops.monitoring.TlsProbeTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": "0.869"
+  },
+  {
+    "name": "dev.agentops.MonitoringApiTest",
+    "tests": 23,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": "12.724"
+  },
+  {
+    "name": "dev.agentops.targets.PrivateNetworkPolicyTest",
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": "0.012"
+  },
+  {
+    "name": "dev.agentops.TargetUrlPolicyTest",
+    "tests": 26,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": "0.052"
+  },
+  {
+    "name": "dev.agentops.WorkspaceQueryTest",
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": "8.448"
+  }
+]

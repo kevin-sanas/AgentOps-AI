@@ -1,0 +1,7 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import {healthSegments,latencySamples,eventBuckets,hypothesisScore} from '../src/presentation.ts'
+test('unknown targets remain a separate category and empty health is not simulated',()=>{assert.deepEqual(healthSegments({up:0,down:0,unknown:2}),[{name:'未知',value:2,tone:'muted'}]);assert.deepEqual(healthSegments({up:0,down:0,unknown:0}),[])})
+test('latency keeps real ordering, window boundaries, unknown gaps and zero latency',()=>{assert.deepEqual(latencySamples([{completedAt:'2026-10-21T02:00:00Z',outcome:'UP',latencyMs:0},{completedAt:'2026-10-21T01:00:00Z',outcome:'UNKNOWN',latencyMs:0},{completedAt:'2026-10-20T00:00:00Z',outcome:'DOWN',latencyMs:20}],Date.parse('2026-10-21T00:00:00Z'),Date.parse('2026-10-21T03:00:00Z')),[[Date.parse('2026-10-21T01:00:00Z'),null],[Date.parse('2026-10-21T02:00:00Z'),0]])})
+test('event aggregation fills empty buckets only inside a successfully queried interval',()=>{assert.deepEqual(eventBuckets({from:'2026-10-21T00:20:00Z',to:'2026-10-21T02:10:00Z',bucket:'hour',points:[{time:'2026-10-21T01:00:00Z',count:3}]}).map(p=>p[1]),[0,3,0])})
+test('mock confidence is never displayed and provider self assessment is explicitly uncalibrated',()=>{assert.equal(hypothesisScore('mock',.9),null);assert.equal(hypothesisScore('hosted',NaN),null);assert.equal(hypothesisScore('hosted',.7),'模型自评 0.70（未经校准）')})

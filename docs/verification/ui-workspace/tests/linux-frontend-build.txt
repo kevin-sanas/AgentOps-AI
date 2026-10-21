@@ -1,0 +1,113 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 681B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:24.22.0-alpine@sha256:44fce696f38ba8c987c4db89954051000bbd05ffd8d8659ba15ed4a8602e937f
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/nginx:1.30.0-alpine@sha256:0272e4604ed93c1792f03695a033a6e8546840f86e0de20a884bb17d2c924883
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 165B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 DONE 0.0s
+
+#6 [build 1/6] FROM docker.io/library/node:24.22.0-alpine@sha256:44fce696f38ba8c987c4db89954051000bbd05ffd8d8659ba15ed4a8602e937f
+#6 resolve docker.io/library/node:24.22.0-alpine@sha256:44fce696f38ba8c987c4db89954051000bbd05ffd8d8659ba15ed4a8602e937f 0.0s done
+#6 DONE 0.0s
+
+#7 [stage-1 1/3] FROM docker.io/library/nginx:1.30.0-alpine@sha256:0272e4604ed93c1792f03695a033a6e8546840f86e0de20a884bb17d2c924883
+#7 resolve docker.io/library/nginx:1.30.0-alpine@sha256:0272e4604ed93c1792f03695a033a6e8546840f86e0de20a884bb17d2c924883 0.0s done
+#7 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 1.83MB 0.1s done
+#5 DONE 0.1s
+
+#8 [build 3/6] COPY frontend/package.json frontend/package-lock.json frontend/.npmrc ./
+#8 CACHED
+
+#9 [build 2/6] WORKDIR /app
+#9 CACHED
+
+#10 [build 4/6] RUN npm ci --ignore-scripts --no-fund --no-audit
+#10 CACHED
+
+#11 [build 5/6] COPY frontend/ ./
+#11 DONE 0.1s
+
+#12 [build 6/6] RUN npm run build
+#12 0.595
+#12 0.595 > agentops-workbench@0.2.0 build
+#12 0.595 > node scripts/notices.mjs && npm run typecheck && vite build
+#12 0.595
+#12 0.790 Third-party notices generated for 96 installed packages.
+#12 0.918
+#12 0.918 > agentops-workbench@0.2.0 typecheck
+#12 0.918 > vue-tsc --noEmit
+#12 0.918
+#12 4.958 vite v8.3.4 building client environment for production...
+#12 4.970 transforming...
+#12 5.786 ✓ 3248 modules transformed.
+#12 5.945 rendering chunks...
+#12 6.075 computing gzip size...
+#12 6.085 dist/index.html                                      0.86 kB │ gzip:   0.52 kB
+#12 6.085 dist/assets/TargetDetailPage-Z4-Vofiq.css            0.10 kB │ gzip:   0.10 kB
+#12 6.085 dist/assets/AgentDeliveryPanel-DZf3o0k7.css          0.20 kB │ gzip:   0.13 kB
+#12 6.085 dist/assets/IncidentsPage-Cz73A_5l.css               0.21 kB │ gzip:   0.16 kB
+#12 6.085 dist/assets/IncidentDetailPage-CM-vgkqE.css          0.59 kB │ gzip:   0.28 kB
+#12 6.085 dist/assets/RunbookDetailPage-CYApDqUO.css           0.71 kB │ gzip:   0.33 kB
+#12 6.085 dist/assets/AgentRunPage-BF2uv0hq.css                5.34 kB │ gzip:   1.30 kB
+#12 6.085 dist/assets/index-R7ebdRLI.css                      48.75 kB │ gzip:   9.53 kB
+#12 6.085 dist/assets/_plugin-vue_export-helper-BDNMzG2s.js    0.08 kB │ gzip:   0.09 kB
+#12 6.085 dist/assets/diagnosis-CsoKBH4h.js                    0.37 kB │ gzip:   0.36 kB
+#12 6.085 dist/assets/LiveIndicator-D925r8fj.js                0.43 kB │ gzip:   0.36 kB
+#12 6.085 dist/assets/PaginationBar-C8pgo1LE.js                0.68 kB │ gzip:   0.43 kB
+#12 6.085 dist/assets/StatusBadge-CzvotoVF.js                  0.78 kB │ gzip:   0.54 kB
+#12 6.085 dist/assets/PageState-D6OPLb3C.js                    0.87 kB │ gzip:   0.56 kB
+#12 6.085 dist/assets/FilterToolbar-Bf6PRJJO.js                1.25 kB │ gzip:   0.72 kB
+#12 6.085 dist/assets/LoginPage-D5_4RK9Q.js                    2.49 kB │ gzip:   1.41 kB
+#12 6.085 dist/assets/AgentDeliveryPanel-CiCA6ERp.js           3.65 kB │ gzip:   2.10 kB
+#12 6.085 dist/assets/TargetsPage-BGvKVUyj.js                  3.88 kB │ gzip:   2.07 kB
+#12 6.085 dist/assets/CreateTargetPage-CSeW7cYl.js             4.09 kB │ gzip:   2.02 kB
+#12 6.085 dist/assets/AgentCenterPage-Cxe39rie.js              5.19 kB │ gzip:   2.80 kB
+#12 6.085 dist/assets/RunbookDetailPage-B7WKI19p.js            5.50 kB │ gzip:   2.55 kB
+#12 6.085 dist/assets/RunbooksPage-DUgi23PN.js                 6.16 kB │ gzip:   3.09 kB
+#12 6.085 dist/assets/IncidentsPage-B-Wlf0qE.js                6.92 kB │ gzip:   3.25 kB
+#12 6.085 dist/assets/UsersPage-CYrFeIDM.js                    6.95 kB │ gzip:   3.00 kB
+#12 6.085 dist/assets/IncidentDetailPage--2TRfbqT.js          10.25 kB │ gzip:   4.39 kB
+#12 6.085 dist/assets/AgentRunPage-BhJB0gUK.js                16.33 kB │ gzip:   6.48 kB
+#12 6.085 dist/assets/TargetDetailPage-BPyznQNj.js            25.24 kB │ gzip:   8.72 kB
+#12 6.085 dist/assets/utils-D0T3A-kS.js                       27.56 kB │ gzip:   8.73 kB
+#12 6.085 dist/assets/AppIcon-DR-DVPl6.js                    101.63 kB │ gzip:  40.78 kB
+#12 6.085 dist/assets/index-NdCsjIcX.js                      108.47 kB │ gzip:  39.30 kB
+#12 6.085 dist/assets/OverviewPage-B8osWkku.js               562.50 kB │ gzip: 191.85 kB
+#12 6.085
+#12 6.086 ✓ built in 1.13s
+#12 6.087 [plugin builtin:vite-reporter]
+#12 6.087 (!) Some chunks are larger than 500 kB after minification. Consider:
+#12 6.087 - Using dynamic import() to code-split the application
+#12 6.087 - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+#12 6.087 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+#12 DONE 6.2s
+
+#13 [stage-1 2/3] COPY frontend/nginx.conf /etc/nginx/nginx.conf
+#13 CACHED
+
+#14 [stage-1 3/3] COPY --from=build /app/dist /usr/share/nginx/html
+#14 DONE 0.0s
+
+#15 exporting to image
+#15 exporting layers 0.1s done
+#15 exporting manifest sha256:fd8cf83bbd1f18d540a74a629999269474b71a706b639164d82d01002f1832e5 0.0s done
+#15 exporting config sha256:882dc007f5274040f3c9f444e21a19f91fb21182eb71cffffc1e5738dbbea1e0 0.0s done
+#15 exporting attestation manifest sha256:f0701e3953dcbe067daf6707e8244394eeb05abb64266a56b66c094c1ef1ff51 0.0s done
+#15 exporting manifest list sha256:37e16ae6a0f5f980b34bd237b601e63f10d4fd881fbd1ad39028ef094a2526f2 0.0s done
+#15 naming to docker.io/library/agentops-ui-verify:20261021 done
+#15 unpacking to docker.io/library/agentops-ui-verify:20261021 0.0s done
+#15 DONE 0.3s

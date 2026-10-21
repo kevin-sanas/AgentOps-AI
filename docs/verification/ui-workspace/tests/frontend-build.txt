@@ -1,0 +1,52 @@
+
+> agentops-workbench@0.2.0 build
+> node scripts/notices.mjs && npm run typecheck && vite build
+
+Third-party notices generated for 96 installed packages.
+
+> agentops-workbench@0.2.0 typecheck
+> vue-tsc --noEmit
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 3248 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                      0.86 kB │ gzip:   0.52 kB
+dist/assets/TargetDetailPage-Z4-Vofiq.css            0.10 kB │ gzip:   0.10 kB
+dist/assets/AgentDeliveryPanel-DZf3o0k7.css          0.20 kB │ gzip:   0.13 kB
+dist/assets/IncidentsPage-Cz73A_5l.css               0.21 kB │ gzip:   0.16 kB
+dist/assets/IncidentDetailPage-CM-vgkqE.css          0.59 kB │ gzip:   0.28 kB
+dist/assets/RunbookDetailPage-CYApDqUO.css           0.71 kB │ gzip:   0.33 kB
+dist/assets/AgentRunPage-BF2uv0hq.css                5.34 kB │ gzip:   1.30 kB
+dist/assets/index-Pvm8MEw_.css                      32.18 kB │ gzip:   7.21 kB
+dist/assets/_plugin-vue_export-helper-BDNMzG2s.js    0.08 kB │ gzip:   0.09 kB
+dist/assets/diagnosis-CsoKBH4h.js                    0.37 kB │ gzip:   0.36 kB
+dist/assets/LiveIndicator-D925r8fj.js                0.43 kB │ gzip:   0.36 kB
+dist/assets/PaginationBar-C8pgo1LE.js                0.68 kB │ gzip:   0.43 kB
+dist/assets/StatusBadge-CzvotoVF.js                  0.78 kB │ gzip:   0.54 kB
+dist/assets/PageState-D6OPLb3C.js                    0.87 kB │ gzip:   0.56 kB
+dist/assets/FilterToolbar-D3rilK2_.js                1.25 kB │ gzip:   0.72 kB
+dist/assets/LoginPage-CWVqIAgD.js                    2.49 kB │ gzip:   1.41 kB
+dist/assets/AgentDeliveryPanel-BsOpYvWd.js           3.65 kB │ gzip:   2.10 kB
+dist/assets/TargetsPage-DOh16QmC.js                  3.88 kB │ gzip:   2.07 kB
+dist/assets/CreateTargetPage-DvewYYnS.js             4.09 kB │ gzip:   2.02 kB
+dist/assets/AgentCenterPage-CR3ENhh_.js              5.19 kB │ gzip:   2.80 kB
+dist/assets/RunbookDetailPage-LahoXe-d.js            5.50 kB │ gzip:   2.55 kB
+dist/assets/RunbooksPage-Vh_EShz4.js                 6.16 kB │ gzip:   3.09 kB
+dist/assets/IncidentsPage-tSD322jU.js                6.92 kB │ gzip:   3.25 kB
+dist/assets/UsersPage-CWbgaoJe.js                    6.95 kB │ gzip:   3.00 kB
+dist/assets/IncidentDetailPage-HCUxt4fz.js          10.25 kB │ gzip:   4.39 kB
+dist/assets/AgentRunPage-1996EPoh.js                16.33 kB │ gzip:   6.48 kB
+dist/assets/TargetDetailPage-CXQi5aBN.js            25.24 kB │ gzip:   8.72 kB
+dist/assets/utils-D0T3A-kS.js                       27.56 kB │ gzip:   8.73 kB
+dist/assets/AppIcon-DR-DVPl6.js                    101.63 kB │ gzip:  40.78 kB
+dist/assets/index-B8FRMdjN.js                      108.47 kB │ gzip:  39.30 kB
+dist/assets/OverviewPage-CFj07nBL.js               562.50 kB │ gzip: 191.85 kB
+
+✓ built in 987ms
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

@@ -48,6 +48,7 @@ jobs:
         with:
           node-version: '24.22.0'
       - run: npm ci --ignore-scripts --no-fund --no-audit
+      - run: npm test
       - run: npm run build
       - run: node --test ../scripts/demo-target.test.mjs
       - run: npm audit --audit-level=low

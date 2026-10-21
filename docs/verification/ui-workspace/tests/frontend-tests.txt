@@ -1,0 +1,18 @@
+
+> agentops-workbench@0.2.0 test
+> node --experimental-strip-types --test tests/*.test.mjs
+
+✔ a late response for A cannot label B, or a 24h response label a new 1h range (1.2487ms)
+✔ processing the final waiting task on page two returns to remaining page one (0.1567ms)
+✔ unknown targets remain a separate category and empty health is not simulated (0.9714ms)
+✔ latency keeps real ordering, window boundaries, unknown gaps and zero latency (0.1643ms)
+✔ event aggregation fills empty buckets only inside a successfully queried interval (0.1525ms)
+✔ mock confidence is never displayed and provider self assessment is explicitly uncalibrated (0.1168ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 182.1241
