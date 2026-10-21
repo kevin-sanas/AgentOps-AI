@@ -1,0 +1,24 @@
+2026-10-21T16:22:18.154+08:00  INFO 22140 --- [agentops-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Shutdown initiated...
+2026-10-21T16:22:18.156+08:00  INFO 22140 --- [agentops-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Shutdown completed.
+[INFO] Tests run: 23, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 11.65 s -- in dev.agentops.MonitoringApiTest
+[INFO] Running dev.agentops.targets.PrivateNetworkPolicyTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s -- in dev.agentops.targets.PrivateNetworkPolicyTest
+[INFO] Running dev.agentops.TargetUrlPolicyTest
+[INFO] Tests run: 26, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.093 s -- in dev.agentops.TargetUrlPolicyTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 107, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ agentops-backend ---
+[INFO] 
+[INFO] --- spring-boot:4.1.1:repackage (repackage) @ agentops-backend ---
+[INFO] Replacing main artifact E:\javaProjects\AgentOps AI\backend\target\agentops-backend-0.1.0-SNAPSHOT.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to E:\javaProjects\AgentOps AI\backend\target\agentops-backend-0.1.0-SNAPSHOT.jar.original
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:24 min
+[INFO] Finished at: 2026-10-21T16:22:19+08:00
+[INFO] ------------------------------------------------------------------------

@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-20",
+  "timezone": "Asia/Shanghai",
+  "completedAt": "2026-10-20T15:09:41+08:00",
+  "command": ".\\scripts\\backend.ps1 verify",
+  "result": "BUILD SUCCESS",
+  "suite": [
+    {
+      "name": "dev.agentops.BootstrapTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 14.276
+    },
+    {
+      "name": "dev.agentops.FoundationTest",
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 13.198
+    },
+    {
+      "name": "dev.agentops.TargetUrlPolicyTest",
+      "tests": 26,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.171
+    }
+  ],
+  "java": "Temurin 21.0.12.1+1",
+  "maven": "3.9.16",
+  "postgresql": "17.11",
+  "springBoot": "4.1.1",
+  "jar": "backend/target/agentops-backend-0.1.0-SNAPSHOT.jar",
+  "jarSha256": "c6a3a1f1a94bb61592f0499bf34b9574431dcdb1499cbc8d23fe813e240cc6bf",
+  "composeConfig": "PASS",
+  "containerStartup": "NOT RUN - registry timeout",
+  "remoteCi": "NOT RUN",
+  "performance": "NOT RUN",
+  "fullDependencyScan": "NOT RUN"
+}

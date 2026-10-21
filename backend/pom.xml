@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-parent</artifactId><version>4.1.1</version><relativePath/>
+  </parent>
+  <groupId>dev.agentops</groupId><artifactId>agentops-backend</artifactId><version>0.1.0-SNAPSHOT</version>
+  <name>AgentOps AI backend</name>
+  <properties>
+    <java.version>21</java.version><embedded-postgres.version>2.2.2</embedded-postgres.version><postgres-binaries.version>17.11.0</postgres-binaries.version>
+    <!-- Same-line security patches; see docs/verification/dependencies-2026-10-20/advisories.json. -->
+    <tomcat.version>11.0.27</tomcat.version><jackson-bom.version>3.1.8</jackson-bom.version>
+  </properties>
+  <dependencies>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-webmvc</artifactId></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-security</artifactId></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-validation</artifactId></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-jdbc</artifactId></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-flyway</artifactId></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-actuator</artifactId></dependency>
+    <dependency><groupId>org.postgresql</groupId><artifactId>postgresql</artifactId><scope>runtime</scope></dependency>
+    <dependency><groupId>org.flywaydb</groupId><artifactId>flyway-database-postgresql</artifactId></dependency>
+    <dependency><groupId>org.apache.httpcomponents.client5</groupId><artifactId>httpclient5</artifactId></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId><scope>test</scope></dependency>
+    <dependency>
+      <groupId>io.zonky.test</groupId><artifactId>embedded-postgres</artifactId><version>${embedded-postgres.version}</version><scope>test</scope>
+      <exclusions>
+        <exclusion><groupId>io.zonky.test.postgres</groupId><artifactId>embedded-postgres-binaries-windows-amd64</artifactId></exclusion>
+        <exclusion><groupId>io.zonky.test.postgres</groupId><artifactId>embedded-postgres-binaries-darwin-amd64</artifactId></exclusion>
+        <exclusion><groupId>io.zonky.test.postgres</groupId><artifactId>embedded-postgres-binaries-linux-amd64</artifactId></exclusion>
+        <exclusion><groupId>io.zonky.test.postgres</groupId><artifactId>embedded-postgres-binaries-linux-amd64-alpine</artifactId></exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+  <profiles>
+    <profile><id>windows-tests</id><activation><os><family>Windows</family><arch>amd64</arch></os></activation><dependencies>
+      <dependency><groupId>io.zonky.test.postgres</groupId><artifactId>embedded-postgres-binaries-windows-amd64</artifactId><version>${postgres-binaries.version}</version><scope>test</scope></dependency>
+    </dependencies></profile>
+    <profile><id>linux-tests</id><activation><os><name>Linux</name><arch>amd64</arch></os></activation><dependencies>
+      <dependency><groupId>io.zonky.test.postgres</groupId><artifactId>embedded-postgres-binaries-linux-amd64</artifactId><version>${postgres-binaries.version}</version><scope>test</scope></dependency>
+    </dependencies></profile>
+  </profiles>
+  <build>
+    <resources>
+      <resource><directory>src/main/resources</directory></resource>
+      <resource><directory>../db/migration</directory><targetPath>db/migration</targetPath></resource>
+    </resources>
+    <plugins>
+      <plugin><groupId>org.springframework.boot</groupId><artifactId>spring-boot-maven-plugin</artifactId></plugin>
+      <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId><configuration><systemPropertyVariables><java.io.tmpdir>${project.build.directory}/tmp</java.io.tmpdir></systemPropertyVariables></configuration></plugin>
+      <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-enforcer-plugin</artifactId><version>3.6.2</version><executions><execution><id>java21</id><goals><goal>enforce</goal></goals><configuration><rules><requireJavaVersion><version>[21,22)</version></requireJavaVersion><requireMavenVersion><version>[3.9,4)</version></requireMavenVersion></rules></configuration></execution></executions></plugin>
+    </plugins>
+  </build>
+</project>

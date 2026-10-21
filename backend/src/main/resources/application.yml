@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: agentops-backend
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/agentops}
+    username: ${DB_USER:agentops}
+    password: ${DB_PASSWORD}
+  flyway:
+    locations: classpath:db/migration
+    clean-disabled: true
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+server:
+  port: ${PORT:8080}
+  error:
+    include-message: never
+    include-stacktrace: never
+    include-binding-errors: never
+  tomcat:
+    max-http-form-post-size: 64KB
+    max-swallow-size: 64KB
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+agentops:
+  agent:
+    enabled: ${AGENT_ENABLED:false}
+    origin: ${AGENT_SERVICE_ORIGIN:http://127.0.0.1:8090}
+    model-name: ${AGENT_MODEL_NAME:mock}
+  monitoring:
+    enabled: ${MONITORING_ENABLED:true}
+    allowed-private-cidrs: ${MONITOR_ALLOWED_PRIVATE_CIDRS:}
+  security:
+    session-pepper: ${SESSION_TOKEN_PEPPER}
+    internal-token: ${AGENT_INTERNAL_TOKEN}
+    session-duration: ${SESSION_DURATION:PT30M}
+  bootstrap:
+    username: ${BOOTSTRAP_ADMIN_USERNAME:}
+    password: ${BOOTSTRAP_ADMIN_PASSWORD:}

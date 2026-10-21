@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+.tools/
+.cache/
+**/target/
+**/node_modules/
+frontend/dist/
+**/.venv/
+**/.tmp/
+**/.pytest_cache/
+**/__pycache__/
+.superpowers/
+*.log
+.idea/
+.vscode/

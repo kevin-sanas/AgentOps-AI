@@ -1,0 +1,354 @@
+{
+  "stage": "G4",
+  "date": "2026-10-21",
+  "timezone": "Asia/Shanghai",
+  "scope": "Local implementation and regression; not deployment or real-model quality",
+  "backend": {
+    "command": "scripts/backend.ps1 verify",
+    "completedAt": "2026-10-21T16:22:19+08:00",
+    "tests": 107,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "suite": "dev.agentops.agent.AgentClientTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "dev.agentops.AgentApiTest",
+        "tests": 14,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "dev.agentops.AgentIntegrationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "dev.agentops.AgentOutboxTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "dev.agentops.BootstrapTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "dev.agentops.FoundationTest",
+        "tests": 19,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "dev.agentops.monitoring.SafeHttpProbeTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "dev.agentops.monitoring.TlsProbeTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "dev.agentops.MonitoringApiTest",
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "dev.agentops.targets.PrivateNetworkPolicyTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "dev.agentops.TargetUrlPolicyTest",
+        "tests": 26,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "evidence": "g4-tests/verify-summary.txt"
+  },
+  "python": {
+    "unitTests": 59,
+    "postgresTests": 11,
+    "postgresIncludedInOneJavaTest": true,
+    "syntheticScenarios": 30,
+    "evidence": [
+      "g4-tests/python-unit.txt",
+      "g4-tests/python-postgres.txt"
+    ]
+  },
+  "frontend": {
+    "typecheck": "PASS",
+    "productionBuild": "PASS",
+    "modules": 84,
+    "runtime": "Vue3/Vite8.3.4",
+    "desktopAnd390": "PASS",
+    "mobilePageWidth": 382,
+    "mobileViewportWidth": 382,
+    "consoleWarnings": 0,
+    "consoleErrors": 0,
+    "screenshots": [
+      "g4-ui/approved-mobile.jpg",
+      "g4-ui/manual-result-desktop.jpg",
+      "g4-ui/model-outcome-unknown.jpg",
+      "g4-ui/model-recovery-mobile.jpg",
+      "g4-ui/rejected-desktop.jpg",
+      "g4-ui/rejected-viewport.jpg",
+      "g4-ui/waiting-desktop.jpg",
+      "g4-ui/waiting-mobile.jpg"
+    ]
+  },
+  "review": {
+    "completedIndependentReviews": 1,
+    "critical": 0,
+    "important": 1,
+    "importantFixed": true,
+    "fix": "Durable model-call journal; cached result reuse; ambiguous completion stops same-run retry",
+    "secondReviewPerformed": false,
+    "faultWindows": [
+      "before HTTP after STARTED",
+      "result commit",
+      "graph checkpoint commit"
+    ]
+  },
+  "environment": {
+    "os": "Windows x64",
+    "java": "21.0.12.1+1",
+    "python": "3.13.5",
+    "postgres": "17.11",
+    "node": "24.22.0",
+    "branch": "codex/g1-foundation",
+    "gitCommit": null
+  },
+  "safety": {
+    "existingBusinessDatabaseMigrated": false,
+    "existingUserServicesRestarted": false,
+    "externalModelCalled": false,
+    "temporaryFixturesStopped": true,
+    "credentialsArchived": false,
+    "automaticOperationsTools": 0
+  },
+  "notRun": [
+    "External paid or hosted model compatibility/quality",
+    "Human-rated 30-scenario accuracy/recall",
+    "Performance benchmarks",
+    "Remote Linux CI",
+    "Full Compose build/up",
+    "Kuma",
+    "Backup/restore drill"
+  ],
+  "sourceSnapshot": [
+    {
+      "path": "backend/src/main/java/dev/agentops/agent/AgentClient.java",
+      "sha256": "ca0dd138b539e2bb2c993f52eb7b7bad22a6ea927c6b057cdc2ff9d2f4f96c6c"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/agent/AgentContracts.java",
+      "sha256": "c3edbeb72858040251e7ae459b7d34b0e21fdf66cb361383807f0df0701a9bf6"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/agent/AgentController.java",
+      "sha256": "79c266f3acd6dfc5cd5b3b1ab0d141cc19364f8e5af9cfe9e220f05e0179ce34"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/agent/AgentDispatcher.java",
+      "sha256": "f8eb9c020bdc2c16c2bab7494be6740a9566b5416566fc8cfd3d443097aa9615"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/agent/AgentOutbox.java",
+      "sha256": "c3571b1b8b09e9718a34021759f113fec872dce83f971c820dc022bb6f0188a2"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/agent/AgentService.java",
+      "sha256": "76c94996d48d88c4da30d0ba62313febfb579fa28e8db9b8297b1c6d99c6a131"
+    },
+    {
+      "path": "backend/src/main/java/dev/agentops/agent/ApprovalService.java",
+      "sha256": "7f7b283c382c1c50c7ae69b172efa4726b7043b0fd27339202b524db987630e3"
+    },
+    {
+      "path": "agent-service/agentops_agent/__init__.py",
+      "sha256": "12e1f283ac58329f60a3dcb784b97a73526c3fa7aa87ada1cda15a8a662d29b3"
+    },
+    {
+      "path": "agent-service/agentops_agent/app.py",
+      "sha256": "fb077da73193f1346c93ffadbeec41430cdca714cc26b2057eda1e3e8dccf0fe"
+    },
+    {
+      "path": "agent-service/agentops_agent/graph.py",
+      "sha256": "34e18cf0c2413d0389b10432e145a604ec5d0fa603b60bbc4707f9dd6582c327"
+    },
+    {
+      "path": "agent-service/agentops_agent/model_calls.py",
+      "sha256": "e01b969f114fc1bfb2e628bb4599f93fa74e4ccbfe1f55a53ee05bad5a48966e"
+    },
+    {
+      "path": "agent-service/agentops_agent/models.py",
+      "sha256": "8eb7c9602be6ba45da5623fd685aa8f63552c7ca5fb0970e133ef20cc22a7311"
+    },
+    {
+      "path": "agent-service/agentops_agent/provider.py",
+      "sha256": "7926d133f6733849a224e6776d4041c206e6843e7a64b521696c9d6ac845d1cf"
+    },
+    {
+      "path": "agent-service/agentops_agent/safety.py",
+      "sha256": "8d3f28df1695dcc8635cb6b11406297cad040fc572a37afbbdf77446788c3f00"
+    },
+    {
+      "path": "agent-service/agentops_agent/store.py",
+      "sha256": "7e9f9548694ace6a5a7c47bee0832c26431f732afc7d52f2aab9c8f30ee970e9"
+    },
+    {
+      "path": "db/migration/V5__agent_human_review.sql",
+      "sha256": "c3c7a0b6dfeb670003d7dbc2ef040542fcb010904eb0f2c42525ff6f4b1a7e54"
+    },
+    {
+      "path": "frontend/src/api.ts",
+      "sha256": "e480f07d993149f66e7970dac435ae885ef005654c8b7b77a29586169db58833"
+    },
+    {
+      "path": "frontend/src/App.vue",
+      "sha256": "7e50c34ea159a74938951b40851886acd8c58cebffe361ed66e3af4fe03c1213"
+    },
+    {
+      "path": "frontend/src/composables.ts",
+      "sha256": "a1f9a904edf10581cf73ca90bdd74ea187f9b683ac1bc08c3fd1fba535870df1"
+    },
+    {
+      "path": "frontend/src/diagnosis.ts",
+      "sha256": "714760260b84d8a19a5b555bc974c8cf0312ae5457a49c67c1e70981da6e57a1"
+    },
+    {
+      "path": "frontend/src/main.ts",
+      "sha256": "04a5a769a09873b326fc912de8f22464e326cfa8349e8806b78768ffe6437a99"
+    },
+    {
+      "path": "frontend/src/router.ts",
+      "sha256": "a51403cc22f780375d222cae18b61fff9133f94b74987009470d304daeaae0b9"
+    },
+    {
+      "path": "frontend/src/style.css",
+      "sha256": "d7faeee015d9e71b286aabf9c8af636607496864d597874492a62acb00635314"
+    },
+    {
+      "path": "frontend/src/types.ts",
+      "sha256": "270a2d3240c2a945ebd82e160a02ac9602d5a41b24fed874608c35cd1f0c42be"
+    },
+    {
+      "path": "frontend/src/components/AccessPanel.vue",
+      "sha256": "46e15e4cb2f67c960ba3c2f9fbb450ec87d249fb3e39d18db71785b2d6fa521b"
+    },
+    {
+      "path": "frontend/src/components/AgentDeliveryPanel.vue",
+      "sha256": "b9f79813849532c922314bcd8a91fbfef3d2d71325236394c900dcba7f10c432"
+    },
+    {
+      "path": "frontend/src/components/AgentReviewPanel.vue",
+      "sha256": "4b961da0452ec2da7c8f36fc2faaefff31de2e08d650a9f66174bd6ae2bbfc97"
+    },
+    {
+      "path": "frontend/src/components/AgentRunsPanel.vue",
+      "sha256": "57735e894c49818359f4808c79768c82b5b85f6b9caca929befd73976b7e7044"
+    },
+    {
+      "path": "frontend/src/components/AppIcon.vue",
+      "sha256": "d3ae729bff7321bde9d491a1c4b4aa8c256494e1165668b18630a7fe010a8348"
+    },
+    {
+      "path": "frontend/src/components/CheckEditor.vue",
+      "sha256": "ebbc86513f1f610c3b150a2d9a3f1186170829e30c343e18459a57992ea99700"
+    },
+    {
+      "path": "frontend/src/components/ChecksPanel.vue",
+      "sha256": "bcf2d300dba49a2f061528e78010c834b4da099bc936394c87e801474cbd5a5f"
+    },
+    {
+      "path": "frontend/src/components/HistoryPanel.vue",
+      "sha256": "a9cc2d11b49de0203f0d73a1f918d838ce9949f130332d8e5791b7215ea0c04a"
+    },
+    {
+      "path": "frontend/src/components/NetworkPanel.vue",
+      "sha256": "a980be3af4a457767f1572366d977e6ead49feb0b31366d291941bd4e396a69c"
+    },
+    {
+      "path": "frontend/src/components/PageState.vue",
+      "sha256": "82b9a2cee34c7ed2d886783cab25feaec925eb52e2d6ae65106a08536ff58a13"
+    },
+    {
+      "path": "frontend/src/components/PaginationBar.vue",
+      "sha256": "00572561a57009c44e8a6501c0b4911e07b43b1aa830db1fa782e3cc3851984f"
+    },
+    {
+      "path": "frontend/src/components/StatusBadge.vue",
+      "sha256": "51e4149994eefd9aed3378e952e8dbf07e87f9d27cd72c745f150db16cfdc13f"
+    },
+    {
+      "path": "frontend/src/pages/AgentRunPage.vue",
+      "sha256": "8d64f9b7e21c36cfaf3dbb0bf81f4240201f972664e0e3859b63fee14ff86b7c"
+    },
+    {
+      "path": "frontend/src/pages/CreateTargetPage.vue",
+      "sha256": "c43c5dca2f5f8b13d7b6900978901180522190ee55dcb046531f468b84d87bce"
+    },
+    {
+      "path": "frontend/src/pages/IncidentDetailPage.vue",
+      "sha256": "dfe002174fbca91ce38637122ccf7f795ec4e6f8c0bc819c9774476002ccd9e0"
+    },
+    {
+      "path": "frontend/src/pages/IncidentsPage.vue",
+      "sha256": "79f8463f4dd95a5e67558a1312169e21d386224bd152288ec3db8d9049f39088"
+    },
+    {
+      "path": "frontend/src/pages/LoginPage.vue",
+      "sha256": "caaa03ed7141dc1718d70fd4508c79e33f137e161e2de1ff92d9709b3bf354ac"
+    },
+    {
+      "path": "frontend/src/pages/OverviewPage.vue",
+      "sha256": "f3f2226d2f3f4786d183f0c838b28425477a8fe70ec4d9774d6667e7c731557f"
+    },
+    {
+      "path": "frontend/src/pages/RunbookDetailPage.vue",
+      "sha256": "0fcc97355a9285a67cfd32423558559c3eb2b9309ec7d9c0e9f38613126f05b9"
+    },
+    {
+      "path": "frontend/src/pages/RunbooksPage.vue",
+      "sha256": "75de89b0f1c7cc6a78df2282c37b52fb0a3e4cfb13af65cdeade993860356cc0"
+    },
+    {
+      "path": "frontend/src/pages/TargetDetailPage.vue",
+      "sha256": "cc3d6fefb03c0d8349df23bde70d57f4ea4b217ab5c788e9a4ea1eeefd13b49f"
+    },
+    {
+      "path": "frontend/src/pages/TargetsPage.vue",
+      "sha256": "9a76d3013c9f6cb6ea3362ab196a048f7cacc85996b143f48ccd26c3064485dd"
+    },
+    {
+      "path": "frontend/src/pages/UsersPage.vue",
+      "sha256": "ab8bb3d3623699d8572f821d15b5b2f776149055b9944bcb06a2395d83827b29"
+    }
+  ]
+}

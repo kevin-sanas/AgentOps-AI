@@ -1,0 +1,43 @@
+name: agentops-platform
+services:
+  postgres:
+    image: postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826
+    environment:
+      POSTGRES_DB: agentops
+      POSTGRES_USER: ${DB_USER:-agentops}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d agentops"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [data]
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/agentops
+      DB_USER: ${DB_USER:-agentops}
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      SESSION_TOKEN_PEPPER: ${SESSION_TOKEN_PEPPER:?Set SESSION_TOKEN_PEPPER in .env}
+      AGENT_INTERNAL_TOKEN: ${AGENT_INTERNAL_TOKEN:?Set AGENT_INTERNAL_TOKEN in .env}
+      SESSION_DURATION: ${SESSION_DURATION:-PT30M}
+      MONITORING_ENABLED: ${MONITORING_ENABLED:-true}
+      MONITOR_ALLOWED_PRIVATE_CIDRS: ${MONITOR_ALLOWED_PRIVATE_CIDRS:-}
+      BOOTSTRAP_ADMIN_USERNAME: ${BOOTSTRAP_ADMIN_USERNAME:-admin}
+      BOOTSTRAP_ADMIN_PASSWORD: ${BOOTSTRAP_ADMIN_PASSWORD:?Set BOOTSTRAP_ADMIN_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-18080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [data, app]
+networks:
+  data:
+    internal: true
+  app: {}
+volumes:
+  postgres-data: {}

@@ -1,0 +1,72 @@
+{
+  "stage": "G2 local functional verification",
+  "date": "2026-10-20",
+  "timezone": "Asia/Shanghai",
+  "backend": {
+    "errors": 0,
+    "finishedAt": "2026-10-20T17:49:57+08:00",
+    "failures": 0,
+    "followup": "After assertion-only strengthening, overview configuration/resume test passed at 17:51:00. No production source changed after full verify.",
+    "skipped": 0,
+    "command": ".\\scripts\\backend.ps1 verify",
+    "durationSeconds": 42.317,
+    "suites": {
+      "BootstrapTest": 1,
+      "MonitoringApiTest": 21,
+      "PrivateNetworkPolicyTest": 5,
+      "TargetUrlPolicyTest": 26,
+      "TlsProbeTest": 2,
+      "SafeHttpProbeTest": 7,
+      "FoundationTest": 19
+    },
+    "exitCode": 0,
+    "tests": 81
+  },
+  "frontend": {
+    "npmAuditFindings": 0,
+    "cssBytes": 20458,
+    "typecheck": "PASS",
+    "build": "PASS",
+    "installedLicensePackages": 47,
+    "jsBytes": 152540
+  },
+  "browser": {
+    "database": "disposable PostgreSQL 17.11",
+    "probeSamples": "synthetic UI fixture; actual transport tested separately",
+    "checks": [
+      "admin and observer login",
+      "overview scoped counts and stale UNKNOWN",
+      "incident ACK/INVESTIGATE/MONITORING/RESOLVED/CLOSED",
+      "target and check creation/activation",
+      "target ACL and user roles",
+      "incident stale version conflict",
+      "two-session check conflict / refresh / save",
+      "observer restricted resources and controls",
+      "390x844 mobile; no document overflow",
+      "reload clears memory session",
+      "console error/warn log empty in final inspection"
+    ]
+  },
+  "review": {
+    "importantFindings": 4,
+    "fixedAndRechecked": 4,
+    "remainingImportant": 0
+  },
+  "dependencies": {
+    "scope": "package version matching; not native/container OS/JDK scan",
+    "npmAuditMatches": 0,
+    "osvMatches": 0,
+    "npmComponents": 72,
+    "javaComponents": 115,
+    "osvQueried": 115
+  },
+  "composeConfig": "PASS",
+  "notRun": [
+    "container build/up: Docker registry connection timed out",
+    "remote Linux CI",
+    "load/performance benchmarks",
+    "G3-G5 Agent/Kuma/full Compose"
+  ],
+  "userService": "IDEA process and existing database not modified",
+  "migration": "V3 validated only in disposable databases; applying to user database requires their upgrade action"
+}

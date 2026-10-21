@@ -1,0 +1,1271 @@
+[
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-starter-webmvc",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-starter-webmvc@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-starter",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-starter@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-starter-logging",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-starter-logging@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "ch.qos.logback",
+    "name": "logback-classic",
+    "version": "1.5.38",
+    "scope": "required",
+    "purl": "pkg:maven/ch.qos.logback/logback-classic@1.5.38?type=jar",
+    "licenses": [
+      "EPL-2.0",
+      "LGPL-2.1-only"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "ch.qos.logback",
+    "name": "logback-core",
+    "version": "1.5.38",
+    "scope": "required",
+    "purl": "pkg:maven/ch.qos.logback/logback-core@1.5.38?type=jar",
+    "licenses": [
+      "EPL-2.0",
+      "LGPL-2.1-only"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.apache.logging.log4j",
+    "name": "log4j-to-slf4j",
+    "version": "2.25.5",
+    "scope": "required",
+    "purl": "pkg:maven/org.apache.logging.log4j/log4j-to-slf4j@2.25.5?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.apache.logging.log4j",
+    "name": "log4j-api",
+    "version": "2.25.5",
+    "scope": "required",
+    "purl": "pkg:maven/org.apache.logging.log4j/log4j-api@2.25.5?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.slf4j",
+    "name": "jul-to-slf4j",
+    "version": "2.0.18",
+    "scope": "required",
+    "purl": "pkg:maven/org.slf4j/jul-to-slf4j@2.0.18?type=jar",
+    "licenses": [
+      "MIT"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-autoconfigure",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-autoconfigure@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "jakarta.annotation",
+    "name": "jakarta.annotation-api",
+    "version": "3.0.0",
+    "scope": "required",
+    "purl": "pkg:maven/jakarta.annotation/jakarta.annotation-api@3.0.0?type=jar",
+    "licenses": [
+      "EPL-2.0",
+      "GPL-2.0-with-classpath-exception"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.yaml",
+    "name": "snakeyaml",
+    "version": "2.6",
+    "scope": "required",
+    "purl": "pkg:maven/org.yaml/snakeyaml@2.6?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-starter-jackson",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-starter-jackson@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-jackson",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-jackson@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-starter-tomcat",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-starter-tomcat@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-starter-tomcat-runtime",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-starter-tomcat-runtime@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-web-server",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-web-server@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.apache.tomcat.embed",
+    "name": "tomcat-embed-core",
+    "version": "11.0.27",
+    "scope": "required",
+    "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@11.0.27?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.apache.tomcat.embed",
+    "name": "tomcat-embed-websocket",
+    "version": "11.0.27",
+    "scope": "required",
+    "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-websocket@11.0.27?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-tomcat",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-tomcat@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-http-converter",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-http-converter@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework",
+    "name": "spring-context",
+    "version": "7.0.9",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework/spring-context@7.0.9?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework",
+    "name": "spring-web",
+    "version": "7.0.9",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework/spring-web@7.0.9?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-webmvc",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-webmvc@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-servlet",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-servlet@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework",
+    "name": "spring-webmvc",
+    "version": "7.0.9",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework/spring-webmvc@7.0.9?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework",
+    "name": "spring-expression",
+    "version": "7.0.9",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework/spring-expression@7.0.9?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-starter-security",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-starter-security@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-security",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-security@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.security",
+    "name": "spring-security-config",
+    "version": "7.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.security/spring-security-config@7.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.security",
+    "name": "spring-security-core",
+    "version": "7.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.security/spring-security-core@7.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.security",
+    "name": "spring-security-crypto",
+    "version": "7.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.security/spring-security-crypto@7.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.security",
+    "name": "spring-security-web",
+    "version": "7.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.security/spring-security-web@7.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework",
+    "name": "spring-aop",
+    "version": "7.0.9",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework/spring-aop@7.0.9?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework",
+    "name": "spring-beans",
+    "version": "7.0.9",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework/spring-beans@7.0.9?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-starter-validation",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-starter-validation@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-validation",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-validation@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.apache.tomcat.embed",
+    "name": "tomcat-embed-el",
+    "version": "11.0.27",
+    "scope": "required",
+    "purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-el@11.0.27?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.hibernate.validator",
+    "name": "hibernate-validator",
+    "version": "9.1.3.Final",
+    "scope": "required",
+    "purl": "pkg:maven/org.hibernate.validator/hibernate-validator@9.1.3.Final?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "jakarta.validation",
+    "name": "jakarta.validation-api",
+    "version": "3.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/jakarta.validation/jakarta.validation-api@3.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.jboss.logging",
+    "name": "jboss-logging",
+    "version": "3.6.3.Final",
+    "scope": "required",
+    "purl": "pkg:maven/org.jboss.logging/jboss-logging@3.6.3.Final?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "com.fasterxml",
+    "name": "classmate",
+    "version": "1.7.3",
+    "scope": "required",
+    "purl": "pkg:maven/com.fasterxml/classmate@1.7.3?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-starter-jdbc",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-starter-jdbc@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-jdbc",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-jdbc@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-sql",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-sql@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-transaction",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-transaction@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-persistence",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-persistence@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework",
+    "name": "spring-tx",
+    "version": "7.0.9",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework/spring-tx@7.0.9?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework",
+    "name": "spring-jdbc",
+    "version": "7.0.9",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework/spring-jdbc@7.0.9?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "com.zaxxer",
+    "name": "HikariCP",
+    "version": "7.0.2",
+    "scope": "required",
+    "purl": "pkg:maven/com.zaxxer/HikariCP@7.0.2?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-starter-flyway",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-starter-flyway@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-flyway",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-flyway@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-starter-actuator",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-starter-actuator@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-starter-micrometer-metrics",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-starter-micrometer-metrics@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-micrometer-metrics",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-micrometer-metrics@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-micrometer-observation",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-micrometer-observation@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-actuator-autoconfigure",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-actuator-autoconfigure@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-actuator",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-actuator@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-health",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-health@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "io.micrometer",
+    "name": "micrometer-observation",
+    "version": "1.17.1",
+    "scope": "required",
+    "purl": "pkg:maven/io.micrometer/micrometer-observation@1.17.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.jspecify",
+    "name": "jspecify",
+    "version": "1.0.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.jspecify/jspecify@1.0.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "io.micrometer",
+    "name": "micrometer-commons",
+    "version": "1.17.1",
+    "scope": "required",
+    "purl": "pkg:maven/io.micrometer/micrometer-commons@1.17.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "io.micrometer",
+    "name": "micrometer-jakarta9",
+    "version": "1.17.1",
+    "scope": "required",
+    "purl": "pkg:maven/io.micrometer/micrometer-jakarta9@1.17.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "io.micrometer",
+    "name": "micrometer-core",
+    "version": "1.17.1",
+    "scope": "required",
+    "purl": "pkg:maven/io.micrometer/micrometer-core@1.17.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.hdrhistogram",
+    "name": "HdrHistogram",
+    "version": "2.2.2",
+    "scope": "required",
+    "purl": "pkg:maven/org.hdrhistogram/HdrHistogram@2.2.2?type=jar",
+    "licenses": [
+      "CC0-1.0",
+      "BSD-2-Clause"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.postgresql",
+    "name": "postgresql",
+    "version": "42.7.13",
+    "scope": "required",
+    "purl": "pkg:maven/org.postgresql/postgresql@42.7.13?type=jar",
+    "licenses": [
+      "BSD-2-Clause"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.checkerframework",
+    "name": "checker-qual",
+    "version": "3.55.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.checkerframework/checker-qual@3.55.1?type=jar",
+    "licenses": [
+      "MIT"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.flywaydb",
+    "name": "flyway-database-postgresql",
+    "version": "12.4.0",
+    "scope": "required",
+    "purl": "pkg:maven/org.flywaydb/flyway-database-postgresql@12.4.0?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.flywaydb",
+    "name": "flyway-core",
+    "version": "12.4.0",
+    "scope": "required",
+    "purl": "pkg:maven/org.flywaydb/flyway-core@12.4.0?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "tools.jackson.core",
+    "name": "jackson-databind",
+    "version": "3.1.8",
+    "scope": "required",
+    "purl": "pkg:maven/tools.jackson.core/jackson-databind@3.1.8?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "com.fasterxml.jackson.core",
+    "name": "jackson-annotations",
+    "version": "2.21",
+    "scope": "required",
+    "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.21?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "tools.jackson.core",
+    "name": "jackson-core",
+    "version": "3.1.8",
+    "scope": "required",
+    "purl": "pkg:maven/tools.jackson.core/jackson-core@3.1.8?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.apache.httpcomponents.client5",
+    "name": "httpclient5",
+    "version": "5.6.4",
+    "scope": "required",
+    "purl": "pkg:maven/org.apache.httpcomponents.client5/httpclient5@5.6.4?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.apache.httpcomponents.core5",
+    "name": "httpcore5",
+    "version": "5.4.3",
+    "scope": "required",
+    "purl": "pkg:maven/org.apache.httpcomponents.core5/httpcore5@5.4.3?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.apache.httpcomponents.core5",
+    "name": "httpcore5-h2",
+    "version": "5.4.3",
+    "scope": "required",
+    "purl": "pkg:maven/org.apache.httpcomponents.core5/httpcore5-h2@5.4.3?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.slf4j",
+    "name": "slf4j-api",
+    "version": "2.0.18",
+    "scope": "required",
+    "purl": "pkg:maven/org.slf4j/slf4j-api@2.0.18?type=jar",
+    "licenses": [
+      "MIT"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-starter-test",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-starter-test@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-test",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-test@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework.boot",
+    "name": "spring-boot-test-autoconfigure",
+    "version": "4.1.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework.boot/spring-boot-test-autoconfigure@4.1.1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "com.jayway.jsonpath",
+    "name": "json-path",
+    "version": "2.10.0",
+    "scope": "required",
+    "purl": "pkg:maven/com.jayway.jsonpath/json-path@2.10.0?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "jakarta.xml.bind",
+    "name": "jakarta.xml.bind-api",
+    "version": "4.0.5",
+    "scope": "required",
+    "purl": "pkg:maven/jakarta.xml.bind/jakarta.xml.bind-api@4.0.5?type=jar",
+    "licenses": [
+      "BSD-3-Clause"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "jakarta.activation",
+    "name": "jakarta.activation-api",
+    "version": "2.1.4",
+    "scope": "required",
+    "purl": "pkg:maven/jakarta.activation/jakarta.activation-api@2.1.4?type=jar",
+    "licenses": [
+      "BSD-3-Clause"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "net.minidev",
+    "name": "json-smart",
+    "version": "2.6.0",
+    "scope": "required",
+    "purl": "pkg:maven/net.minidev/json-smart@2.6.0?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "net.minidev",
+    "name": "accessors-smart",
+    "version": "2.6.0",
+    "scope": "required",
+    "purl": "pkg:maven/net.minidev/accessors-smart@2.6.0?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.ow2.asm",
+    "name": "asm",
+    "version": "9.7.1",
+    "scope": "required",
+    "purl": "pkg:maven/org.ow2.asm/asm@9.7.1?type=jar",
+    "licenses": [
+      "BSD-3-Clause"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.assertj",
+    "name": "assertj-core",
+    "version": "3.27.7",
+    "scope": "required",
+    "purl": "pkg:maven/org.assertj/assertj-core@3.27.7?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "net.bytebuddy",
+    "name": "byte-buddy",
+    "version": "1.18.11",
+    "scope": "required",
+    "purl": "pkg:maven/net.bytebuddy/byte-buddy@1.18.11?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.awaitility",
+    "name": "awaitility",
+    "version": "4.3.0",
+    "scope": "required",
+    "purl": "pkg:maven/org.awaitility/awaitility@4.3.0?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.hamcrest",
+    "name": "hamcrest",
+    "version": "3.0",
+    "scope": "required",
+    "purl": "pkg:maven/org.hamcrest/hamcrest@3.0?type=jar",
+    "licenses": [
+      "BSD-3-Clause"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.junit.jupiter",
+    "name": "junit-jupiter",
+    "version": "6.0.3",
+    "scope": "required",
+    "purl": "pkg:maven/org.junit.jupiter/junit-jupiter@6.0.3?type=jar",
+    "licenses": [
+      "EPL-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.junit.jupiter",
+    "name": "junit-jupiter-api",
+    "version": "6.0.3",
+    "scope": "required",
+    "purl": "pkg:maven/org.junit.jupiter/junit-jupiter-api@6.0.3?type=jar",
+    "licenses": [
+      "EPL-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.opentest4j",
+    "name": "opentest4j",
+    "version": "1.3.0",
+    "scope": "required",
+    "purl": "pkg:maven/org.opentest4j/opentest4j@1.3.0?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.junit.platform",
+    "name": "junit-platform-commons",
+    "version": "6.0.3",
+    "scope": "required",
+    "purl": "pkg:maven/org.junit.platform/junit-platform-commons@6.0.3?type=jar",
+    "licenses": [
+      "EPL-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.apiguardian",
+    "name": "apiguardian-api",
+    "version": "1.1.2",
+    "scope": "required",
+    "purl": "pkg:maven/org.apiguardian/apiguardian-api@1.1.2?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.junit.jupiter",
+    "name": "junit-jupiter-params",
+    "version": "6.0.3",
+    "scope": "required",
+    "purl": "pkg:maven/org.junit.jupiter/junit-jupiter-params@6.0.3?type=jar",
+    "licenses": [
+      "EPL-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.junit.jupiter",
+    "name": "junit-jupiter-engine",
+    "version": "6.0.3",
+    "scope": "required",
+    "purl": "pkg:maven/org.junit.jupiter/junit-jupiter-engine@6.0.3?type=jar",
+    "licenses": [
+      "EPL-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.junit.platform",
+    "name": "junit-platform-engine",
+    "version": "6.0.3",
+    "scope": "required",
+    "purl": "pkg:maven/org.junit.platform/junit-platform-engine@6.0.3?type=jar",
+    "licenses": [
+      "EPL-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.mockito",
+    "name": "mockito-core",
+    "version": "5.23.0",
+    "scope": "required",
+    "purl": "pkg:maven/org.mockito/mockito-core@5.23.0?type=jar",
+    "licenses": [
+      "MIT"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "net.bytebuddy",
+    "name": "byte-buddy-agent",
+    "version": "1.18.11",
+    "scope": "required",
+    "purl": "pkg:maven/net.bytebuddy/byte-buddy-agent@1.18.11?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.objenesis",
+    "name": "objenesis",
+    "version": "3.3",
+    "scope": "required",
+    "purl": "pkg:maven/org.objenesis/objenesis@3.3?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.mockito",
+    "name": "mockito-junit-jupiter",
+    "version": "5.23.0",
+    "scope": "required",
+    "purl": "pkg:maven/org.mockito/mockito-junit-jupiter@5.23.0?type=jar",
+    "licenses": [
+      "MIT"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.skyscreamer",
+    "name": "jsonassert",
+    "version": "1.5.3",
+    "scope": "required",
+    "purl": "pkg:maven/org.skyscreamer/jsonassert@1.5.3?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "com.vaadin.external.google",
+    "name": "android-json",
+    "version": "0.0.20131108.vaadin1",
+    "scope": "required",
+    "purl": "pkg:maven/com.vaadin.external.google/android-json@0.0.20131108.vaadin1?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework",
+    "name": "spring-core",
+    "version": "7.0.9",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework/spring-core@7.0.9?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "commons-logging",
+    "name": "commons-logging",
+    "version": "1.3.6",
+    "scope": "required",
+    "purl": "pkg:maven/commons-logging/commons-logging@1.3.6?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.springframework",
+    "name": "spring-test",
+    "version": "7.0.9",
+    "scope": "required",
+    "purl": "pkg:maven/org.springframework/spring-test@7.0.9?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.xmlunit",
+    "name": "xmlunit-core",
+    "version": "2.11.0",
+    "scope": "required",
+    "purl": "pkg:maven/org.xmlunit/xmlunit-core@2.11.0?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "io.zonky.test",
+    "name": "embedded-postgres",
+    "version": "2.2.2",
+    "scope": "required",
+    "purl": "pkg:maven/io.zonky.test/embedded-postgres@2.2.2?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.apache.commons",
+    "name": "commons-lang3",
+    "version": "3.20.0",
+    "scope": "required",
+    "purl": "pkg:maven/org.apache.commons/commons-lang3@3.20.0?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.apache.commons",
+    "name": "commons-compress",
+    "version": "1.28.0",
+    "scope": "required",
+    "purl": "pkg:maven/org.apache.commons/commons-compress@1.28.0?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "org.tukaani",
+    "name": "xz",
+    "version": "1.11",
+    "scope": "required",
+    "purl": "pkg:maven/org.tukaani/xz@1.11?type=jar",
+    "licenses": [
+      "0BSD"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "commons-io",
+    "name": "commons-io",
+    "version": "2.21.0",
+    "scope": "required",
+    "purl": "pkg:maven/commons-io/commons-io@2.21.0?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "commons-codec",
+    "name": "commons-codec",
+    "version": "1.21.0",
+    "scope": "required",
+    "purl": "pkg:maven/commons-codec/commons-codec@1.21.0?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "io.zonky.test.postgres",
+    "name": "embedded-postgres-binaries-windows-amd64",
+    "version": "17.11.0",
+    "scope": "required",
+    "purl": "pkg:maven/io.zonky.test.postgres/embedded-postgres-binaries-windows-amd64@17.11.0?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  },
+  {
+    "group": "io.zonky.test.postgres",
+    "name": "embedded-postgres-binaries-linux-amd64",
+    "version": "17.11.0",
+    "scope": "required",
+    "purl": "pkg:maven/io.zonky.test.postgres/embedded-postgres-binaries-linux-amd64@17.11.0?type=jar",
+    "licenses": [
+      "Apache-2.0"
+    ],
+    "review": "DECLARED_LICENSE_REVIEW_REQUIRED"
+  }
+]

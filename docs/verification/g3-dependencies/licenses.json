@@ -1,0 +1,409 @@
+{
+  "components": [
+    {
+      "name": "annotated-doc",
+      "version": "0.0.5",
+      "license": "MIT",
+      "licenseFiles": [
+        "annotated_doc-0.0.5.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "annotated-types",
+      "version": "0.8.0",
+      "license": "MIT",
+      "licenseFiles": [
+        "annotated_types-0.8.0.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "anyio",
+      "version": "4.15.1",
+      "license": "MIT",
+      "licenseFiles": [
+        "anyio-4.15.1.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "certifi",
+      "version": "2026.10.19",
+      "license": "MPL-2.0",
+      "licenseFiles": [
+        "certifi-2026.10.19.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "charset-normalizer",
+      "version": "3.5.2",
+      "license": "MIT",
+      "licenseFiles": [
+        "charset_normalizer-3.5.2.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "click",
+      "version": "8.5.0",
+      "license": "BSD-3-Clause",
+      "licenseFiles": [
+        "click-8.5.0.dist-info/licenses/LICENSE.txt"
+      ]
+    },
+    {
+      "name": "distro",
+      "version": "1.9.0",
+      "license": "Apache License, Version 2.0",
+      "licenseFiles": [
+        "distro-1.9.0.dist-info/LICENSE"
+      ]
+    },
+    {
+      "name": "fastapi",
+      "version": "0.151.0",
+      "license": "MIT",
+      "licenseFiles": [
+        "fastapi-0.151.0.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "h11",
+      "version": "0.16.0",
+      "license": "MIT",
+      "licenseFiles": [
+        "h11-0.16.0.dist-info/licenses/LICENSE.txt"
+      ]
+    },
+    {
+      "name": "httpcore",
+      "version": "1.0.9",
+      "license": "BSD-3-Clause",
+      "licenseFiles": [
+        "httpcore-1.0.9.dist-info/licenses/LICENSE.md"
+      ]
+    },
+    {
+      "name": "httpcore2",
+      "version": "2.15.1",
+      "license": "BSD-3-Clause",
+      "licenseFiles": [
+        "httpcore2-2.15.1.dist-info/licenses/LICENSE.md"
+      ]
+    },
+    {
+      "name": "httpx",
+      "version": "0.28.1",
+      "license": "BSD-3-Clause",
+      "licenseFiles": [
+        "httpx-0.28.1.dist-info/licenses/LICENSE.md"
+      ]
+    },
+    {
+      "name": "httpx2",
+      "version": "2.15.1",
+      "license": "BSD-3-Clause",
+      "licenseFiles": [
+        "httpx2-2.15.1.dist-info/licenses/LICENSE.md"
+      ]
+    },
+    {
+      "name": "idna",
+      "version": "3.20",
+      "license": "BSD-3-Clause",
+      "licenseFiles": [
+        "idna-3.20.dist-info/licenses/LICENSE.md"
+      ]
+    },
+    {
+      "name": "jsonpatch",
+      "version": "1.36",
+      "license": "BSD-3-Clause",
+      "licenseFiles": [
+        "jsonpatch-1.36.dist-info/licenses/AUTHORS",
+        "jsonpatch-1.36.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "jsonpointer",
+      "version": "3.4",
+      "license": "Modified BSD License",
+      "licenseFiles": [
+        "jsonpointer-3.4.dist-info/licenses/AUTHORS",
+        "jsonpointer-3.4.dist-info/licenses/LICENSE.txt"
+      ]
+    },
+    {
+      "name": "langchain-core",
+      "version": "1.6.12",
+      "license": "MIT",
+      "licenseFiles": [
+        "langchain_core-1.6.12.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "langchain-protocol",
+      "version": "0.0.20",
+      "license": "MIT",
+      "licenseFiles": [
+        "langchain_protocol-0.0.20.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "langgraph",
+      "version": "1.2.16",
+      "license": "MIT",
+      "licenseFiles": [
+        "langgraph-1.2.16.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "langgraph-checkpoint",
+      "version": "4.3.0",
+      "license": "MIT",
+      "licenseFiles": [
+        "langgraph_checkpoint-4.3.0.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "langgraph-checkpoint-postgres",
+      "version": "3.2.0",
+      "license": "MIT",
+      "licenseFiles": [
+        "langgraph_checkpoint_postgres-3.2.0.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "langgraph-prebuilt",
+      "version": "1.1.1",
+      "license": "MIT",
+      "licenseFiles": [
+        "langgraph_prebuilt-1.1.1.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "langgraph-sdk",
+      "version": "0.4.8",
+      "license": "MIT",
+      "licenseFiles": [
+        "langgraph_sdk-0.4.8.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "langsmith",
+      "version": "0.14.11",
+      "license": "MIT",
+      "licenseFiles": [
+        "langsmith-0.14.11.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "opentelemetry-api",
+      "version": "1.45.1",
+      "license": "Apache-2.0",
+      "licenseFiles": [
+        "opentelemetry_api-1.45.1.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "orjson",
+      "version": "3.13.0",
+      "license": "MPL-2.0 AND (Apache-2.0 OR MIT)",
+      "licenseFiles": [
+        "orjson-3.13.0.dist-info/licenses/LICENSE-APACHE",
+        "orjson-3.13.0.dist-info/licenses/LICENSE-MIT",
+        "orjson-3.13.0.dist-info/licenses/LICENSE-MPL-2.0"
+      ]
+    },
+    {
+      "name": "ormsgpack",
+      "version": "1.13.0",
+      "license": "Apache-2.0 OR MIT",
+      "licenseFiles": [
+        "ormsgpack-1.13.0.dist-info/licenses/LICENSE-APACHE",
+        "ormsgpack-1.13.0.dist-info/licenses/LICENSE-MIT"
+      ]
+    },
+    {
+      "name": "packaging",
+      "version": "26.3",
+      "license": "Apache-2.0 OR BSD-2-Clause",
+      "licenseFiles": [
+        "packaging-26.3.dist-info/licenses/LICENSE",
+        "packaging-26.3.dist-info/licenses/LICENSE.APACHE",
+        "packaging-26.3.dist-info/licenses/LICENSE.BSD"
+      ]
+    },
+    {
+      "name": "psycopg",
+      "version": "3.3.6",
+      "license": "LGPL-3.0-only",
+      "licenseFiles": [
+        "psycopg-3.3.6.dist-info/licenses/LICENSE.txt"
+      ]
+    },
+    {
+      "name": "psycopg-binary",
+      "version": "3.3.6",
+      "license": "LGPL-3.0-only",
+      "licenseFiles": [
+        "psycopg_binary-3.3.6.dist-info/licenses/LICENSE.txt"
+      ]
+    },
+    {
+      "name": "psycopg-pool",
+      "version": "3.3.3",
+      "license": "LGPL-3.0-only",
+      "licenseFiles": [
+        "psycopg_pool-3.3.3.dist-info/licenses/LICENSE.txt"
+      ]
+    },
+    {
+      "name": "pydantic",
+      "version": "2.14.1",
+      "license": "MIT",
+      "licenseFiles": [
+        "pydantic-2.14.1.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "pydantic-core",
+      "version": "2.50.1",
+      "license": "MIT",
+      "licenseFiles": [
+        "pydantic_core-2.50.1.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "pyyaml",
+      "version": "6.0.3",
+      "license": "MIT",
+      "licenseFiles": [
+        "pyyaml-6.0.3.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "requests",
+      "version": "2.34.2",
+      "license": "Apache-2.0",
+      "licenseFiles": [
+        "requests-2.34.2.dist-info/licenses/LICENSE",
+        "requests-2.34.2.dist-info/licenses/NOTICE"
+      ]
+    },
+    {
+      "name": "requests-toolbelt",
+      "version": "1.0.0",
+      "license": "Apache 2.0",
+      "licenseFiles": [
+        "requests_toolbelt-1.0.0.dist-info/AUTHORS.rst",
+        "requests_toolbelt-1.0.0.dist-info/LICENSE"
+      ]
+    },
+    {
+      "name": "sniffio",
+      "version": "1.3.1",
+      "license": "MIT OR Apache-2.0",
+      "licenseFiles": [
+        "sniffio-1.3.1.dist-info/LICENSE",
+        "sniffio-1.3.1.dist-info/LICENSE.APACHE2",
+        "sniffio-1.3.1.dist-info/LICENSE.MIT"
+      ]
+    },
+    {
+      "name": "starlette",
+      "version": "1.9.0",
+      "license": "BSD-3-Clause",
+      "licenseFiles": [
+        "starlette-1.9.0.dist-info/licenses/LICENSE.md"
+      ]
+    },
+    {
+      "name": "tenacity",
+      "version": "9.2.1",
+      "license": "Apache-2.0",
+      "licenseFiles": [
+        "tenacity-9.2.1.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "truststore",
+      "version": "0.10.5",
+      "license": "MIT",
+      "licenseFiles": [
+        "truststore-0.10.5.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "typing-extensions",
+      "version": "4.16.0",
+      "license": "PSF-2.0",
+      "licenseFiles": [
+        "typing_extensions-4.16.0.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "typing-inspection",
+      "version": "0.4.4",
+      "license": "MIT",
+      "licenseFiles": [
+        "typing_inspection-0.4.4.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "tzdata",
+      "version": "2026.5",
+      "license": "Apache-2.0",
+      "licenseFiles": [
+        "tzdata-2026.5.dist-info/licenses/LICENSE",
+        "tzdata-2026.5.dist-info/licenses/licenses/LICENSE_APACHE"
+      ]
+    },
+    {
+      "name": "urllib3",
+      "version": "2.8.0",
+      "license": "MIT",
+      "licenseFiles": [
+        "urllib3-2.8.0.dist-info/licenses/LICENSE.txt"
+      ]
+    },
+    {
+      "name": "uuid-utils",
+      "version": "0.18.0",
+      "license": "BSD-3-Clause",
+      "licenseFiles": [
+        "uuid_utils-0.18.0.dist-info/licenses/LICENSE.md"
+      ]
+    },
+    {
+      "name": "uvicorn",
+      "version": "0.54.0",
+      "license": "BSD-3-Clause",
+      "licenseFiles": [
+        "uvicorn-0.54.0.dist-info/licenses/LICENSE.md"
+      ]
+    },
+    {
+      "name": "websockets",
+      "version": "16.1.1",
+      "license": "BSD-3-Clause",
+      "licenseFiles": [
+        "websockets-16.1.1.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "xxhash",
+      "version": "4.0.2",
+      "license": "BSD-2-Clause",
+      "licenseFiles": [
+        "xxhash-4.0.2.dist-info/licenses/LICENSE"
+      ]
+    },
+    {
+      "name": "zstandard",
+      "version": "0.25.0",
+      "license": "BSD-3-Clause",
+      "licenseFiles": [
+        "zstandard-0.25.0.dist-info/licenses/LICENSE"
+      ]
+    }
+  ],
+  "missingEvidence": []
+}

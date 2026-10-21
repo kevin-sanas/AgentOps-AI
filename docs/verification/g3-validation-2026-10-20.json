@@ -1,0 +1,131 @@
+{
+  "stage": "G3",
+  "verifiedAt": "2026-10-20T20:43:40+08:00",
+  "javaCommand": "scripts/backend.ps1 verify",
+  "javaTests": 98.0,
+  "suites": [
+    {
+      "name": "dev.agentops.agent.AgentClientTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "dev.agentops.AgentApiTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "dev.agentops.AgentIntegrationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "dev.agentops.AgentOutboxTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "dev.agentops.BootstrapTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "dev.agentops.FoundationTest",
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "dev.agentops.monitoring.SafeHttpProbeTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "dev.agentops.monitoring.TlsProbeTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "dev.agentops.MonitoringApiTest",
+      "tests": 23,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "dev.agentops.targets.PrivateNetworkPolicyTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "dev.agentops.TargetUrlPolicyTest",
+      "tests": 26,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "pythonUnit": {
+    "passed": 10,
+    "command": "scripts/agent.ps1 Test"
+  },
+  "pythonPostgres": {
+    "includedInJavaIntegrationTest": true,
+    "passed": 3,
+    "launcher": "AgentIntegrationTest"
+  },
+  "frontend": {
+    "command": "npm run build",
+    "typecheck": "PASS",
+    "build": "PASS"
+  },
+  "dependencies": {
+    "licenseEvidenceMissing": 0,
+    "osvKnownVersionMatches": 0,
+    "runtimeDistributions": 49
+  },
+  "browser": {
+    "mockRun": "COMPLETED",
+    "readOnlyRunbookMobileWidth": 382,
+    "citations": 5,
+    "consoleErrors": 0,
+    "reportMobileWidth": 390,
+    "reportMobileDocumentWidth": 390,
+    "readOnlyRunbookDocumentWidth": 382,
+    "adminRetry": "COMPLETED/DONE",
+    "screenshots": "g3-ui/"
+  },
+  "review": {
+    "minorFixed": 1,
+    "minor": 1,
+    "critical": 0,
+    "important": 4,
+    "secondReview": "NOT RUN; regression verification after one review pass",
+    "importantFixed": 4
+  },
+  "notRun": [
+    "remote Linux CI",
+    "container build/up",
+    "production database migration",
+    "real model and 30-case human evaluation",
+    "performance benchmarks",
+    "Kuma and backup restore drill"
+  ]
+}
