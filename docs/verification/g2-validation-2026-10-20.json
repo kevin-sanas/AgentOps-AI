@@ -68,5 +68,12 @@
     "G3-G5 Agent/Kuma/full Compose"
   ],
   "userService": "IDEA process and existing database not modified",
-  "migration": "V3 validated only in disposable databases; applying to user database requires their upgrade action"
+  "migration": "V3 validated only in disposable databases; applying to user database requires their upgrade action",
+  "artifactRetention": {
+    "updatedAt": "2026-10-24",
+    "removedScreenshotCount": 9,
+    "retainedScreenshots": [],
+    "restoreFromGitCommit": "cf7c468",
+    "note": "Superseded UI screenshots were pruned. Historical test results and formal test reports are unchanged; retained screenshots refer only to their original verification date."
+  }
 }

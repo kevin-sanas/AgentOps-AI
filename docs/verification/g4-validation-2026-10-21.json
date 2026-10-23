@@ -111,16 +111,7 @@
     "mobileViewportWidth": 382,
     "consoleWarnings": 0,
     "consoleErrors": 0,
-    "screenshots": [
-      "g4-ui/approved-mobile.jpg",
-      "g4-ui/manual-result-desktop.jpg",
-      "g4-ui/model-outcome-unknown.jpg",
-      "g4-ui/model-recovery-mobile.jpg",
-      "g4-ui/rejected-desktop.jpg",
-      "g4-ui/rejected-viewport.jpg",
-      "g4-ui/waiting-desktop.jpg",
-      "g4-ui/waiting-mobile.jpg"
-    ]
+    "screenshots": []
   },
   "review": {
     "completedIndependentReviews": 1,
@@ -350,5 +341,12 @@
       "path": "frontend/src/pages/UsersPage.vue",
       "sha256": "ab8bb3d3623699d8572f821d15b5b2f776149055b9944bcb06a2395d83827b29"
     }
-  ]
+  ],
+  "artifactRetention": {
+    "updatedAt": "2026-10-24",
+    "removedScreenshotCount": 8,
+    "retainedScreenshots": [],
+    "restoreFromGitCommit": "cf7c468",
+    "note": "Superseded UI screenshots were pruned. Historical test results and formal test reports are unchanged; retained screenshots refer only to their original verification date."
+  }
 }
