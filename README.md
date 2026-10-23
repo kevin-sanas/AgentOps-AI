@@ -6,6 +6,8 @@ G6新增一条核心自动验收命令：` .\scripts\acceptance.ps1`。使用独
 
 **自己操作验收：** 在IDEA终端运行 ` .\scripts\demo.ps1`，按终端显示的网址和临时账号登录。脚本自动准备独立数据库、Java/Python、前端、服务目标和手册；输入 `down` / `up` 控制合成故障及恢复，输入 `quit` 结束。界面明确标注演示样本和mock，最长两小时，退出后清除临时数据库及凭据。无需Docker、hosts修改或填写新密钥；已有开发依赖要求和完整验收步骤见专属指南第13节。自动检查此入口用 ` .\scripts\demo.ps1 -Check`。
 
+Windows PowerShell 5.1与PowerShell 7均可使用；中文验收入口保持UTF-8 BOM，JSON按UTF-8读取。兼容回归在Windows上调用自带5.1解析两个入口，在Linux上明确跳过该专属检查。
+
 **在你的电脑上启动项目，请直接看 [IDEA 启动与验收指南](IDEA启动与验收指南.md)。** 该指南随启动配置和项目验收流程同步维护。
 
 ## 当前进度与方向

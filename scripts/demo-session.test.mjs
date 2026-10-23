@@ -3,8 +3,15 @@ import assert from 'node:assert/strict'
 import { mkdir, mkdtemp, writeFile, readFile, rm } from 'node:fs/promises'
 import { dirname, join, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { spawnSync } from 'node:child_process'
 import { sessionDirectory, localOrigin, sendCommand, readSession } from './demo-session.mjs'
 const root=dirname(dirname(fileURLToPath(import.meta.url))),base=join(root,'.cache/demo')
+test('Windows entry points parse in built-in Windows PowerShell 5.1',{skip:process.platform!=='win32'},()=>{
+ const executable=join(process.env.SystemRoot,'System32/WindowsPowerShell/v1.0/powershell.exe')
+ const command="$ErrorActionPreference='Stop'; foreach($file in @('scripts/demo.ps1','scripts/acceptance.ps1')){$tokens=$null;$errors=$null;[Management.Automation.Language.Parser]::ParseFile((Join-Path (Get-Location) $file),[ref]$tokens,[ref]$errors) | Out-Null;if($errors.Count){[Console]::Error.WriteLine($file+': '+$errors.Count+' parser errors');exit 1}}"
+ const result=spawnSync(executable,['-NoProfile','-NonInteractive','-Command',command],{cwd:root,encoding:'utf8',windowsHide:true,timeout:15000})
+ assert.equal(result.status,0,result.stderr||result.error?.message)
+})
 async function fixture(action){await mkdir(base,{recursive:true});const dir=await mkdtemp(join(base,'protocol-test-'));try{await action(dir)}finally{assert.ok(resolve(dir).startsWith(resolve(base)+sep));await rm(dir,{recursive:true,force:true})}}
 test('session paths stay in the project demo directory and origins are loopback only',()=>{
  assert.throws(()=>sessionDirectory(root));assert.throws(()=>sessionDirectory(join(root,'..','other-project')))

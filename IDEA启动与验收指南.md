@@ -370,6 +370,10 @@ Set-Location 'E:\javaProjects\AgentOps AI'
 
 这次验收直接使用此入口。无需先启动IDEA里的Java、日常Python、数据库、前端或Docker；已经在运行的日常服务可以保留。演示使用随机本机端口和独立临时数据库，不会连接你的业务库。初次开发依赖仍需按前文安装：Java21、Maven3.9、项目Python虚拟环境的开发依赖、Node22.12+和前端锁定依赖。首次缺少Maven缓存时仍需要下载依赖。
 
+终端可使用Windows自带的 **Windows PowerShell 5.1** 或 **PowerShell 7**。2026-10-23修正：含中文的 `demo.ps1`、`acceptance.ps1` 使用UTF-8 BOM，JSON明确按UTF-8读取，避免5.1把中文误读后报“必须在 / 运算符后面提供一个值表达式”等解析错误。无需修改系统区域、执行策略或终端代码页；以后编辑这两个脚本时保留UTF-8 BOM。
+
+同次修正也处理了5.1重定向日志时把原生命令stderr包装成异常的差异：Maven和前端的普通警告保留在日志中，验收成功与否按命令退出码判断；真实非零退出仍返回失败。
+
 在IDEA下方的“终端”（PowerShell）执行：
 
 ```powershell

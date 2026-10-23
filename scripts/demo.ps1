@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param([switch]$Check,[switch]$NoInput)
 $ErrorActionPreference='Stop'
 $taskRoot=Split-Path -Parent $PSScriptRoot
@@ -41,11 +41,11 @@ try{
     $taskClasspath=(Join-Path $taskRoot 'backend/target/test-classes')+';'+(Join-Path $taskRoot 'backend/target/classes')+';'+[IO.File]::ReadAllText($taskClasspathFile).Trim()
     $taskJavaProcess=Start-DemoProcess $taskJava @("-Dagentops.demo.directory=$taskRun","-Dagentops.demo.parent=$PID",'-cp',$taskClasspath,'dev.agentops.DemoRuntime') (Join-Path $taskRoot 'backend') 'runtime'
     Wait-DemoFile 'ready.json' $taskJavaProcess
-    $taskManifest=Get-Content -Raw -LiteralPath (Join-Path $taskRun 'ready.json') | ConvertFrom-Json
+    $taskManifest=Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $taskRun 'ready.json') | ConvertFrom-Json
     $taskListener=[Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback,0);$taskListener.Start();$taskFrontendPort=$taskListener.LocalEndpoint.Port;$taskListener.Stop()
     $taskViteProcess=Start-DemoProcess $taskNode @((Join-Path $PSScriptRoot 'demo-vite.mjs'),$taskRun,[string]$taskFrontendPort,[string]$PID) $taskRoot 'frontend'
     Wait-DemoFile 'frontend.json' $taskViteProcess
-    $taskFrontend=Get-Content -Raw -LiteralPath (Join-Path $taskRun 'frontend.json') | ConvertFrom-Json
+    $taskFrontend=Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $taskRun 'frontend.json') | ConvertFrom-Json
     Write-Host "演示工作台：$($taskFrontend.origin)/login"
     Write-Host "DEMO_SESSION=$taskRun"
     if($Check){

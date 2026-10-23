@@ -19,7 +19,13 @@ $taskPreviousJava = $env:JAVA_HOME
 try {
     $env:JAVA_HOME = $taskJavaHome
     New-Item -ItemType Directory -Path (Join-Path $taskRoot 'backend\target\tmp') -Force | Out-Null
-    & $taskMaven '-B' '-ntp' "-Dmaven.repo.local=$taskRoot\.cache\m2" '-f' (Join-Path $taskRoot 'backend\pom.xml') @MavenArgs
+    # Windows PowerShell 5.1 wraps redirected native stderr as ErrorRecord.
+    # Keep warnings in the log, and use Maven's exit code to determine failure.
+    $taskPreviousErrorAction=$ErrorActionPreference
+    try {
+        $ErrorActionPreference='Continue'
+        & $taskMaven '-B' '-ntp' "-Dmaven.repo.local=$taskRoot\.cache\m2" '-f' (Join-Path $taskRoot 'backend\pom.xml') @MavenArgs 2>&1 | ForEach-Object { $_.ToString() }
+    } finally { $ErrorActionPreference=$taskPreviousErrorAction }
     if ($LASTEXITCODE -ne 0) { throw "Maven failed (exit $LASTEXITCODE)." }
 } finally {
     $env:JAVA_HOME = $taskPreviousJava
