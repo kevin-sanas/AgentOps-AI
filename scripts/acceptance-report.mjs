@@ -2,7 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const stageNames = { backend: 'Java / PostgreSQL 与核心旅程', python: 'Python 图与模型契约', 'frontend-tests': '前端状态与导航回归', 'frontend-build': '前端类型检查与生产构建', 'demo-target': '演示目标契约', 'report-tests': '验收报告回归' }
+const stageNames = { backend: 'Java / PostgreSQL 与核心旅程', python: 'Python 图与模型契约', 'frontend-tests': '前端状态与导航回归', 'frontend-build': '前端类型检查与生产构建', 'demo-target': '演示目标与会话契约', 'report-tests': '验收报告回归' }
 const stepNames = {
   bootstrap: '隔离环境与三个角色登录', 'check-enabled': '创建并启用检查', 'threshold-progress': '阈值前异常进度', 'incident-open': '达到阈值只建一个事故',
   'role-boundaries': '管理员与观察员操作边界', 'incident-investigation': '确认事故并进入排查', 'published-runbook': '发布诊断依据',
