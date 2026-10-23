@@ -51,6 +51,7 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: node --test ../scripts/demo-target.test.mjs
+      - run: node --test ../scripts/acceptance-report.test.mjs
       - run: npm audit --audit-level=low
       - name: Save frontend build
         uses: actions/upload-artifact@v4

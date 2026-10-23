@@ -1,0 +1,12 @@
+✔ the same health URL returns 200, then 503, then 200 without configuration changes (48.8603ms)
+✔ HEAD reports the current status with no response body (11.5145ms)
+✔ HTTP clients cannot change state or access other resources (22.1414ms)
+✔ CLI binding is restricted to a private IPv4 address owned by this machine (0.3499ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 214.6021
