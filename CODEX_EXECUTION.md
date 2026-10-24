@@ -486,3 +486,7 @@ Python110项（新增15项）及Node目标/会话/恢复12项通过；实际CLI�
 用户要求继续开发，之后验收；从21ee229新建codex/deepseek-evaluation-pilot。不把继续开发视为场景已人审或付费预算已批准。新增只接受原始合成数据的离线plan与一次性run，默认5场景、最多5次、每次预留US$0.01/总额US$0.05；数据/场景/预算hash绑定，隐藏Key只在显式交互运行读取，复用直连官方适配、原请求和输出限制。原子started防跨进程重复，失败/usage未知/预算预留不足停止，没有自动付费重试。
 
 新增离线报告审阅包和CSV导入，自动绑定报告hash、保留未变人评、清空变化报告的旧评分，不自动批准标注或填写分值；被拒报告原文不复制，Markdown/HTML按文本展示，CSV公式前缀转义且保留原审阅人文字。完整Python137项通过（新增27项），包括5次实际HTTP适配器MockTransport、并发/故障/预算与审阅包契约。实际CLI完成3条明确模拟报告的导出/导入/评分，0个人工复核维持INCOMPLETE。生成五场景计划；用户已另批准本批最多5次、总预算US$0.05、失败即停且无自动重试，当前未启动真实请求，等待用户在本机隐藏输入Key运行。独立只读评审、后续实际模型请求按正式记录更新；不改日常服务、库、迁移、mock入口或主分支。
+
+用户随后回复已执行。核对实际started/receipts/responses及plan/dataset/inputhash：2次请求，第1条http-503本地接受，第2条request-timeout触发AGENT_RISK_UNDERESTIMATED，批次按约STOPPED，flapping/no-evidence/injected-instructions未调用。两次均有usage，合计4561 tokens、峰时未命中估算US$0.0029568（非实际账单）；无补跑、重试、护栏修改或系统操作。拒绝原文按设计未保存，只能确定匹配了现有风险操作且risk非HIGH，不能确定具体语句或是否保守匹配。
+
+重新离线校验1份实际接受报告，并生成review-package和score，标注/人评0、报告覆盖1，INCOMPLETE/退出2；审阅包附说明区分导入NOT_RUN与实际已请求但被拒。安全回执、接受报告、两个尝试输入快照和限制归档到verification/deepseek-evaluation-pilot-2026-10-24目录，原离线夹具保持独立。指南14.6、README、模型/测试文档同步真实部分结果；本次未修改运行时代码或重复业务测试，不声称5场景或30场景全通过。

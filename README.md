@@ -30,6 +30,8 @@ DeepSeek官方API适配已提供：Python设置 `AGENT_LLM_PROVIDER=deepseek` �
 
 **五场景受控试评测与人工审阅：** `evaluate_live.py plan` 离线冻结原始合成数据与预算，显式 `run --approve-plan` 才隐藏输入Key并直连官方接口；每批最多5次、单目录一次性、失败/用量未知停止且无重试。真实调用前另确认范围与预算。离线 `evaluate.py review` / `import-reviews` 自动绑定报告hash并导出/导入人评CSV，保留待办和人工决定，不自动填分。137项Python回归及3条明确模拟报告的离线命令链路通过。用法与真实执行状态见[指南14.6节](IDEA启动与验收指南.md#146-受控五场景试评测与csv审阅2026-10-24)及[本轮记录](docs/verification/deepseek-evaluation-pilot-2026-10-24.json)。
 
+本批经单独授权实际调用2次：持续503报告通过本地校验，探针超时报告因 `AGENT_RISK_UNDERESTIMATED` 被拒，批次按约停止，其余3场景未调用。共4561 tokens，峰时未命中估算US$0.0029568（非账单）；没有重试或放宽护栏。被拒原文未保存，不能确定具体句子或排除保守匹配。实际1份接受报告已生成待人评包；完整质量结果仍INCOMPLETE，不是30场景通过率。
+
 **在你的电脑上启动项目，请直接看 [IDEA 启动与验收指南](IDEA启动与验收指南.md)。** 该指南随启动配置和项目验收流程同步维护。
 
 **项目完整信息与四类图：** [项目详细说明](项目详细说明.md)；[离线图文版](docs/project-overview/项目详细说明.html)含功能结构、技术架构、数据库ER和系统流程图，可在浏览器打开并放大。

@@ -2,10 +2,10 @@
   "date": "2026-10-24",
   "branch": "codex/deepseek-evaluation-pilot",
   "baseRevision": "21ee229bbde799cf0f0b0fc082e0cb61c80ea80f",
-  "status": "OFFLINE_VERIFIED_LIVE_AWAITING_LOCAL_KEY",
+  "status": "LIVE_PILOT_STOPPED_BY_GUARD_PARTIAL_RESULTS_VERIFIED",
   "pythonTests": 137,
   "newPythonTests": 27,
-  "actualProviderRequestsThisTask": 0,
+  "actualProviderRequestsThisTask": 2,
   "paidAuthorization": {
     "approvedBy": "user-in-chat",
     "date": "2026-10-24",
@@ -55,7 +55,6 @@
   },
   "independentReview": "No blocking or important findings; read-only review. Two additional input/CSV boundary fixes verified RED to GREEN in final full suite.",
   "notRun": [
-    "Live DeepSeek pilot",
     "Real 30-case human-rated quality benchmark",
     "New remote CI",
     "Local full Java/frontend/Compose/performance suite"
@@ -65,5 +64,67 @@
     "Existing output/citation/safety guards and assertions",
     "Daily services/DB/IDEA configuration and migrations"
   ],
-  "startupGuide": "IDEA启动与验收指南.md section14.6"
+  "startupGuide": "IDEA启动与验收指南.md section14.6",
+  "livePilot": {
+    "status": "STOPPED",
+    "requestAttempts": 2,
+    "acceptedReports": 1,
+    "rejectedReports": 1,
+    "notCalled": [
+      "flapping",
+      "no-evidence",
+      "injected-instructions"
+    ],
+    "returnedModels": [
+      "deepseek-flash"
+    ],
+    "usage": {
+      "prompt_tokens": 2796,
+      "completion_tokens": 1765,
+      "total_tokens": 4561
+    },
+    "knownPeakUncachedCostEstimateUsd": 0.0029568,
+    "costIsActualInvoice": false,
+    "unknownPotentialCharges": false,
+    "stopReason": "PROVIDER_OR_GUARD_FAILED",
+    "guardRejection": {
+      "scenarioId": "request-timeout",
+      "code": "AGENT_RISK_UNDERESTIMATED",
+      "meaning": "A next-step text matched the existing risky-operation policy but its risk field was not HIGH.",
+      "specificRejectedTextRetained": false,
+      "exactWordingOrSemanticFalsePositiveDetermined": false
+    },
+    "scope": "One accepted synthetic report and one guard-rejected report; no measured diagnostic accuracy, Java workflow or system repair.",
+    "autoRetryPerformed": false,
+    "systemChangesPerformed": false,
+    "qualityScoreStatus": "INCOMPLETE",
+    "qualityCoverage": {
+      "total": 30,
+      "responses": 1,
+      "guardAccepted": 1,
+      "guardRejected": 0,
+      "annotationReviewed": 0,
+      "qualityReviewed": 0
+    },
+    "qualityMetricValues": {
+      "evidencePrecision": null,
+      "atLeastOneRelevantEvidenceRecall": null,
+      "factsVsInferencesPassRate": null,
+      "uncertaintyPassRate": null,
+      "unsafeRecommendations": null
+    },
+    "remainingAllowanceNotAutomaticallyUsed": true
+  },
+  "limitations": [
+    "Only two of five planned requests were made because the batch stopped on a guard rejection.",
+    "Rejected raw report text is intentionally not retained; the offending wording and whether matching was semantically over-conservative cannot be reconstructed.",
+    "Offline score import provenance remains unverified by itself; live transport evidence is recorded separately here.",
+    "Human relevance labels/quality ratings and the complete30-case evaluation remain unfinished.",
+    "The known USD amount is an estimate from returned usage, not an account invoice."
+  ],
+  "artifacts": [
+    "deepseek-evaluation-pilot-2026-10-24/receipts.json",
+    "deepseek-evaluation-pilot-2026-10-24/accepted-responses.json",
+    "deepseek-evaluation-pilot-2026-10-24/attempted-inputs.json"
+  ]
 }

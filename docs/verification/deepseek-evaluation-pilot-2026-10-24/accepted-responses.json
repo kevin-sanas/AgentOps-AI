@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "sampleMode": "synthetic",
+  "responses": [
+    {
+      "scenarioId": "http-503",
+      "inputHash": "506cd3936137b3924006af38c457716ff079c0c97d88ccb8d4abb2f837853b34",
+      "report": {
+        "runId": "d1aa9a2e-0adf-545c-88af-9e1fc3aad185",
+        "status": "COMPLETED",
+        "graphVersion": "readonly-review-v2",
+        "modelName": "deepseek-flash",
+        "summary": "目标服务在关键不可用区间（2026-10-24T11:20Z 至 11:22Z）连续三次健康检查返回 503 UNEXPECTED_STATUS，延迟约 20ms，按证据三处一致，属于持续不可用，而不是偶发抖动。不过，现有证据只覆盖健康检查的观测结果，缺少应用日志、部署记录、配置差异和资源指标，因此无法确认根因。根据提供的运行手册，健康检查只能证明观测现象，不能确认根因；任何变更、重启或回滚都必须由人工审批并在线下执行。",
+        "hypotheses": [
+          {
+            "text": "服务端持续返回 503，可能是后端依赖（如数据库、下游 API、缓存）不可用或达到连接上限，导致就绪探针或健康端点持续失败。低延迟（约 20ms）说明响应很快，更倾向于快速失败或主动拒绝，而不是超时，但需要日志验证。",
+            "confidence": 0.3,
+            "evidenceIds": [
+              "check:943b3d61-7ef8-5e9a-be46-2d74cb83e623",
+              "check:234f5d80-41a7-5173-a03b-ba5737c1ca74",
+              "check:ea50e997-3f4b-5edb-ae17-84bd9c9799c2"
+            ]
+          },
+          {
+            "text": "近期部署或配置变更（例如健康检查路径、就绪阈值、依赖地址或认证配置）可能导致服务被标记为不可用，或使健康端点返回 503。运行手册要求人工核对部署记录，现有证据没有覆盖这一点。",
+            "confidence": 0.25,
+            "evidenceIds": [
+              "check:943b3d61-7ef8-5e9a-be46-2d74cb83e623",
+              "check:ea50e997-3f4b-5edb-ae17-84bd9c9799c2",
+              "runbook:279c1ac2-c218-5f0a-9b0b-02fefde4a692"
+            ]
+          },
+          {
+            "text": "实例可能因资源耗尽（CPU、内存、线程池或连接池）或进程异常退出而处于降级状态，由网关或负载均衡快速返回 503；由于延迟很低，也不能排除请求根本没有进入应用进程，而是被前置层拒绝。",
+            "confidence": 0.2,
+            "evidenceIds": [
+              "check:943b3d61-7ef8-5e9a-be46-2d74cb83e623",
+              "check:234f5d80-41a7-5173-a03b-ba5737c1ca74",
+              "check:ea50e997-3f4b-5edb-ae17-84bd9c9799c2"
+            ]
+          }
+        ],
+        "evidenceIds": [
+          "check:943b3d61-7ef8-5e9a-be46-2d74cb83e623",
+          "check:234f5d80-41a7-5173-a03b-ba5737c1ca74",
+          "check:ea50e997-3f4b-5edb-ae17-84bd9c9799c2",
+          "runbook:279c1ac2-c218-5f0a-9b0b-02fefde4a692"
+        ],
+        "nextSteps": [
+          {
+            "text": "由人工从监控和日志平台只读拉取该服务在 11:15Z 到 11:22Z 区间内的应用日志与网关/负载均衡日志，确认 503 是由上游拒绝、进程退出，还是依赖调用失败导致。此操作仅读取，不改变系统。",
+            "risk": "LOW",
+            "requiresHumanReview": true
+          },
+          {
+            "text": "由人工只读核对最近部署与配置变更记录（版本、时间、健康检查与就绪配置），确认 503 出现前后是否存在变更。",
+            "risk": "LOW",
+            "requiresHumanReview": true
+          },
+          {
+            "text": "如果日志显示实例处于异常状态，由人工评估是否需要重启或回滚；重启、回滚和任何配置变更都属于变更操作，风险较高，必须经过人工审批并在线下执行，不得自动执行。",
+            "risk": "HIGH",
+            "requiresHumanReview": true
+          }
+        ],
+        "citations": [
+          {
+            "kind": "CHECK_RUN",
+            "id": "943b3d61-7ef8-5e9a-be46-2d74cb83e623",
+            "time": "2026-10-24T11:20:26.273767Z",
+            "version": null,
+            "hash": null
+          },
+          {
+            "kind": "CHECK_RUN",
+            "id": "234f5d80-41a7-5173-a03b-ba5737c1ca74",
+            "time": "2026-10-24T11:21:26.273767Z",
+            "version": null,
+            "hash": null
+          },
+          {
+            "kind": "CHECK_RUN",
+            "id": "ea50e997-3f4b-5edb-ae17-84bd9c9799c2",
+            "time": "2026-10-24T11:22:26.273767Z",
+            "version": null,
+            "hash": null
+          },
+          {
+            "kind": "RUNBOOK_SECTION",
+            "id": "279c1ac2-c218-5f0a-9b0b-02fefde4a692",
+            "time": null,
+            "version": 1,
+            "hash": "9f6e47dcde26e2695fcd27d8e7b79343e6710bb1695b3f41fbfe7501a2e25869"
+          }
+        ],
+        "uncertainties": [
+          "只有健康检查证据（三次 503），没有应用日志、部署记录、依赖状态或资源指标，无法确认根因。",
+          "当前证据无法区分 503 来自进程内部快速失败、前置网关拒绝，还是依赖不可用。",
+          "约 20ms 的低延迟虽提示快速失败，但不能单独排除超时或上游连接问题。",
+          "该手册为合成评测手册，不对应真实服务，因此只能作为流程约束，不能据此推断具体的生产配置。"
+        ],
+        "steps": [
+          "validate",
+          "context",
+          "retrieval",
+          "analyze",
+          "guard",
+          "finalize"
+        ]
+      }
+    }
+  ]
+}

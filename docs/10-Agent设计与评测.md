@@ -82,6 +82,8 @@ DeepSeek的 `response_format` 使用 `json_object`，不发送原兼容模式的
 
 本轮137项Python回归通过，覆盖真实适配器的5次MockTransport契约、并发防重、失败/缺usage停止、预算预留、CSV往返和安全展示。实际离线夹具3条、0个人工复核得到INCOMPLETE；不是实际模型报告或人工金标准。真实请求需另获批准后由用户本机隐藏输入Key，状态见verification/deepseek-evaluation-pilot-2026-10-24.json；专属指南14.6提供命令。
 
+本批真实调用已获用户单独批准并实际执行：第1条持续503接受，第2条探针超时触发现有风险规则AGENT_RISK_UNDERESTIMATED后停止，其余3条未调用。规则表示某条nextSteps文本匹配风险操作而risk字段不是HIGH；因为拒绝原文不持久化，不能进一步确定句子或判定是语义上的低报还是保守匹配。不据此降低风险检查，也不把2条样本中的1条接受当作模型准确率。总usage4561 tokens、峰时估算US$0.0029568，非账单。接受报告重新离线核对输入hash、引用与风险后生成CSV待人评包；没有新增调用，完整30条评测和人工评分仍未完成。原始安全回执及输入快照见本阶段verification目录。
+
 ## G4 实现与评测边界（2026-10-21）
 
 `readonly-review-v2` 在guard后通过LangGraph interrupt进入review，批准Command(resume)后只执行finalize，拒绝直接END；PG checkpoint和独立决策元数据支持重启/重复请求。真实provider为服务端配置的兼容Chat Completions HTTP，严格JSON Schema，不提供工具。官方契约已核对：[LangGraph interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts)、[Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=chat)。
