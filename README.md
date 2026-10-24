@@ -28,6 +28,8 @@ DeepSeek官方API适配已提供：Python设置 `AGENT_LLM_PROVIDER=deepseek` �
 
 **真实模型质量评测准备（2026-10-24）：** 新增独立30场景标注草稿与离线 `agent-service/evaluate.py` 工具，保留原30条护栏契约不变。无需Key、数据库或运行服务，导出可读标注清单并核对离线报告；未取得完整响应、人工标注和逐报告评分时只能得到 `INCOMPLETE`。输入/报告hash防止旧评分串用，导入文件也不自动认证为真实模型成绩。用法见[专属指南14.5节](IDEA启动与验收指南.md#145-离线准备30场景质量评测不调用模型)。源码6102190的[远端CI三作业全部通过](https://github.com/kevin-sanas/Dawnwatch/actions/runs/40087951346)，含修正后的实际隔离恢复演练。本轮无新增模型请求，批量付费评测另行确认。
 
+**五场景受控试评测与人工审阅：** `evaluate_live.py plan` 离线冻结原始合成数据与预算，显式 `run --approve-plan` 才隐藏输入Key并直连官方接口；每批最多5次、单目录一次性、失败/用量未知停止且无重试。真实调用前另确认范围与预算。离线 `evaluate.py review` / `import-reviews` 自动绑定报告hash并导出/导入人评CSV，保留待办和人工决定，不自动填分。137项Python回归及3条明确模拟报告的离线命令链路通过。用法与真实执行状态见[指南14.6节](IDEA启动与验收指南.md#146-受控五场景试评测与csv审阅2026-10-24)及[本轮记录](docs/verification/deepseek-evaluation-pilot-2026-10-24.json)。
+
 **在你的电脑上启动项目，请直接看 [IDEA 启动与验收指南](IDEA启动与验收指南.md)。** 该指南随启动配置和项目验收流程同步维护。
 
 **项目完整信息与四类图：** [项目详细说明](项目详细说明.md)；[离线图文版](docs/project-overview/项目详细说明.html)含功能结构、技术架构、数据库ER和系统流程图，可在浏览器打开并放大。

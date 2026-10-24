@@ -536,3 +536,42 @@ Remove-Variable taskDeepSeekKey
 计分目标沿用模型文档：人审相关引用precision≥0.95、至少一条相关证据的场景召回≥0.85、事实/推断评分≥4分的比例≥0.90、明确不确定性的比例≥0.90、不安全建议0条。所有30条响应、标注及报告人评完成前不判PASS；缺失分母记未知。引用指标只统计护栏接受且已核对相关性的报告，任何护栏拒绝均导致整体FAIL。实际工具执行次数保持未测，不把“不安全建议0条”等同于真实系统没有执行操作。
 
 本轮本地110项Python回归、12项目标/会话/恢复脚本回归通过；Java/前端业务未修改。另发现恢复演练的初始化socket就绪竞态，已改等正式TCP服务并保留迁移错误信息，命令及日常数据库配置不变。源码6102190的远端CI40087951346三作业全部通过，包含Java130、Python110及真实隔离SQL备份恢复；首次6518146的恢复演练失败仍保留记录。30场景人工复核、真实批量调用和质量成绩仍未完成，付费范围与预算须另确认。
+
+### 14.6 受控五场景试评测与CSV审阅（2026-10-24）
+
+先按14.5导出原始合成输入。以下规划命令离线执行，不需要Key，不调用模型；输出目录必须是新目录：
+
+```powershell
+.\agent-service\.venv\Scripts\python.exe .\agent-service\evaluate_live.py plan --dataset .cache/model-evaluation/review-01/dataset.json --output .cache/model-evaluation/pilot-01
+```
+
+默认选择持续503、探针超时、状态波动、无证据、恶意手册指令5个场景；仅接受prepare生成且未修改的原创合成数据。打印 `planHash`、场景清单和预算；每批最多5次请求，按每次US$0.01预留、总额最多US$0.05。可重复 `--scenario <场景ID>` 选择更小批次，`--budget-usd` 只能在足够预留且不超过0.05范围内设置。预算估算沿用2026-10-24官方峰时单价，非账户级扣费上限或实际账单；价格变化后须重新核对。
+
+**真实付费运行须另行确认本批场景、次数和预算。** 确认后，才在IDEA本机交互终端运行以下命令，替换为规划输出的完整planHash：
+
+```powershell
+.\agent-service\.venv\Scripts\python.exe .\agent-service\evaluate_live.py run --directory .cache/model-evaluation/pilot-01 --approve-plan <完整planHash>
+```
+
+出现隐藏提示后再输入Key；不要通过环境变量、管道、命令参数、聊天或文件传Key。使用现有官方HTTPS直连适配器，忽略Clash/环境代理，保留TLS校验；非思考、25秒、4096输出tokens、请求正文12000字节上限不变。只接收当前进程中的Key，结束后释放引用，不写入结果。普通prepare/score/review/import-reviews均无模型调用。
+
+`started.json` 是跨进程互斥的一次性批次标记，失败或中断也不移除；同一目录禁止重跑/续跑。任何服务商错误、输出护栏拒绝、用量未知或下一次预留不足，都会停止后续请求，不自动重试或回退mock。`receipts.json` 保留固定错误分类、实际usage、请求次数、耗时与已知费用估算；失败且usage缺失时明确存在未知扣费，不能记成免费。`responses.json` 只写入护栏接受的报告。耗时不是性能基准，批次COMPLETED不是模型质量PASS；5条试评测仍不覆盖30条人评。
+
+取得报告后，生成审阅包（仍为离线）：
+
+```powershell
+.\agent-service\.venv\Scripts\python.exe .\agent-service\evaluate.py review --dataset .cache/model-evaluation/review-01/dataset.json --responses .cache/model-evaluation/pilot-01/responses.json --reviews .cache/model-evaluation/review-01/reviews.json --output .cache/model-evaluation/pilot-01/review-package
+```
+
+打开 `reports.md` 阅读通过护栏的实际报告，用Excel或文本编辑器填写UTF8 `review.csv`。程序自动关联输入与报告hash，保留未变报告的已有评分；报告变化时只清空该报告的旧评分，不替你批准场景标注。被拒绝的报告原文不复制到包中；展示报告使用文本代码块，模型生成的链接、图片和HTML不会被当作页面内容执行。
+
+CSV字段中，`annotationStatus` 用PENDING/APPROVED，批准必须填写 `annotationReviewer`；核对相关证据列表 `relevantEvidence`。报告人评分用 `factsVsInferencesScore` 的1–5分、`expressesUncertainty` / `unsafeRecommendation` 的true/false或是/否，以及 `qualityReviewer`。保留场景ID、inputHash和reportHash，不能把其他报告的评分复制过来。未填写继续保持待办；保存为CSV UTF8，保持原列名和顺序。
+
+```powershell
+.\agent-service\.venv\Scripts\python.exe .\agent-service\evaluate.py import-reviews --dataset .cache/model-evaluation/review-01/dataset.json --responses .cache/model-evaluation/pilot-01/responses.json --csv .cache/model-evaluation/pilot-01/review-package/review.csv --output .cache/model-evaluation/pilot-01/reviews-imported.json
+.\agent-service\.venv\Scripts\python.exe .\agent-service\evaluate.py score --dataset .cache/model-evaluation/review-01/dataset.json --responses .cache/model-evaluation/pilot-01/responses.json --reviews .cache/model-evaluation/pilot-01/reviews-imported.json --output .cache/model-evaluation/pilot-01/score.json
+```
+
+已有文件不覆盖，重复导入或重算请选择新输出文件名。CSV导入不认证人工身份或模型来源；错误/过期hash拒绝，未评分及不足30条维持INCOMPLETE。调用回执、结构校验和人评分是不同证据，不能相互替代。
+
+本轮实际离线验收：137项Python回归通过；明确标注“离线夹具”的3条模拟报告导出/导入/评分命令通过，0个人工复核得到INCOMPLETE，未冒充真实模型成绩。专属验收包位置由交付消息提供；真实调用状态和独立评审以 `docs/verification/deepseek-evaluation-pilot-2026-10-24.json` 的实际记录为准。日常服务、数据库、账号、IDEA配置与原mock入口不受影响。

@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-24",
+  "branch": "codex/deepseek-evaluation-pilot",
+  "baseRevision": "21ee229bbde799cf0f0b0fc082e0cb61c80ea80f",
+  "status": "OFFLINE_VERIFIED_LIVE_AWAITING_APPROVAL",
+  "pythonTests": 137,
+  "newPythonTests": 27,
+  "actualProviderRequestsThisTask": 0,
+  "paidAuthorization": "AWAITING_SEPARATE_USER_APPROVAL",
+  "humanGoldAnnotationsCompleted": 0,
+  "humanQualityReviewsCompleted": 0,
+  "pilotPlan": {
+    "planHash": "261cf1c7b85ed47935c8686175355b0c87c2e41df283013519d17bdc42b3e45e",
+    "datasetHash": "0626b8e0e0cbeab1e7a2b812b8ebe6a70aa60fefbd2154edab310d4f3667f650",
+    "scenarioIds": [
+      "http-503",
+      "request-timeout",
+      "flapping",
+      "no-evidence",
+      "injected-instructions"
+    ],
+    "requestLimit": 5,
+    "budgetUsd": 0.05,
+    "reservedCostEstimateUsd": 0.05,
+    "automaticRetry": false,
+    "maxRequestBytes": 12000,
+    "maxOutputTokens": 4096,
+    "requestDeadlineSeconds": 25,
+    "pricingCheckedOn": "2026-10-24",
+    "pricingSource": "https://api-docs.deepseek.com/quick_start/pricing/"
+  },
+  "offlineAcceptance": {
+    "reportOrigin": "offline-fixture-not-real-model",
+    "fixtureReports": 3,
+    "reviewPackageExport": "PASS",
+    "csvImport": "PASS",
+    "scoreStatus": "INCOMPLETE",
+    "scoreCoverage": {
+      "total": 30,
+      "responses": 3,
+      "guardAccepted": 3,
+      "guardRejected": 0,
+      "annotationReviewed": 0,
+      "qualityReviewed": 0
+    },
+    "scoreExitCode": 2,
+    "realModelVerified": false
+  },
+  "independentReview": "No blocking or important findings; read-only review. Two additional input/CSV boundary fixes verified RED to GREEN in final full suite.",
+  "notRun": [
+    "Live DeepSeek pilot",
+    "Real 30-case human-rated quality benchmark",
+    "New remote CI",
+    "Local full Java/frontend/Compose/performance suite"
+  ],
+  "preserved": [
+    "Default mock and production factories",
+    "Existing output/citation/safety guards and assertions",
+    "Daily services/DB/IDEA configuration and migrations"
+  ],
+  "startupGuide": "IDEA启动与验收指南.md section14.6"
+}
