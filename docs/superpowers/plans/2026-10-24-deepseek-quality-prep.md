@@ -32,7 +32,7 @@ Interfaces: score(dataset: dict, responses: dict, reviews: dict) -> dict. Respon
 - [x] Add tests for complete/partial/unreviewed samples, foreign/duplicate cases, stale hashes, forged citations, missing human judgments, safety failures and no networking; observe RED.
 - [x] Implement structural validation plus human-label precision, at-least-one relevant evidence recall, fact/inference score, uncertainty and unsafe recommendation measures. No aggregate PASS without all 30 covered/reviewed and targets met; actual tool execution remains unmeasured.
 - [x] Add the new tests to scripts/agent.ps1 and CI; run focused/full Python regression and a real offline CLI export/score. No business/runtime changes require a Java/frontend rerun.
-- [ ] Verify pushed 6518146 CI separately; perform independent review, sync startup/README/model/testing docs and save local feature commit. No main merge or paid evaluation.
+- [x] Verify pushed 6518146 CI separately; perform independent review, sync startup/README/model/testing docs and save local feature commit. No main merge or paid evaluation.
 
 ## Ledger
 
@@ -42,3 +42,4 @@ Interfaces: score(dataset: dict, responses: dict, reviews: dict) -> dict. Respon
 - The initial remote run passed verify/frontend but failed recovery fixture migrations; stderr was suppressed. Reproduced socket-only bootstrap readiness race using a fake Docker lifecycle, two new tests RED→GREEN after waiting for final TCP and retaining migration diagnostics. Actual root cause of the old hidden database error remains unproven; new remote confirmation is required.
 - Node 12 passed in authorized environment; initial restricted-loopback EACCES was an environment failure. Python restricted run hung in existing async tests, stopped only that run; authorized rerun passed. No model calls.
 - Independent whole-change review: no blocking/important findings, diff check passed. No deferred findings or extra model calls. New remote CI still pending.
+- Source commit6102190 pushed. Remote CI40087951346 verify/frontend/compose all success; Python110, Java130 with no failures/errors/skips. Actual isolated custom dump/restore into two new databases passed. No paid evaluation, main merge or user service changes.

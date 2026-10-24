@@ -479,4 +479,4 @@ Compose逻辑项目名与数据身份分离：新增DAWNWATCH_DATA_PREFIX，默�
 
 从6518146新建本地codex/deepseek-quality-prep，保留原30契约场景，另建30条有效诊断输入草稿。新增纯离线prepare/score和中文可读复核清单；既有Invocation及输出护栏复用，标注与人评分分别绑定inputHash/reportHash，禁止重复/外来/旧评分、缺报告/缺人评不得PASS。导入来源固定未认证，实际工具执行未测；没有批量付费入口、没有读取Key或调用模型。
 
-Python110项（新增15项）及Node目标/会话/恢复12项通过；实际CLI导出30草稿，空响应与待复核标注计分为INCOMPLETE/退出2，所有指标分母缺失时为未知。初次受限环境的loopback拒绝/异步停住已只停止本轮测试，再在授权环境通过。Java/前端业务未改，本轮未本地重跑对应整套。启动指南14.5、README、模型文档与计划已同步。正式摘要verification/deepseek-quality-prep-2026-10-24.json，独立评审与修正后远端CI待完成。人工金标准、真实质量成绩、性能与完整阶段门仍未完成，不合并main。
+Python110项（新增15项）及Node目标/会话/恢复12项通过；实际CLI导出30草稿，空响应与待复核标注计分为INCOMPLETE/退出2，所有指标分母缺失时为未知。初次受限环境的loopback拒绝/异步停住已只停止本轮测试，再在授权环境通过。Java/前端业务未改，本轮未本地重跑对应整套。启动指南14.5、README、模型文档与计划已同步。独立只读评审无重要发现。源码提交6102190已推送codex/deepseek-quality-prep，CI40087951346的verify/frontend/compose全部通过；远端Python110、Java130项0失败/错误/跳过，真实隔离SQL备份恢复到两个新库通过。正式摘要verification/deepseek-quality-prep-2026-10-24.json保留首次CI失败及修正后实测，不倒推此前被隐藏的具体数据库错误。人工金标准、真实质量成绩、性能与完整阶段门仍未完成，不合并main。
