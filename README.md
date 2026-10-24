@@ -22,6 +22,8 @@ DeepSeek官方API适配已提供：Python设置 `AGENT_LLM_PROVIDER=deepseek` �
 
 首次接通可以在本机运行 ` .\agent-service\.venv\Scripts\python.exe .\agent-service\deepseek_check.py`，安全输入Key后仅请求一次，保存脱敏结果；无需数据库配置。具体范围、费用确认与日常工作台接入区别见专属指南第14.1.1节。三次原始脱敏结果与限制见[真实接通记录](docs/verification/deepseek-live-2026-10-24.json)，后续调用须重新确认，不自动重跑。
 
+模型网络保持直连，不为DeepSeek配置Clash代理；Clash仅用于其他网站。当前连接失败原因尚未确定，不将“没有使用代理”视为故障原因。
+
 **在你的电脑上启动项目，请直接看 [IDEA 启动与验收指南](IDEA启动与验收指南.md)。** 该指南随启动配置和项目验收流程同步维护。
 
 **项目完整信息与四类图：** [项目详细说明](项目详细说明.md)；[离线图文版](docs/project-overview/项目详细说明.html)含功能结构、技术架构、数据库ER和系统流程图，可在浏览器打开并放大。

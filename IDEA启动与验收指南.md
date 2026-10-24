@@ -434,6 +434,8 @@ Set-Location 'E:\javaProjects\AgentOps AI'
 
 ### 14.1.1 首次接通检查：只输入Key
 
+**网络约定（2026-10-24确认）：DeepSeek保持直连，不配置Clash模型代理；Clash仅用于其他网站。** 当前适配器不设置代理，并通过 `trust_env=False` 忽略环境代理设置。此前的 `CONNECT_ERROR` 尚未确定具体原因，不能据此归因为“模型没有走Clash”，也不以改走Clash作为默认处理。原有TLS验证和网络安全边界保持不变。
+
 首次使用Key时，可先在IDEA的项目根目录终端执行下面的**一次接通检查**，无需启动日常数据库、Java或Python服务：
 
 ```powershell
