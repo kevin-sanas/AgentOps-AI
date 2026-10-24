@@ -18,7 +18,10 @@ class Analysis(StrictModel):
 
 
 class ProviderUnavailable(RuntimeError):
-    pass
+    def __init__(self, message="MODEL_UNAVAILABLE", *, http_status=None, failure_kind=None):
+        super().__init__(message)
+        self.http_status = http_status
+        self.failure_kind = failure_kind
 
 
 class ModelOutcomeUnknown(ProviderUnavailable):
@@ -43,15 +46,16 @@ class CompatibleProvider:
                 async with httpx.AsyncClient(timeout=self.budget, follow_redirects=False, trust_env=False, transport=self.transport) as client:
                     async with client.stream("POST", self.url, headers={"Authorization": "Bearer " + self.key}, json=body) as response:
                         if response.status_code == 429 or response.status_code >= 500:
-                            raise ProviderUnavailable("MODEL_UNAVAILABLE")
+                            raise ProviderUnavailable("MODEL_UNAVAILABLE", http_status=response.status_code, failure_kind="HTTP_STATUS")
                         if response.status_code != 200: raise ValueError("MODEL_REQUEST_REJECTED")
                         data = bytearray()
                         async for chunk in response.aiter_bytes():
                             data.extend(chunk)
                             if len(data) > 65536: raise ValueError("MODEL_RESPONSE_TOO_LARGE")
                         return json.loads(data)
-        except (httpx.ConnectError, httpx.ConnectTimeout):
-            raise ProviderUnavailable("MODEL_UNAVAILABLE") from None
+        except (httpx.ConnectError, httpx.ConnectTimeout) as error:
+            kind = "CONNECT_TIMEOUT" if isinstance(error, httpx.ConnectTimeout) else "CONNECT_ERROR"
+            raise ProviderUnavailable("MODEL_UNAVAILABLE", failure_kind=kind) from None
         except (httpx.HTTPError, TimeoutError):
             raise ModelOutcomeUnknown("MODEL_OUTCOME_UNKNOWN") from None
 
@@ -95,7 +99,12 @@ class DeepSeekProvider(CompatibleProvider):
         super().__init__("https://api.deepseek.com", model, key, transport=transport, budget=budget)
 
     def _body(self, prompt, evidence):
+        allowed = ["check:" + str(check["runId"]) for check in evidence["checks"]]
+        allowed += ["runbook:" + str(section["sectionId"]) for section in evidence["runbooks"]]
+        prompt += ("\nFor every evidenceIds field, use only exact strings from allowedEvidenceIds. "
+                   "Check citations use check:<runId>; runbook citations use runbook:<sectionId>, never runbookId. "
+                   "Every hypothesis citation must also appear in the top-level evidenceIds.")
         prompt += "\nReturn one JSON object matching this JSON Schema:\n" + json.dumps(Analysis.model_json_schema(), ensure_ascii=False)
-        body = super()._body(prompt, evidence)
+        body = super()._body(prompt, evidence | {"allowedEvidenceIds": allowed})
         body.update({"response_format": {"type": "json_object"}, "thinking": {"type": "disabled"}, "stream": False, "max_tokens": 4096})
         return body

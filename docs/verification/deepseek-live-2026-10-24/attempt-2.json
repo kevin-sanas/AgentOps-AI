@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "status": "FAIL",
+  "sampleMode": "synthetic",
+  "requestedModel": "deepseek-flash",
+  "endpoint": "https://api.deepseek.com/chat/completions",
+  "checkedAt": "2026-10-24T09:12:57.054474+00:00",
+  "requestAttempts": 1,
+  "usage": null,
+  "returnedModel": null,
+  "peakUncachedCostEstimateUsd": null,
+  "pricingCheckedAt": "2026-10-24",
+  "pricingSource": "https://api-docs.deepseek.com/quick_start/pricing/",
+  "scope": "One model request and local schema/citation/safety validation; no database, Java workflow, quality benchmark or automatic repair.",
+  "error": "PROVIDER_UNAVAILABLE",
+  "elapsedMs": 577
+}

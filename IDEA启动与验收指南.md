@@ -432,6 +432,22 @@ Set-Location 'E:\javaProjects\AgentOps AI'
 
 在 [DeepSeek开放平台](https://platform.deepseek.com/api_keys) 创建API Key并确认账户可用额度，聊天网站的登录密码不能代替API Key。Key只在你本机输入，不用发到聊天里，也不要写入Git、截图或手册。调用会将这次诊断的授权检查摘要、事件信息和脱敏后的运行手册段落发送给DeepSeek，并产生API费用；先使用虚构测试服务和不含真实秘密的手册验收。
 
+### 14.1.1 首次接通检查：只输入Key
+
+首次使用Key时，可先在IDEA的项目根目录终端执行下面的**一次接通检查**，无需启动日常数据库、Java或Python服务：
+
+```powershell
+.\agent-service\.venv\Scripts\python.exe .\agent-service\deepseek_check.py
+```
+
+命令出现 `DeepSeek API Key (hidden):` 后再粘贴Key并回车；输入不显示，不要把Key写进命令或聊天。每次执行最多发起一个官方请求，不会重试或回退mock。使用项目原创的三个合成503样本与测试手册，固定 `deepseek-flash`、非思考、输出最多4096 tokens、25秒预算，并沿用现有结构/引用/敏感输出/人工审阅校验；请求正文超过12000 UTF-8字节时在发送前拒绝。它不读取 `.env`、业务库或IDEA私有配置，不需要checkpoint DSN和内部token。
+
+2026-10-24首次真实验收及两次追加尝试均分别获得授权，每次预算上限US$0.05；三次均已结束。这不授权自动重跑或20–30场景付费评测。后续每次运行前重新确认调用范围和预算。脚本仅在当前Python进程接收Key，不写入结果；结果保存在Git忽略的 `.cache/deepseek-live-check/<本次目录>/result.json`，终端打印确切位置。记录实际返回的usage和耗时，按已核对峰时未命中单价估算费用；usage缺失时记为未知，不记零费用。`PASS`只证明这一次请求和本地结构/引用校验，不代表Java人审全链路或模型质量评测已经完成。
+
+`MODEL_REQUEST_REJECTED` 表示服务商拒绝请求；`OUTPUT_REJECTED` 表示输出未通过校验；`OUTCOME_UNKNOWN` 表示远端结果不确定。失败仍可能扣费，脚本不会自动重发。先核对控制台和本机脱敏结果，再决定下一步。命令必须直接运行在交互终端，禁止将Key通过管道输入。
+
+接通检查不会把当前独立演示切换成真实模型。用于日常工作台时，继续按下文分别设置Python与IDEA的模型名称；新任务才会使用新模型。
+
 ### 14.2 在Python启动终端设置
 
 在第2节已经配置checkpoint DSN和内部token的同一个PowerShell终端中，先用Ctrl+C停止原Python服务，再执行：
@@ -473,4 +489,4 @@ Remove-Variable taskDeepSeekKey
 
 结束时Ctrl+C停止Python，可用 `Remove-Item Env:AGENT_LLM_API_KEY` 清除本终端中的Key。恢复mock时Java和Python都改回 `AGENT_MODEL_NAME=mock`，Python还设置 `AGENT_LLM_PROVIDER=mock` 后重新启动。`.env.example`只提供变量说明；宿主机脚本不会自动读取 `.env`。
 
-本轮验证使用HTTP模拟响应与独立临时PG，未使用真实Key、未调用DeepSeek、未产生模型费用；真实效果以你按上述步骤完成的新任务为准。
+2026-10-24真实接通记录：第1次返回deepseek-flash、1286输入/755输出tokens、耗时5091ms，但输出被本地校验拒绝，具体原因未留存，不能确定；第2次PROVIDER_UNAVAILABLE、577ms、usage未知；第3次CONNECT_ERROR、765ms、usage未知。首笔按峰时未命中单价估算US$0.0012918，不是实际账单，后两笔不能记为零费用。已补齐合法引用ID清单及安全错误码，不放宽护栏；后两次未取得模型响应，修正后的真实报告仍待验收。无Key的直连探针出现过连接失败，随后401；经本机Clash的HEAD也返回401，只证明探针当时可达，不证明模型调用成功。当前程序仍不自动使用Clash/系统代理，不会关闭TLS验证，也未切换当前mock演示。详情见docs/verification/deepseek-live-2026-10-24.json。

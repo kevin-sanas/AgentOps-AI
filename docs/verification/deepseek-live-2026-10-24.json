@@ -1,0 +1,87 @@
+{
+  "date": "2026-10-24",
+  "branch": "codex/deepseek-live-check",
+  "baseRevision": "1551f53",
+  "testedWorkingTree": true,
+  "liveAcceptancePassed": false,
+  "sampleScenarioCount": 1,
+  "authorizedAttempts": 3,
+  "maxBudgetUsdPerAttempt": 0.05,
+  "noMoreCallsAuthorized": true,
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "FAIL",
+      "error": "OUTPUT_REJECTED",
+      "failureKind": null,
+      "elapsedMs": 5091,
+      "usage": {
+        "prompt_tokens": 1286,
+        "completion_tokens": 755,
+        "total_tokens": 2041,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 1286
+      },
+      "peakUncachedCostEstimateUsd": 0.0012918,
+      "artifact": "deepseek-live-2026-10-24/attempt-1.json"
+    },
+    {
+      "attempt": 2,
+      "status": "FAIL",
+      "error": "PROVIDER_UNAVAILABLE",
+      "failureKind": null,
+      "elapsedMs": 577,
+      "usage": null,
+      "peakUncachedCostEstimateUsd": null,
+      "artifact": "deepseek-live-2026-10-24/attempt-2.json"
+    },
+    {
+      "attempt": 3,
+      "status": "FAIL",
+      "error": "PROVIDER_UNAVAILABLE",
+      "failureKind": "CONNECT_ERROR",
+      "elapsedMs": 765,
+      "usage": null,
+      "peakUncachedCostEstimateUsd": null,
+      "artifact": "deepseek-live-2026-10-24/attempt-3.json"
+    }
+  ],
+  "interpretation": "First response proves authenticated model connectivity, not report acceptance. Exact first rejection cause was not retained. Later failures do not prove the citation improvement works with a real model.",
+  "freeConnectivityProbes": {
+    "noApiKey": true,
+    "modelCalls": 0,
+    "direct": "ConnectError observed, then HTTP401",
+    "localClash1270017897": "HTTP401",
+    "scope": "HEAD root only; neither is proof of a successful model response"
+  },
+  "localValidation": {
+    "java": 129,
+    "python": 89,
+    "frontend": 10,
+    "targetAndSession": 9,
+    "report": 5,
+    "total": 242,
+    "typecheckAndBuild": "PASS",
+    "coreJourneySteps": 16,
+    "newTests": 15
+  },
+  "changes": [
+    "Original synthetic one-request manual checker with hidden local Key input",
+    "Explicit legal citation IDs in DeepSeek prompt; guards unchanged",
+    "Whitelisted validation/transport diagnostics; no raw response or Key in errors",
+    "Windows real-console check rejects NUL/redirection",
+    "Guide and CI include the new entry and tests"
+  ],
+  "limits": [
+    "No accepted real report yet",
+    "No Java/checkpoint/human-review live model E2E",
+    "No 20-30-case model quality benchmark",
+    "Later usage/billing unknown; never recorded as zero",
+    "No TLS, proxy, role, DB or migration policy relaxation",
+    "Current mock demo not converted; new remote CI not run"
+  ],
+  "modelAlias": "deepseek-flash",
+  "modelVersion": "Returned alias only; exact server revision not independently pinned",
+  "pricingSource": "https://api-docs.deepseek.com/quick_start/pricing/",
+  "pricingCheckedAt": "2026-10-24"
+}

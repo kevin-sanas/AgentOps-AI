@@ -4,6 +4,8 @@
 
 把已有事实整理成可审查的诊断报告，不替代工程师判断。输入只能来自 Java 已授权 DTO：incident、有限时间窗口的 check run 摘要、事件、已发布运行手册段落。输出字段固定为 `summary/hypotheses/evidenceIds/nextSteps/uncertainties`。
 
+2026-10-24新增独立的首次DeepSeek接通入口 `agent-service/deepseek_check.py`：只发送原创合成证据，最多一个请求、无自动重试，使用同一DeepSeek适配器与本地输出护栏。Key由本机终端隐藏输入，不保存到报告；记录实际usage、耗时和基于2026-10-24[官方峰时价格](https://api-docs.deepseek.com/quick_start/pricing/)的未命中费用估算（美元/百万tokens：输入0.3、输出1.2），usage缺失时保持未知。该入口无业务库与checkpoint写入，不等于完整图/Java链路实测，也不计作20–30场景质量评测；3次逐次授权的真实尝试均未通过完整报告验收：第1次已返回usage但OUTPUT_REJECTED且具体原因未知，第2次不可用，第3次CONNECT_ERROR。引用白名单提示与脱敏诊断已补充；这些离线改动不能冒充真实修正成功。原始结果见verification/deepseek-live-2026-10-24.json。用法与预算授权见专属启动指南第14.1.1节。
+
 ## 图节点
 
 ```mermaid

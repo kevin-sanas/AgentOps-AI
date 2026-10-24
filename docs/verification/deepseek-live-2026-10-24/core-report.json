@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "revision": "1551f5326b6d621978b7f1a301d8b8d80db578dc",
+  "dirty": true,
+  "startedAt": "2026-10-24T09:19:05.0688990+00:00",
+  "finishedAt": "2026-10-24T09:21:32.0869515+00:00",
+  "sampleMode": "synthetic",
+  "model": "mock",
+  "stages": [
+    {
+      "id": "backend",
+      "label": "Java / PostgreSQL 与核心旅程",
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "backend.log"
+    },
+    {
+      "id": "python",
+      "label": "Python 图与模型契约",
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "python.log"
+    },
+    {
+      "id": "frontend-tests",
+      "label": "前端状态与导航回归",
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "frontend-tests.log"
+    },
+    {
+      "id": "frontend-build",
+      "label": "前端类型检查与生产构建",
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "frontend-build.log"
+    },
+    {
+      "id": "demo-target",
+      "label": "演示目标与会话契约",
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "demo-target.log"
+    },
+    {
+      "id": "report-tests",
+      "label": "验收报告回归",
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "report-tests.log"
+    }
+  ],
+  "steps": [
+    {
+      "id": "bootstrap",
+      "label": "隔离环境与三个角色登录",
+      "status": "PASS",
+      "detail": "三个独立角色登录；仅初始化本次随机数据库。",
+      "elapsedMs": 264
+    },
+    {
+      "id": "check-enabled",
+      "label": "创建并启用检查",
+      "status": "PASS",
+      "detail": "公共API新建检查默认禁用，再按版本显式启用。",
+      "elapsedMs": 152
+    },
+    {
+      "id": "threshold-progress",
+      "label": "阈值前异常进度",
+      "status": "PASS",
+      "detail": "连续两条合成503只显示异常进度，不提前产生事故。",
+      "elapsedMs": 100
+    },
+    {
+      "id": "incident-open",
+      "label": "达到阈值只建一个事故",
+      "status": "PASS",
+      "detail": "第三条合成503经实际聚合器产生唯一OPEN事故。",
+      "elapsedMs": 61
+    },
+    {
+      "id": "role-boundaries",
+      "label": "管理员与观察员操作边界",
+      "status": "PASS",
+      "detail": "纯管理员、观察员均不能替代值班人员处理事故。",
+      "elapsedMs": 31
+    },
+    {
+      "id": "incident-investigation",
+      "label": "确认事故并进入排查",
+      "status": "PASS",
+      "detail": "值班人员确认并开始排查，保留版本及理由。",
+      "elapsedMs": 66
+    },
+    {
+      "id": "published-runbook",
+      "label": "发布诊断依据",
+      "status": "PASS",
+      "detail": "通过公共API发布含两个稳定段落的虚构手册。",
+      "elapsedMs": 38
+    },
+    {
+      "id": "diagnosis-idempotency",
+      "label": "同键发起只产生一个诊断",
+      "status": "PASS",
+      "detail": "重复相同发起键返回同一runId，只有一条诊断事实。",
+      "elapsedMs": 45
+    },
+    {
+      "id": "waiting-human",
+      "label": "真实 Python 检查点进入人审",
+      "status": "PASS",
+      "detail": "实际后台Outbox经内部HTTP调用Python并保存PostgreSQL检查点。",
+      "elapsedMs": 2653
+    },
+    {
+      "id": "frozen-citations",
+      "label": "报告引用冻结检查与手册",
+      "status": "PASS",
+      "detail": "报告准确引用本次三条检查和两个已发布手册段落。",
+      "elapsedMs": 0
+    },
+    {
+      "id": "human-approval",
+      "label": "审阅决定与后台恢复",
+      "status": "PASS",
+      "detail": "观察员审阅被拒绝；值班批准可幂等重放，后台恢复到待线下处理。",
+      "elapsedMs": 2870
+    },
+    {
+      "id": "manual-report",
+      "label": "如实回填未执行且不解决事故",
+      "status": "PASS",
+      "detail": "如实回填NOT_EXECUTED，重复提交不重复写；诊断完成但事故仍在排查。",
+      "elapsedMs": 44
+    },
+    {
+      "id": "observer-report-denied",
+      "label": "观察员不能读取诊断报告",
+      "status": "PASS",
+      "detail": "观察员可读事件与检查，但不能读取他人的诊断报告。",
+      "elapsedMs": 23
+    },
+    {
+      "id": "recovery-monitoring",
+      "label": "检查恢复后进入观察",
+      "status": "PASS",
+      "detail": "两条合成UP满足恢复阈值，进入MONITORING而非立即解决。",
+      "elapsedMs": 28
+    },
+    {
+      "id": "incident-closed",
+      "label": "恢复满足窗口后关闭事故",
+      "status": "PASS",
+      "detail": "再两条UP满足观察窗口，自动解决后由值班人员明确关闭。",
+      "elapsedMs": 48
+    },
+    {
+      "id": "timeline-audit",
+      "label": "时间线与审计完整",
+      "status": "PASS",
+      "detail": "同一事故的发现、人审、回填、恢复与关闭均可追溯。",
+      "elapsedMs": 10
+    }
+  ],
+  "notRun": [
+    "外部目标实际网络探测",
+    "真实模型质量与人工评分",
+    "性能与容量基准",
+    "本轮 Compose / Kuma 运行验收",
+    "本轮远端 CI（另见 GitHub Actions）"
+  ],
+  "scope": "临时 PostgreSQL、随机本机端口、Java 公共 API、真实 Python mock / checkpoint；检查结果为受控合成样本。没有访问用户数据库、外部模型或服务目标。"
+}

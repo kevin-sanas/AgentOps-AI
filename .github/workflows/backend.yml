@@ -24,7 +24,7 @@ jobs:
           agent-service/.venv/bin/python -m pip install --require-hashes --only-binary=:all: -r agent-service/requirements-dev.lock
       - name: Verify read-only graph contracts
         working-directory: agent-service
-        run: .venv/bin/python -m pytest tests/test_graph.py tests/test_review.py tests/test_provider.py tests/test_scenarios.py -q -p no:cacheprovider
+        run: .venv/bin/python -m pytest tests/test_graph.py tests/test_review.py tests/test_provider.py tests/test_scenarios.py tests/test_deepseek_check.py -q -p no:cacheprovider
       - name: Compile and run PostgreSQL and probe tests
         run: |
           mkdir -p backend/target/tmp

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "status": "FAIL",
+  "sampleMode": "synthetic",
+  "requestedModel": "deepseek-flash",
+  "endpoint": "https://api.deepseek.com/chat/completions",
+  "checkedAt": "2026-10-24T09:02:53.196455+00:00",
+  "requestAttempts": 1,
+  "usage": {
+    "prompt_tokens": 1286,
+    "completion_tokens": 755,
+    "total_tokens": 2041,
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 1286
+  },
+  "returnedModel": "deepseek-flash",
+  "peakUncachedCostEstimateUsd": 0.0012918,
+  "pricingCheckedAt": "2026-10-24",
+  "pricingSource": "https://api-docs.deepseek.com/quick_start/pricing/",
+  "scope": "One model request and local schema/citation/safety validation; no database, Java workflow, quality benchmark or automatic repair.",
+  "error": "OUTPUT_REJECTED",
+  "elapsedMs": 5091
+}

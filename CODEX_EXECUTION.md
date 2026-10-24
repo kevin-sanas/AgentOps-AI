@@ -448,3 +448,11 @@ Task P/Q/R完成：tokens/共享源组件、Dark/Light、六区导航、键盘�
 Compose逻辑项目名与数据身份分离：新增DAWNWATCH_DATA_PREFIX，默认复用原三个物理卷，自定义安装须先指定原前缀；CI项目与卷前缀均为dawnwatch-ci。配置回归先RED，发现Compose自动注入项目名后改为独立前缀，最终2/2通过。不运行/迁移用户数据卷；本机Docker引擎不可用，本轮容器运行结果以新提交的远端Compose CI为准。
 
 完整基线与改名后acceptance均通过；最终Java129、Python74、前端10、目标/会话9、报告5，共227项，类型/构建和核心16步通过。全新隔离演示七步自检通过，并在浏览器用本次临时管理员登录，核对Dawnwatch登录页、标题和侧栏。四SVG XML、96条本地链接、锁文件仅包名变化、迁移不变及未分类旧品牌0项已核对。独立只读评审无Critical/Important，1处旧分支文案已同步Markdown/离线版。正式证据verification/dawnwatch-rename-2026-10-24.json及子目录；专属启动指南和README同步。无真实模型请求、无日常服务或数据操作。保留本阶段分支，不合并main；设计系统和其余阶段尚未执行。
+
+## DeepSeek首次真实接通尝试（2026-10-24）
+
+从1551f53建立codex/deepseek-live-check。用户已备Key并逐次授权3次、每次上限US$0.05，只由用户在本机隐藏输入，工具未读取Key或发起模型请求。新增单请求检查入口，使用原创合成503/手册、原适配与输出护栏，记录安全usage和耗时；无自动重试/回退，无DB配置。Windows NUL会被isatty视为终端，新增实际console校验并真实子进程回归。
+
+三次均未通过报告验收：1返回model和usage但OUTPUT_REJECTED、5091ms，1286/755/2041tokens，峰时未命中估算US$0.0012918，具体拒绝原因未留存；2不可用、577ms、usage未知；3明确CONNECT_ERROR、765ms、usage未知。首个失败根因未知。补充请求中的合法引用格式/清单与安全白名单诊断，未放宽校验或风险边界。无Key的HEAD直连出现ConnectError后401，经本机Clash返回401，均不是模型调用成功证明。已用完三次授权，不追加真实请求。
+
+先RED后GREEN；最终完整acceptance（.cache/acceptance/20261024-171905-6ad70ef9）Java129、Python89、前端10、目标/会话9、报告5，共242项及类型/构建、核心16步通过。15项新增回归覆盖单调用、失败停止、无usage保持未知、Key不落盘、重定向输入、合法引用说明与诊断不包含敏感原文。独立只读初审无重复调用/Key泄露阻塞，指出提示缺口与过时文案，已离线修正并回归；不能称真实模型修复已验证。启动指南、README、模型文档同步；正式三次记录及限制见verification/deepseek-live-2026-10-24.json。真实报告、Java全链路与20–30样本质量评测仍未通过/未运行，不关闭阶段5，不合并main。

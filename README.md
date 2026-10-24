@@ -18,7 +18,9 @@ G6新增一条核心自动验收命令：` .\scripts\acceptance.ps1`。使用独
 
 Windows PowerShell 5.1与PowerShell 7均可使用；中文验收入口保持UTF-8 BOM，JSON按UTF-8读取。兼容回归在Windows上调用自带5.1解析两个入口，在Linux上明确跳过该专属检查。
 
-DeepSeek官方API适配已提供：Python设置 `AGENT_LLM_PROVIDER=deepseek` 和本机API Key，Java/Python的 `AGENT_MODEL_NAME` 保持一致。接入及真实调用验收见专属指南第14节。当前只完成模拟HTTP契约与本地链路验证，未调用真实DeepSeek或产生模型费用。
+DeepSeek官方API适配已提供：Python设置 `AGENT_LLM_PROVIDER=deepseek` 和本机API Key，Java/Python的 `AGENT_MODEL_NAME` 保持一致。接入及真实调用验收见专属指南第14节。2026-10-24经逐次授权完成3次真实接通尝试：首次取得模型响应和usage但本地报告校验拒绝，第二次不可用，第三次明确为连接失败；**真实报告验收尚未通过**。不将这一个合成场景写成模型质量或性能成绩。
+
+首次接通可以在本机运行 ` .\agent-service\.venv\Scripts\python.exe .\agent-service\deepseek_check.py`，安全输入Key后仅请求一次，保存脱敏结果；无需数据库配置。具体范围、费用确认与日常工作台接入区别见专属指南第14.1.1节。三次原始脱敏结果与限制见[真实接通记录](docs/verification/deepseek-live-2026-10-24.json)，后续调用须重新确认，不自动重跑。
 
 **在你的电脑上启动项目，请直接看 [IDEA 启动与验收指南](IDEA启动与验收指南.md)。** 该指南随启动配置和项目验收流程同步维护。
 
