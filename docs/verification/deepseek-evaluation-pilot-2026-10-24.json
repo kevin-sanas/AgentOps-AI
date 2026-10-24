@@ -2,11 +2,18 @@
   "date": "2026-10-24",
   "branch": "codex/deepseek-evaluation-pilot",
   "baseRevision": "21ee229bbde799cf0f0b0fc082e0cb61c80ea80f",
-  "status": "OFFLINE_VERIFIED_LIVE_AWAITING_APPROVAL",
+  "status": "OFFLINE_VERIFIED_LIVE_AWAITING_LOCAL_KEY",
   "pythonTests": 137,
   "newPythonTests": 27,
   "actualProviderRequestsThisTask": 0,
-  "paidAuthorization": "AWAITING_SEPARATE_USER_APPROVAL",
+  "paidAuthorization": {
+    "approvedBy": "user-in-chat",
+    "date": "2026-10-24",
+    "maxRequests": 5,
+    "totalBudgetUsd": 0.05,
+    "planHash": "261cf1c7b85ed47935c8686175355b0c87c2e41df283013519d17bdc42b3e45e",
+    "scope": "One prepared batch, original five synthetic scenarios, direct official HTTPS/TLS, no automatic retry, stop on failure or unknown usage."
+  },
   "humanGoldAnnotationsCompleted": 0,
   "humanQualityReviewsCompleted": 0,
   "pilotPlan": {
