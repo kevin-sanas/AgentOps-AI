@@ -8,6 +8,8 @@ G6新增一条核心自动验收命令：` .\scripts\acceptance.ps1`。使用独
 
 Windows PowerShell 5.1与PowerShell 7均可使用；中文验收入口保持UTF-8 BOM，JSON按UTF-8读取。兼容回归在Windows上调用自带5.1解析两个入口，在Linux上明确跳过该专属检查。
 
+DeepSeek官方API适配已提供：Python设置 `AGENT_LLM_PROVIDER=deepseek` 和本机API Key，Java/Python的 `AGENT_MODEL_NAME` 保持一致。接入及真实调用验收见专属指南第14节。当前只完成模拟HTTP契约与本地链路验证，未调用真实DeepSeek或产生模型费用。
+
 **在你的电脑上启动项目，请直接看 [IDEA 启动与验收指南](IDEA启动与验收指南.md)。** 该指南随启动配置和项目验收流程同步维护。
 
 ## 当前进度与方向
@@ -185,7 +187,7 @@ Agent 只整理已有证据、检索授权运行手册并生成诊断/行动建�
 
 验收路径：事故详情 → 发起诊断 → 等待人工审阅。值班且有目标操作权限的账号填写理由，选择“批准线下处理”或“拒绝建议”。批准先显示“决定已记录，待同步”，随后显示“待线下处理”；平台不执行命令。用户自行处理后回填“已执行／未执行／执行失败”和说明，任务结束，事故状态保持原流程。拒绝不进入回填；24小时未决的审阅过期取消。系统关闭分发时会暂停后台同步，重新启用 `AGENT_ENABLED=true` 后继续。
 
-默认 mock 可以完整验收上述闭环。若要启用真实模型，需要你自行提供支持严格 JSON Schema 的 Chat Completions 兼容服务和授权密钥：
+默认 mock 可以完整验收上述闭环。启用DeepSeek官方服务按专属指南第14节使用 `deepseek` 模式；其他支持严格JSON Schema的Chat Completions兼容服务使用下表配置：
 
 | 配置 | Java IDEA 运行环境 | Python 启动终端 |
 |---|---|---|

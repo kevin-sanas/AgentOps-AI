@@ -1,6 +1,6 @@
 # 你的 AgentOps AI：IDEA 启动与验收指南
 
-更新日期：2026-10-23。适用版本：G5 + Dark-first UI/UX 工作空间、处置导航修正、G6核心自动验收及一键交互演示，业务库迁移至 V6。本文按你的 Windows、中文 IDEA 和项目位置编写；以后修改启动配置、端口或验收流程时同步更新本文。
+更新日期：2026-10-24。适用版本：G5 + Dark-first UI/UX 工作空间、处置导航修正、G6核心自动验收、一键交互演示及DeepSeek官方API适配，业务库迁移至 V6。本文按你的 Windows、中文 IDEA 和项目位置编写；以后修改启动配置、端口或验收流程时同步更新本文。
 
 ## 1. 先记住这些位置
 
@@ -209,6 +209,8 @@ CREATE DATABASE agentops_checkpoint OWNER agentops_checkpoint;
 
 ### 可选：以后使用真实模型
 
+DeepSeek官方服务已提供专用模式，直接按本文第14节操作；以下表格供其他严格JSON Schema兼容服务使用。
+
 先确认服务商、数据出站和费用，再手动配置。默认 mock 不会自动发起外部模型请求。
 
 | 变量 | IDEA Java | Python 终端 |
@@ -413,3 +415,54 @@ Set-Location 'E:\javaProjects\AgentOps AI'
 此模式验证前端代理登录、两种角色、故障/恢复命令、真实Outbox与Python检查点、人审、未执行回填及关闭，共7步；完成后自动退出，不在终端显示密码。`check-result.json` 是本次脱敏结果，`session-result.json` 记录服务关闭及凭据清除。完整代码回归仍使用第12节 `acceptance.ps1`。
 
 本入口的503/200是明确标注的**合成检查样本**，目标地址不会发出外部探测；诊断使用Python mock。Java业务流程、Python检查点、审批和审计实际运行，但不作为外网监控、真实模型质量、Kuma或性能验收。本轮未新增迁移或日常环境变量，IDEA日常启动仍按第2节执行。
+
+## 14. 接入真实DeepSeek（2026-10-24）
+
+本节使用第2节的日常Java/Python/前端环境。`demo.ps1` 使用独立临时数据和mock，真实模型验收请从日常工作台发起新任务。本次无新增依赖或数据库迁移，无需重新建库。
+
+### 14.1 准备官方API Key
+
+在 [DeepSeek开放平台](https://platform.deepseek.com/api_keys) 创建API Key并确认账户可用额度，聊天网站的登录密码不能代替API Key。Key只在你本机输入，不用发到聊天里，也不要写入Git、截图或手册。调用会将这次诊断的授权检查摘要、事件信息和脱敏后的运行手册段落发送给DeepSeek，并产生API费用；先使用虚构测试服务和不含真实秘密的手册验收。
+
+### 14.2 在Python启动终端设置
+
+在第2节已经配置checkpoint DSN和内部token的同一个PowerShell终端中，先用Ctrl+C停止原Python服务，再执行：
+
+```powershell
+Set-Location 'E:\javaProjects\AgentOps AI'
+$env:AGENT_LLM_PROVIDER = 'deepseek'
+$env:AGENT_MODEL_NAME = 'deepseek-flash'
+$taskDeepSeekKey = Read-Host '请输入DeepSeek API Key（输入不显示）' -AsSecureString
+$env:AGENT_LLM_API_KEY = [Net.NetworkCredential]::new('', $taskDeepSeekKey).Password
+Remove-Variable taskDeepSeekKey
+.\scripts\agent.ps1 Run
+```
+
+看到输入提示后粘贴Key并按回车；不要把Key拼到命令中。上述写法适用于Windows PowerShell5.1和PowerShell7，仅在当前终端环境中设置。若是新终端，仍需先按第2节准备 `AGENT_CHECKPOINT_DSN`、`AGENT_INTERNAL_TOKEN`，两者与原日常环境保持一致。
+
+`deepseek` 模式固定使用官方HTTPS接口，无需填写 `AGENT_LLM_BASE_URL`。按2026-10-24[官方入门文档](https://api-docs.deepseek.com/)，示例模型使用 `deepseek-flash`；若自行选择其他官方模型名称，下一步Java配置也要完全一致。现有25秒调用预算下使用非思考模式，输出上限4096 tokens；不跟随重定向，也不会自动采用Clash或系统代理。
+
+### 14.3 修改IDEA里的Java运行配置
+
+打开“运行 → 编辑配置 → AgentOpsApplication → 环境变量”，修改：
+
+| 名称 | 值 |
+|---|---|
+| `AGENT_ENABLED` | `true` |
+| `AGENT_SERVICE_ORIGIN` | `http://127.0.0.1:8090` |
+| `AGENT_MODEL_NAME` | `deepseek-flash` |
+
+数据库、端口、内部token和其他已有配置保留。Java不填写DeepSeek API Key。重新运行IDEA后端，确认健康检查UP；前端仍按第2节启动并访问 `http://127.0.0.1:5174/login`。
+
+### 14.4 验收真实模型
+
+1. 用有值班角色和目标操作授权的账号，进入已有测试事故，确认有近期检查证据和可引用的已发布手册。
+2. **新发起一次诊断**。旧任务冻结原模型标识，修改启动配置不会把旧mock报告变成DeepSeek报告。
+3. 核对任务顶部模型为 `deepseek-flash`，等待“等待人工审阅”；报告应有实际结论、真实检查/手册引用及不确定项。模型自评需人工核对，不能当作根因已证实。
+4. 到DeepSeek平台核对本次调用及用量；再在工作台批准或拒绝建议。批准后仅在实际线下处理后如实回填，纯验收选择“未执行”。
+
+界面出现 `AGENT_HTTP_400`，表示Python拒绝了本次配置、模型请求或报告；先检查官方Key、额度、两端模型名称及输出结构。服务端将这些错误统一返回，不会向浏览器转发模型服务的原始正文。Python启动时缺少变量会直接提示配置错误。`AGENT_UNAVAILABLE` 先检查8090服务是否启动；`AGENT_HTTP_401` 检查Java/Python内部token是否一致。`AGENT_MODEL_OUTCOME_UNKNOWN` 表示25秒超时等情况导致结果无法确认，先核对DeepSeek调用记录，不要连续点击或重发同一任务；必要时明确发起一个新诊断。拒绝、空结果、截断或结构/引用校验失败会标记失败，不伪装成功或改用mock。
+
+结束时Ctrl+C停止Python，可用 `Remove-Item Env:AGENT_LLM_API_KEY` 清除本终端中的Key。恢复mock时Java和Python都改回 `AGENT_MODEL_NAME=mock`，Python还设置 `AGENT_LLM_PROVIDER=mock` 后重新启动。`.env.example`只提供变量说明；宿主机脚本不会自动读取 `.env`。
+
+本轮验证使用HTTP模拟响应与独立临时PG，未使用真实Key、未调用DeepSeek、未产生模型费用；真实效果以你按上述步骤完成的新任务为准。

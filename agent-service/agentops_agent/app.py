@@ -106,5 +106,8 @@ def from_environment():
         from .provider import CompatibleProvider
         provider = CompatibleProvider(os.environ["AGENT_LLM_BASE_URL"], os.environ["AGENT_MODEL_NAME"], os.environ["AGENT_LLM_API_KEY"],
                                       allow_local_http=os.environ.get("AGENT_ALLOW_LOCAL_MODEL_HTTP", "false").lower() == "true")
+    elif kind == "deepseek":
+        from .provider import DeepSeekProvider
+        provider = DeepSeekProvider(os.environ["AGENT_MODEL_NAME"], os.environ["AGENT_LLM_API_KEY"])
     elif kind != "mock": raise ValueError("UNKNOWN_MODEL_PROVIDER")
     return create_app(Store(os.environ["AGENT_CHECKPOINT_DSN"], provider=provider), os.environ["AGENT_INTERNAL_TOKEN"])

@@ -424,3 +424,13 @@ Task P/Q/R完成：tokens/共享源组件、Dark/Light、六区导航、键盘�
 ## docs资料清理（2026-10-24）
 
 按用户要求将verification截图由52张精简为13张，删除G2/G3/G4旧界面及重复状态截图39张，保留总览、Kuma、导航/下拉框、当前交互演示和报告代表图。阶段JSON增加artifactRetention说明并更新截图清单/哈希，测试结论、正式测试文本、依赖/许可证资料和01–16规范文档保留。上文旧截图路径是历史归档记录，可从cf7c468恢复；不会用新截图冒充旧阶段结果。README和测试矩阵同步，核对JSON、保留图哈希与本地文档链接；无启动影响、无功能测试重跑，不推送远端。
+
+## DeepSeek官方API适配（2026-10-24）
+
+用户选择真实DeepSeek。以603ecd0建立本地codex/deepseek-provider分支，按官方Chat Completions接口增加deepseek模式：固定官方HTTPS地址、json_object输出、提示中提供结构定义，本地Pydantic/图/Java引用与权限校验沿用。显式关闭thinking，限制输出，沿用25秒预算、64KiB响应上限及不确定结果停止自动重发。默认mock和现有严格json_schema兼容模式保留；不新增依赖、数据库迁移或UI，不读取用户密钥，不启动付费请求或重启用户服务。
+
+- [x] 先补DeepSeek请求/结构与证据拒绝/环境工厂契约，观察RED，再实现适配。
+- [x] 运行Python契约及Java→Python独立PG集成，确认已有流程兼容；不把模拟HTTP契约称为真实DeepSeek效果。
+- [x] 同步.env示例、README、模型设计与专属IDEA指南；保存本地提交，用户自行设置Key后进行真实调用验收。
+
+实际结果：新增provider契约先观察缺少DeepSeekProvider导致15失败/原16通过，完成后Python单元74/74通过；针对AgentApiTest和AgentIntegrationTest的Maven test于12:17:56 BUILD SUCCESS，Java15项0失败/错误/跳过，其中真实受限PG嵌套12项通过。DeepSeek模拟响应经过真实checkpointer/model_call落库，重复invoke和人审恢复仅调用一次。初次受限环境单元测试挂起已只结束本轮pytest进程，授权环境复验通过。无真实Key、无DeepSeek请求或费用、无用户服务重启；未重跑未改前端、全Java129或远端CI。配置见专属指南第14节，正式摘要deepseek-provider-2026-10-24.json；仅本地新分支提交，不合并/推送已有G6分支或main。

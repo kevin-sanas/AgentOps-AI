@@ -55,6 +55,10 @@ class CompatibleProvider:
         except (httpx.HTTPError, TimeoutError):
             raise ModelOutcomeUnknown("MODEL_OUTCOME_UNKNOWN") from None
 
+    def _body(self, prompt, evidence):
+        return {"model": self.model, "messages": [{"role": "system", "content": prompt}, {"role": "user", "content": json.dumps(evidence, ensure_ascii=False)}],
+                "response_format": {"type": "json_schema", "json_schema": {"name": "readonly_diagnosis", "strict": True, "schema": Analysis.model_json_schema()}}}
+
     def analyze(self, invocation: Invocation):
         if invocation.modelName != self.model: raise ValueError("MODEL_CONFIGURATION_MISMATCH")
         evidence = invocation.model_dump(mode="json")
@@ -64,9 +68,7 @@ class CompatibleProvider:
                   "Respond in Chinese using the exact JSON schema. Each hypothesis must cite supplied evidenceIds. "
                   "State uncertainty. Every next step requires human review. Any operation changing a system, deleting data or restarting services is HIGH risk. "
                   "No next step may be automatically executed. With insufficient evidence, say so explicitly.")
-        body = {"model": self.model, "messages": [{"role": "system", "content": prompt}, {"role": "user", "content": json.dumps(evidence, ensure_ascii=False)}],
-                "response_format": {"type": "json_schema", "json_schema": {"name": "readonly_diagnosis", "strict": True, "schema": Analysis.model_json_schema()}}}
-        response = asyncio.run(self._request(body))
+        response = asyncio.run(self._request(self._body(prompt, evidence)))
         try:
             choices = response["choices"]
             if len(choices) != 1 or choices[0]["finish_reason"] != "stop" or choices[0]["message"].get("refusal"):
@@ -84,3 +86,16 @@ class CompatibleProvider:
                 citations.append({"kind": "RUNBOOK_SECTION", "id": str(section.sectionId), "time": None, "version": section.version, "hash": section.hash})
         return result | {"runId": str(invocation.runId), "status": "COMPLETED", "graphVersion": invocation.graphVersion,
                          "modelName": self.model, "citations": citations, "steps": NODES}
+
+
+class DeepSeekProvider(CompatibleProvider):
+    """Official DeepSeek JSON Output; the same local schema and citation guards apply."""
+
+    def __init__(self, model, key, *, transport=None, budget=25):
+        super().__init__("https://api.deepseek.com", model, key, transport=transport, budget=budget)
+
+    def _body(self, prompt, evidence):
+        prompt += "\nReturn one JSON object matching this JSON Schema:\n" + json.dumps(Analysis.model_json_schema(), ensure_ascii=False)
+        body = super()._body(prompt, evidence)
+        body.update({"response_format": {"type": "json_object"}, "thinking": {"type": "disabled"}, "stream": False, "max_tokens": 4096})
+        return body
