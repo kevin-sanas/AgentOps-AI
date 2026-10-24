@@ -13,13 +13,15 @@ try{
     Invoke-DrillDocker @('run','-d','--name',$taskName,'--label','agentops.recovery-fixture=true','--network','none','--tmpfs','/var/lib/postgresql/data','-e','POSTGRES_HOST_AUTH_METHOD=trust','-e','POSTGRES_DB=drill_source',$taskImage) | Out-Null
     $taskReady=$false
     for($taskAttempt=0;$taskAttempt -lt 80;$taskAttempt++){
-        & docker exec $taskName pg_isready -U postgres -d drill_source *> $null
+        # The image's initialization server accepts socket connections before
+        # database setup is complete. TCP is enabled only on the final server.
+        & docker exec $taskName pg_isready -h 127.0.0.1 -U postgres -d drill_source *> $null
         if($LASTEXITCODE -eq 0){$taskReady=$true;break};Start-Sleep -Milliseconds 250
     }
     if(!$taskReady){throw 'Isolated recovery PostgreSQL did not start'}
     $taskSql=(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'db/migration') -Filter 'V*.sql' | Sort-Object Name | ForEach-Object {[IO.File]::ReadAllText($_.FullName)}) -join "`n"
-    $taskSql | & docker exec -i $taskName psql -U postgres -d drill_source -v ON_ERROR_STOP=1 *> $null
-    if($LASTEXITCODE -ne 0){throw 'Fixture migrations failed'}
+    $taskMigrationOutput=$taskSql | & docker exec -i $taskName psql -U postgres -d drill_source -v ON_ERROR_STOP=1 2>&1
+    if($LASTEXITCODE -ne 0){throw "Fixture migrations failed: $taskMigrationOutput"}
     $taskSeed=@'
 INSERT INTO app_user(id,username,password_hash,display_name) VALUES('11111111-1111-4111-8111-111111111111','restore-fixture','fixture-not-a-login-hash','Restore fixture');
 INSERT INTO service_target(id,code,name,environment,base_url,created_by) VALUES('22222222-2222-4222-8222-222222222222','restore-fixture','Restore fixture','test','https://fixture.example.test/health','11111111-1111-4111-8111-111111111111');

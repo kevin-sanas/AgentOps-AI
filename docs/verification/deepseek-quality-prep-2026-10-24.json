@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-24",
+  "branch": "codex/deepseek-quality-prep",
+  "baseRevision": "6518146eaab3028301d1156e8852062f284b5cef",
+  "status": "OFFLINE_PREPARATION_VERIFIED_REMOTE_FIX_PENDING",
+  "realModelRequestsThisTask": 0,
+  "draftQualityCases": 30,
+  "humanAnnotationsCompleted": 0,
+  "humanReportReviewsCompleted": 0,
+  "realModelQualityMeasured": false,
+  "localTests": {
+    "python": 110,
+    "newPython": 15,
+    "targetSessionRecovery": 12,
+    "newRecovery": 2
+  },
+  "offlineCli": {
+    "prepare": "PASS",
+    "emptyScoreStatus": "INCOMPLETE",
+    "emptyScoreExpectedExitCode": 2,
+    "allMissingMetricsAreUnknown": true
+  },
+  "initialPushedVersion": {
+    "revision": "6518146eaab3028301d1156e8852062f284b5cef",
+    "branch": "codex/deepseek-live-workbench",
+    "runId": 40086656738,
+    "url": "https://github.com/kevin-sanas/Dawnwatch/actions/runs/40086656738",
+    "verify": "success",
+    "frontend": "success",
+    "compose": "failure",
+    "failedStep": "Isolated PostgreSQL dump and restore drill",
+    "message": "Fixture migrations failed",
+    "exactDatabaseError": "not retained by old script"
+  },
+  "recoveryFix": {
+    "change": "Wait for final TCP server; preserve synthetic migration diagnostics",
+    "regression": "Two fake-Docker lifecycle tests RED to GREEN",
+    "actualDockerThisTask": "NOT RUN: local engine not running",
+    "remoteConfirmation": "PENDING",
+    "source": "https://github.com/docker-library/postgres/blob/master/docker-entrypoint.sh"
+  },
+  "independentReview": "No blocking or important findings; read-only review and git diff --check; no Docker/model calls.",
+  "notRun": [
+    "30-case paid model evaluation",
+    "Human gold-label validation",
+    "Human report quality ratings",
+    "Performance benchmark",
+    "Production migration, main merge or deployment"
+  ],
+  "preserved": [
+    "Existing 30 contract fixtures and assertions",
+    "Default mock and direct DeepSeek provider",
+    "Daily services, data and credentials"
+  ]
+}

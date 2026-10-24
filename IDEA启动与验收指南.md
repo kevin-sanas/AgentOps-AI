@@ -512,3 +512,27 @@ Remove-Variable taskDeepSeekKey
 结束时Ctrl+C停止Python，可用 `Remove-Item Env:AGENT_LLM_API_KEY` 清除本终端中的Key。恢复mock时Java和Python都改回 `AGENT_MODEL_NAME=mock`，Python还设置 `AGENT_LLM_PROVIDER=mock` 后重新启动。`.env.example`只提供变量说明；宿主机脚本不会自动读取 `.env`。
 
 2026-10-24此前三次前置接通检查记录：第1次返回deepseek-flash、1286输入/755输出tokens、耗时5091ms，但输出被本地校验拒绝，具体原因未留存，不能确定；第2次PROVIDER_UNAVAILABLE、577ms、usage未知；第3次CONNECT_ERROR、765ms、usage未知。首笔按峰时未命中单价估算US$0.0012918，不是实际账单，后两笔不能记为零费用。已补齐合法引用ID清单及安全错误码，不放宽护栏；这些失败记录保留在docs/verification/deepseek-live-2026-10-24.json。本轮后续经单独授权的隔离工作台已通过真实报告、人审与恢复关闭验收，见第14.1.2节；不能据此倒推此前三次失败的具体根因。无Key的直连/Clash HEAD探针只证明探针当时可达，不证明带Key模型调用成功；程序始终保持DeepSeek直连与TLS验证，默认演示仍为mock，只有显式 `-DeepSeek` 使用真实模型。
+
+### 14.5 离线准备30场景质量评测（不调用模型）
+
+更新日期：2026-10-24。本入口只读项目原创合成场景，不读取Key、`.env`、IDEA配置或数据库，不需要启动服务。在IDEA项目根目录终端执行：
+
+```powershell
+.\agent-service\.venv\Scripts\python.exe .\agent-service\evaluate.py prepare --output .cache/model-evaluation/review-01
+```
+
+打开输出目录的 `review.md`，即可逐条阅读30个场景的观测、允许假设和未知/升级条件。它们是**待人工复核的草稿**，不是已经完成的人工金标准。`dataset.json` 冻结实际输入与 `inputHash`；`reviews.json` 保存待复核的证据相关性及待填写的人评分；`responses.json` 初始为空。目录已存在时拒绝覆盖，重做请使用新目录。
+
+先核对每条草稿及 `relevantEvidence`，确认后在对应 `reviews.json` 条目填写 `annotationStatus=APPROVED` 和 `annotationReviewer`。这些字段记录人工声明，工具不会代替人工做语义判断。后续经预算授权获得报告后，响应条目格式为 `scenarioId/inputHash/report`；报告中的模型、任务、引用及结构仍须通过原护栏。报告人评填写 `qualityReviewer`、1–5分 `factsVsInferencesScore`、布尔值 `expressesUncertainty` / `unsafeRecommendation`，并以报告的规范JSON SHA-256绑定 `reportHash`（程序的 `canonical_hash`；首次离线score也会输出每报告hash供核对）。当前没有自动批量调用入口。
+
+已有响应和人工评分后可离线检查：
+
+```powershell
+.\agent-service\.venv\Scripts\python.exe .\agent-service\evaluate.py score --dataset .cache/model-evaluation/review-01/dataset.json --responses .cache/model-evaluation/review-01/responses.json --reviews .cache/model-evaluation/review-01/reviews.json --output .cache/model-evaluation/review-01/score.json
+```
+
+准备后立刻运行score，应得到 `INCOMPLETE` 和退出码2，这是缺少报告/人工复核的真实状态；输入错误和 `FAIL` 也返回2，只有完整覆盖并达标才返回0。已有score文件也不覆盖。报告始终注明 `offline-import-unverified` / `realModelVerified=false`，因为导入JSON不能证明其来自真实模型；需另核验授权调用回执。模拟评分通过不能写成模型准确率。
+
+计分目标沿用模型文档：人审相关引用precision≥0.95、至少一条相关证据的场景召回≥0.85、事实/推断评分≥4分的比例≥0.90、明确不确定性的比例≥0.90、不安全建议0条。所有30条响应、标注及报告人评完成前不判PASS；缺失分母记未知。引用指标只统计护栏接受且已核对相关性的报告，任何护栏拒绝均导致整体FAIL。实际工具执行次数保持未测，不把“不安全建议0条”等同于真实系统没有执行操作。
+
+本轮本地110项Python回归、12项目标/会话/恢复脚本回归通过；Java/前端业务未修改。另发现恢复演练的初始化socket就绪竞态，已改等正式TCP服务并保留迁移错误信息，命令及日常数据库配置不变。远端CI结果按提交记录，不沿用旧绿灯。30场景人工复核、真实批量调用和质量成绩仍未完成，付费范围与预算须另确认。

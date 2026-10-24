@@ -24,7 +24,7 @@ jobs:
           agent-service/.venv/bin/python -m pip install --require-hashes --only-binary=:all: -r agent-service/requirements-dev.lock
       - name: Verify read-only graph contracts
         working-directory: agent-service
-        run: .venv/bin/python -m pytest tests/test_graph.py tests/test_review.py tests/test_provider.py tests/test_scenarios.py tests/test_deepseek_check.py tests/test_deepseek_demo.py -q -p no:cacheprovider
+        run: .venv/bin/python -m pytest tests/test_graph.py tests/test_review.py tests/test_provider.py tests/test_scenarios.py tests/test_deepseek_check.py tests/test_deepseek_demo.py tests/test_quality_evaluation.py -q -p no:cacheprovider
       - name: Compile and run PostgreSQL and probe tests
         run: |
           mkdir -p backend/target/tmp
@@ -50,7 +50,7 @@ jobs:
       - run: npm ci --ignore-scripts --no-fund --no-audit
       - run: npm test
       - run: npm run build
-      - run: node --test ../scripts/demo-target.test.mjs ../scripts/demo-session.test.mjs ../scripts/demo-live.test.mjs
+      - run: node --test ../scripts/demo-target.test.mjs ../scripts/demo-session.test.mjs ../scripts/demo-live.test.mjs ../scripts/recovery-drill.test.mjs
       - run: node --test ../scripts/acceptance-report.test.mjs
       - run: npm audit --audit-level=low
       - name: Save frontend build

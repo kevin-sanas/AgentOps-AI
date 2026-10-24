@@ -472,3 +472,11 @@ Compose逻辑项目名与数据身份分离：新增DAWNWATCH_DATA_PREFIX，默�
 用户隐藏输入Key启动本轮第1个真实会话后，浏览器实际完成确认事故→开始排查→真实模型诊断→Python/Java校验→等待人工审阅→批准→检查点恢复→NOT_EXECUTED回填→合成up恢复观察/解决→人工关闭。任务COMPLETED、六节点COMPLETED、outbox DONE且attempts=1、审批APPROVED、事故CLOSED v11。最终模型回执仍requestAttempts=1；未执行修复、重启、回滚或配置变更。deepseek-flash实际1919输入/1029输出tokens，模型及本地护栏5702ms，峰时未命中保守估算US$0.0018105（不是实际账单或性能基准）。1/3个会话和1次请求足以完成本轮，不追加付费调用。保留隔离页面供用户查看，最长两小时自动退出；日常服务/库保持原样。
 
 启动指南、README、模型与测试文档已同步。正式摘要verification/deepseek-workbench-2026-10-24.json，附脱敏模型回执、Java已接受报告、事故时间线及两张页面证据。此前三次失败记录保留；新远端CI、20–30样本人工标注质量评测及性能测试未运行，不关闭完整阶段5、不合并main。
+
+## DeepSeek质量评测准备与远端CI（2026-10-24）
+
+用户同意下一步。6518146已推送codex/deepseek-live-workbench，run40086656738的verify/frontend通过，Compose构建和启动通过，但隔离备份演练报Fixture migrations failed；旧脚本吞掉psql错误，具体数据库原因未留存。发现并复现初始化socket服务提前就绪竞态，恢复脚本改等最终TCP服务，并保留合成迁移错误。两条假Docker生命周期回归先RED后GREEN；本机Docker引擎未运行，不宣称本地真实容器演练通过。
+
+从6518146新建本地codex/deepseek-quality-prep，保留原30契约场景，另建30条有效诊断输入草稿。新增纯离线prepare/score和中文可读复核清单；既有Invocation及输出护栏复用，标注与人评分分别绑定inputHash/reportHash，禁止重复/外来/旧评分、缺报告/缺人评不得PASS。导入来源固定未认证，实际工具执行未测；没有批量付费入口、没有读取Key或调用模型。
+
+Python110项（新增15项）及Node目标/会话/恢复12项通过；实际CLI导出30草稿，空响应与待复核标注计分为INCOMPLETE/退出2，所有指标分母缺失时为未知。初次受限环境的loopback拒绝/异步停住已只停止本轮测试，再在授权环境通过。Java/前端业务未改，本轮未本地重跑对应整套。启动指南14.5、README、模型文档与计划已同步。正式摘要verification/deepseek-quality-prep-2026-10-24.json，独立评审与修正后远端CI待完成。人工金标准、真实质量成绩、性能与完整阶段门仍未完成，不合并main。

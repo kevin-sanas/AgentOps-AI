@@ -62,6 +62,16 @@ DeepSeek的 `response_format` 使用 `json_object`，不发送原兼容模式的
 - 用同一固定评测集比较 prompt/图/model 版本；报告场景数、模型、参数、通过率、失败例。全部是待测目标，不是已有成绩。
 - 运行人审审批流程测试：拒绝后不继续图执行；批准后仅记录 `APPROVED_FOR_MANUAL`，不能执行命令。
 
+### 离线评测准备（2026-10-24）
+
+`agent-service/evaluation/scenarios.json` 是独立的30个有效输入草稿，覆盖HTTP错误、传输UNKNOWN、成功延迟、偶发/持续/恢复/波动、空证据/无手册、手册冲突/注入/合成敏感文本与窗口边界。保留原 `tests/fixtures/review_scenarios.json` 的30条契约用例不改；其中非法输入/输出不混作模型诊断题目。
+
+`evaluate.py prepare` 导出冻结输入、可读 `review.md`、PENDING标注与空响应文件。输入为稳定UUID与相对30分钟窗口，可固定时间复现；所有预期都是助手草稿，人工必须先核对观察、允许假设、未知项和相关证据。不会自动写入“已人评”。`score` 只读取显式文件，运行已有Invocation/输出引用与安全护栏，不实例化provider、不读取Key或DB、不请求网络。
+
+相关性人标产生引用precision和至少一条相关证据的场景召回；实际报告的人评声明提供事实/推断1–5分、不确定性及不安全建议布尔值。每份标注绑定inputHash，报告评分再绑定规范JSON的reportHash；重复/外来场景、旧hash拒绝。缺少报告或人评为INCOMPLETE，护栏拒绝为FAIL，只有30条齐备且全部拟定目标达标才PASS。未知分母不记零，实际工具执行保持未测。所有导入报告的真实模型来源仍标未认证，即使离线测试PASS也不是真实模型质量结果。
+
+这次只实现准备与离线评分，不提供批量付费运行器，不能复用先前单会话授权开展30次调用。命令、评分字段和限制见专属启动指南14.5节。正式准备/回归记录见verification/deepseek-quality-prep-2026-10-24.json；人工金标准和真实质量评测待完成。
+
 ## G4 实现与评测边界（2026-10-21）
 
 `readonly-review-v2` 在guard后通过LangGraph interrupt进入review，批准Command(resume)后只执行finalize，拒绝直接END；PG checkpoint和独立决策元数据支持重启/重复请求。真实provider为服务端配置的兼容Chat Completions HTTP，严格JSON Schema，不提供工具。官方契约已核对：[LangGraph interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts)、[Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=chat)。
