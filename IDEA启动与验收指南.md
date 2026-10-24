@@ -579,3 +579,28 @@ CSV字段中，`annotationStatus` 用PENDING/APPROVED，批准必须填写 `anno
 **2026-10-24本批真实结果：** 用户批准最多5次/US$0.05并本机执行后，实际请求2次。持续503报告通过；探针超时报告触发AGENT_RISK_UNDERESTIMATED，批次STOPPED，其余波动、无证据、恶意手册3场景未调用。两次都有实际usage，共2796输入/1765输出/4561 tokens，峰时未命中估算US$0.0029568，非实际账单。未重试、未改护栏、未执行系统变更；被拒原文未保存，无法判断具体语句或是否保守匹配。这个目录已经使用，不能再跑run，也不自动补齐剩余场景。
 
 实际审阅包位于 `.cache/model-evaluation/pilot-20261024-live/review-package/`，先读 `批次结果.md`，再读 `reports.md` 中唯一接受报告并填写 `review.csv`。本次导入只有1份可校验报告，因此score里guardAccepted=1/guardRejected=0；实际执行回执记录的是2次请求/1份接受/1份拒绝，两者含义不同。其他章节的NOT_RUN只表示导入文件没有可校验原文，不能代替真实调用记录。0条人工标注/评分和不足30份报告仍得到INCOMPLETE，不认证质量准确率。正式脱敏回执、接受报告及两个输入快照已保存到docs/verification；本次仅检查实际结果及同步文档，未重跑业务测试或发额外模型请求。
+
+### 14.7 风险拒绝的脱敏定位（2026-10-24）
+
+更新后的DeepSeek提示会说明现有文本风险规则：nextSteps中涉及匹配操作词时需标HIGH，包括否定、历史或假设性表述；真正只读的取证建议可用清晰的观测措辞。HIGH仍只表示需要人工审阅，不允许模型或系统自动执行。规则的正则、敏感过滤和拒绝条件保持原样，不自动修改模型返回的风险值。
+
+之后新产生的 `deepseek_check.py`、隔离工作台或五场景回执在触发 `AGENT_RISK_UNDERESTIMATED` 时，会附安全定位信息，例如：
+
+```json
+{
+  "validationFields": [["nextSteps", 1, "risk"]],
+  "riskDiagnostics": {
+    "policyId": "operation-text-high-v1",
+    "stepIndex": 1,
+    "observedRisk": "LOW",
+    "requiredRisk": "HIGH",
+    "operationCategory": "RESTART"
+  }
+}
+```
+
+这里索引1表示**第2条建议**；示例表示该建议匹配重启类别，但风险字段标LOW，触发了现有HIGH文本要求。只定位首个被拒建议，不判断句子是实际操作、历史查询还是否定表述。回执不附拒绝原文、主机名、Key或任意异常文本；旧回执无法补回当时未保存的定位信息。风险类异常仍兼容ValueError，Java/Web内部接口沿用原统一错误响应。
+
+本轮可直接查看 `.cache/risk-diagnostics/diagnostic-preview.json` 的**离线合成示例**，也可运行 ` .\scripts\agent.ps1 Test` 验证回归；该示例不是旧付费报告重放。实际147项Python测试、15项Java定向测试通过，仍没有新增真实模型调用。过去两次调用的接受/拒绝结果不改，尚未证明新版提示能让真实模型稳定满足规则。
+
+现有启动命令、环境变量、端口和数据库要求不变，新增提示与诊断在下次正常启动Python或受控入口时生效。不要重跑已使用的pilot目录；如要再次付费验证，应先明确新的范围与预算。完整记录见 `docs/verification/deepseek-risk-diagnostics-2026-10-24.json`。

@@ -6,7 +6,7 @@ from urllib.parse import urlsplit
 import httpx
 from pydantic import Field
 from .models import StrictModel, Hypothesis, NextStep, Invocation, NODES
-from .safety import redact
+from .safety import RISKY, redact
 
 
 class Analysis(StrictModel):
@@ -104,6 +104,10 @@ class DeepSeekProvider(CompatibleProvider):
         prompt += ("\nFor every evidenceIds field, use only exact strings from allowedEvidenceIds. "
                    "Check citations use check:<runId>; runbook citations use runbook:<sectionId>, never runbookId. "
                    "Every hypothesis citation must also appear in the top-level evidenceIds.")
+        prompt += ("\nLocal risk policy matches nextSteps text case-insensitively with this pattern: " + RISKY.pattern +
+                   ". Any matching mention requires risk=HIGH, including negated, historical or hypothetical mentions. "
+                   "For a read-only request you may instead use precise observation wording without these operation terms. "
+                   "HIGH is a review classification and never authorizes execution; all steps still require human review.")
         prompt += "\nReturn one JSON object matching this JSON Schema:\n" + json.dumps(Analysis.model_json_schema(), ensure_ascii=False)
         body = super()._body(prompt, evidence | {"allowedEvidenceIds": allowed})
         body.update({"response_format": {"type": "json_object"}, "thinking": {"type": "disabled"}, "stream": False, "max_tokens": 4096})

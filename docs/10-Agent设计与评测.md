@@ -84,6 +84,14 @@ DeepSeek的 `response_format` 使用 `json_object`，不发送原兼容模式的
 
 本批真实调用已获用户单独批准并实际执行：第1条持续503接受，第2条探针超时触发现有风险规则AGENT_RISK_UNDERESTIMATED后停止，其余3条未调用。规则表示某条nextSteps文本匹配风险操作而risk字段不是HIGH；因为拒绝原文不持久化，不能进一步确定句子或判定是语义上的低报还是保守匹配。不据此降低风险检查，也不把2条样本中的1条接受当作模型准确率。总usage4561 tokens、峰时估算US$0.0029568，非账单。接受报告重新离线核对输入hash、引用与风险后生成CSV待人评包；没有新增调用，完整30条评测和人工评分仍未完成。原始安全回执及输入快照见本阶段verification目录。
 
+### 风险定位与提示对齐（2026-10-24）
+
+保持RISKY/SECRETS正则与判定条件不变。新增ValueError子类RiskUnderestimated只携带0–9内建议索引、LOW/MEDIUM/HIGH或UNKNOWN风险值和固定操作类别；错误码仍AGENT_RISK_UNDERESTIMATED，不携带原句、来源主机或任意异常值。原敏感过滤仍先执行。既有validation_details把字段位置与风险元数据写到检查/demo/pilot安全回执；旧普通ValueError继续只有原错误码，不能推测旧原文。
+
+DeepSeek提示直接引用当前RISKY.pattern，说明大小写不敏感匹配、否定/历史/假设提及也要求HIGH；只读取证可使用明确观测措辞，实际变更仍受原HIGH与人工审阅要求约束。提示并未改变分类器，也未自动纠正模型输出。阐明文本规则与原提示对实际变更的说明存在可复现语义差异，是前瞻改进，不是旧超时报告根因已证实。
+
+147项Python回归覆盖定位/类别、不保存原文、敏感过滤优先、保守历史/否定匹配及HIGH接受、单请求/批次停止；包含新版提示下5个MockTransport请求仍符合12000字节/4096输出限制。15项Java定向测试验证HTTP与PG检查点兼容。无新增实模调用或人评，不据此声称付费失败已修复，完整质量评测仍未完成。指南14.7和verification/deepseek-risk-diagnostics-2026-10-24.json提供验收入口。
+
 ## G4 实现与评测边界（2026-10-21）
 
 `readonly-review-v2` 在guard后通过LangGraph interrupt进入review，批准Command(resume)后只执行finalize，拒绝直接END；PG checkpoint和独立决策元数据支持重启/重复请求。真实provider为服务端配置的兼容Chat Completions HTTP，严格JSON Schema，不提供工具。官方契约已核对：[LangGraph interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts)、[Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=chat)。

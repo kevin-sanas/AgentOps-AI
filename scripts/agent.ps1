@@ -18,7 +18,7 @@ try {
     }else{
         Push-Location $taskService
         try{
-            if($Action -eq 'Test'){& $taskPython -m pytest tests/test_graph.py tests/test_review.py tests/test_provider.py tests/test_scenarios.py tests/test_deepseek_check.py tests/test_deepseek_demo.py tests/test_quality_evaluation.py tests/test_evaluation_pilot.py tests/test_quality_review_package.py -q -p no:cacheprovider}
+            if($Action -eq 'Test'){& $taskPython -m pytest tests/test_graph.py tests/test_review.py tests/test_provider.py tests/test_scenarios.py tests/test_deepseek_check.py tests/test_deepseek_demo.py tests/test_quality_evaluation.py tests/test_evaluation_pilot.py tests/test_quality_review_package.py tests/test_risk_diagnostics.py -q -p no:cacheprovider}
             else{
                 if(!$env:AGENT_CHECKPOINT_DSN -or !$env:AGENT_INTERNAL_TOKEN){throw 'Set AGENT_CHECKPOINT_DSN and AGENT_INTERNAL_TOKEN in this terminal first. See README G3.'}
                 & $taskPython -m uvicorn agentops_agent.app:from_environment --factory --host 127.0.0.1 --port $Port --no-access-log

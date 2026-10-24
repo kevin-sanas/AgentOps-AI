@@ -490,3 +490,11 @@ Python110项（新增15项）及Node目标/会话/恢复12项通过；实际CLI�
 用户随后回复已执行。核对实际started/receipts/responses及plan/dataset/inputhash：2次请求，第1条http-503本地接受，第2条request-timeout触发AGENT_RISK_UNDERESTIMATED，批次按约STOPPED，flapping/no-evidence/injected-instructions未调用。两次均有usage，合计4561 tokens、峰时未命中估算US$0.0029568（非实际账单）；无补跑、重试、护栏修改或系统操作。拒绝原文按设计未保存，只能确定匹配了现有风险操作且risk非HIGH，不能确定具体语句或是否保守匹配。
 
 重新离线校验1份实际接受报告，并生成review-package和score，标注/人评0、报告覆盖1，INCOMPLETE/退出2；审阅包附说明区分导入NOT_RUN与实际已请求但被拒。安全回执、接受报告、两个尝试输入快照和限制归档到verification/deepseek-evaluation-pilot-2026-10-24目录，原离线夹具保持独立。指南14.6、README、模型/测试文档同步真实部分结果；本次未修改运行时代码或重复业务测试，不声称5场景或30场景全通过。
+
+## 风险定位与提示对齐（2026-10-24）
+
+用户表示已查看并要求继续；不推断人评或额外费用授权。从9b59ea2建立codex/deepseek-risk-diagnostics。源代码确认文本规则也匹配否定/历史提及，与原模型提示只说明实际变更HIGH存在可复现差异；旧拒绝原文已丢弃，不能证明该差异就是付费失败根因。
+
+保持RISKY/SECRETS和拒绝条件不变，ValueError子类附首个建议的有界索引、固定风险值和操作类别；既有validation_details输出脱敏位置，检查/demo/pilot复用，不附原文或任意异常文本。DeepSeek提示引用当前模式并解释历史/否定/假设语境，仍禁止自动执行，不自动改risk。新10项先RED（9失败1通过）后GREEN，完整Python147通过；Java定向15项0失败/错误/跳过，临时PG测试正常退出。初次受限异步模拟停住已只停止该测试，再授权环境实跑；无真实模型调用、服务重启或数据迁移。
+
+已生成清晰标注的离线诊断示例，静态核对正则与旧断言不变，旧批次回执和归档一致仍请求2次。指南14.7、README及模型/测试文档同步。独立评审与正式状态见verification/deepseek-risk-diagnostics-2026-10-24.json。没有真实验证新提示效果，没有补跑3场景或自动人评，不合并主分支。

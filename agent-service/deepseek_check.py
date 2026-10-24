@@ -13,10 +13,14 @@ from pydantic import ValidationError
 from agentops_agent.graph import validate_result
 from agentops_agent.models import GRAPH_VERSION, Invocation
 from agentops_agent.provider import DeepSeekProvider, ModelOutcomeUnknown, ProviderUnavailable
-from agentops_agent.safety import redact
+from agentops_agent.safety import RiskUnderestimated, redact
 
 
 def validation_details(error):
+    if isinstance(error, RiskUnderestimated):
+        detail=error.diagnostic()
+        return {'validationErrorCode':'AGENT_RISK_UNDERESTIMATED',
+                'validationFields':[['nextSteps',detail['stepIndex'],'risk']], 'riskDiagnostics':detail}
     if isinstance(error, ValidationError):
         names = {'summary', 'hypotheses', 'evidenceIds', 'nextSteps', 'uncertainties', 'text', 'confidence', 'risk', 'requiresHumanReview'}
         fields = [[part if type(part) is int or part in names else '<field>' for part in item['loc'][:8]]
