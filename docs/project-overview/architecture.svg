@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1450" height="1090" viewBox="0 0 1450 1090" role="img" aria-labelledby="title desc"><title id="title">技术架构图</title><desc id="desc">图示为日常默认端口；独立演示使用随机端口。业务库与checkpoint库分离。</desc><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#64748b"/></marker></defs><rect width="100%" height="100%" fill="#f8fafc"/>
+<text x="30" y="36" font-family="Arial,Microsoft YaHei,sans-serif" font-size="25" fill="#0f172a" font-weight="600" text-anchor="start">技术架构图</text>
+<text x="30" y="62" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#475569" font-weight="400" text-anchor="start">图示为日常默认端口；独立演示使用随机端口。业务库与checkpoint库分离。</text>
+<polyline points="250,145 340,145" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="252.0" y="118" width="84" height="19" rx="4" fill="#f8fafc"/>
+<text x="294" y="132" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">/api UI</text>
+<polyline points="550,195 550,240 290,240 290,300" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="372.0" y="214" width="84" height="19" rx="4" fill="#f8fafc"/>
+<text x="414" y="228" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">/api/v1</text>
+<polyline points="290,480 290,670" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="224.0" y="569" width="132" height="19" rx="4" fill="#f8fafc"/>
+<text x="290" y="583" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">业务事务 / JDBC</text>
+<polyline points="510,390 590,390" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="502.0" y="361" width="96" height="19" rx="4" fill="#f8fafc"/>
+<text x="550" y="375" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">同一Java进程</text>
+<polyline points="740,480 740,590 430,590 430,670" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="482.0" y="566" width="156" height="19" rx="4" fill="#f8fafc"/>
+<text x="560" y="580" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">轮询Outbox / 租约</text>
+<polyline points="890,390 1010,390" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="866.0" y="360" width="168" height="19" rx="4" fill="#f8fafc"/>
+<text x="950" y="374" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">内部HTTP + token</text>
+<polyline points="740,480 740,670" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="668.0" y="538" width="144" height="19" rx="4" fill="#f8fafc"/>
+<text x="740" y="552" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">受控GET / HEAD</text>
+<polyline points="1175,480 1175,670" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="1073.0" y="568" width="204" height="19" rx="4" fill="#f8fafc"/>
+<text x="1175" y="582" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">受限角色 / checkpoint</text>
+<polyline points="890,440 930,440 930,970 890,970" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="6 5"/>
+<rect x="896.0" y="861" width="72" height="19" rx="4" fill="#f8fafc"/>
+<text x="932" y="875" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">可选Push</text>
+<polyline points="1340,440 1400,440 1400,970 1340,970" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="6 5"/>
+<rect x="1348.0" y="866" width="84" height="19" rx="4" fill="#f8fafc"/>
+<text x="1390" y="880" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">可选外部API</text>
+<rect x="30" y="100" width="220" height="95" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M42,101 H238" stroke="#5b8cff" stroke-width="3"/>
+<text x="46" y="127" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">操作人员 / 浏览器</text>
+<text x="46" y="151" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">值班 / 管理 / 观察 / 审计</text>
+<rect x="340" y="100" width="430" height="95" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M352,101 H758" stroke="#5b8cff" stroke-width="3"/>
+<text x="356" y="127" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">Vue工作台 · 5174</text>
+<text x="356" y="151" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">Vue3 / Pinia / Router / ECharts</text>
+<rect x="70" y="300" width="440" height="180" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M82,301 H498" stroke="#5b8cff" stroke-width="3"/>
+<text x="86" y="327" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">Java业务API · 18080</text>
+<text x="86" y="351" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">Spring Boot / Spring Security</text>
+<text x="86" y="370" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">账号、ACL、检查、事故、手册</text>
+<text x="86" y="389" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">诊断输入、审批、审计均由Java管理</text>
+<rect x="590" y="300" width="300" height="180" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M602,301 H878" stroke="#5b8cff" stroke-width="3"/>
+<text x="606" y="327" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">Java后台工作者</text>
+<text x="606" y="351" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">探测调度与配额</text>
+<text x="606" y="370" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">Outbox / 租约 / 有界重试</text>
+<text x="606" y="389" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">Kuma adapter</text>
+<rect x="1010" y="300" width="330" height="180" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M1022,301 H1328" stroke="#5b8cff" stroke-width="3"/>
+<text x="1026" y="327" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">Python Agent · 8090</text>
+<text x="1026" y="351" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">FastAPI内部认证 / LangGraph</text>
+<text x="1026" y="370" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">结构、引用、秘密与风险校验</text>
+<text x="1026" y="389" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">模型唯一调用方；当前mock</text>
+<rect x="110" y="670" width="410" height="135" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M122,671 H508" stroke="#5b8cff" stroke-width="3"/>
+<text x="126" y="697" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">业务数据库 · agentops</text>
+<text x="126" y="721" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">PostgreSQL / Flyway V1–V6</text>
+<text x="126" y="740" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">业务事实、Outbox和审计</text>
+<rect x="590" y="670" width="300" height="135" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M602,671 H878" stroke="#5b8cff" stroke-width="3"/>
+<text x="606" y="697" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">已登记的被测服务</text>
+<text x="606" y="721" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">日常：真实HTTP检查</text>
+<text x="606" y="740" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">演示：明确标注的合成样本</text>
+<rect x="1010" y="670" width="330" height="135" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M1022,671 H1328" stroke="#5b8cff" stroke-width="3"/>
+<text x="1026" y="697" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">独立checkpoint数据库</text>
+<text x="1026" y="721" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">PostgreSQL / agent_checkpoint</text>
+<text x="1026" y="740" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">invocation / model_call / 图检查点</text>
+<rect x="590" y="920" width="300" height="110" rx="10" fill="#fff7ed" stroke="#cbd5e1"/><path d="M602,921 H878" stroke="#f59e0b" stroke-width="3"/>
+<text x="606" y="947" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">Uptime Kuma（可选）</text>
+<text x="606" y="971" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">人工预建Monitor，单向状态Push</text>
+<rect x="1010" y="920" width="330" height="110" rx="10" fill="#ecfeff" stroke="#cbd5e1"/><path d="M1022,921 H1328" stroke="#22c6da" stroke-width="3"/>
+<text x="1026" y="947" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">模型服务（可选）</text>
+<text x="1026" y="971" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">DeepSeek / 严格JSON兼容API</text>
+<text x="1026" y="990" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">当前未启用，不发付费请求</text>
+<text x="30" y="1060" font-family="Arial,Microsoft YaHei,sans-serif" font-size="14" fill="#334155" font-weight="400" text-anchor="start">浏览器只访问Java业务API；Python不直连Java业务库。Compose内Agent和数据库不发布宿主机端口。</text>
+</svg>

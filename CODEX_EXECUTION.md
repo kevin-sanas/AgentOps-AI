@@ -434,3 +434,9 @@ Task P/Q/R完成：tokens/共享源组件、Dark/Light、六区导航、键盘�
 - [x] 同步.env示例、README、模型设计与专属IDEA指南；保存本地提交，用户自行设置Key后进行真实调用验收。
 
 实际结果：新增provider契约先观察缺少DeepSeekProvider导致15失败/原16通过，完成后Python单元74/74通过；针对AgentApiTest和AgentIntegrationTest的Maven test于12:17:56 BUILD SUCCESS，Java15项0失败/错误/跳过，其中真实受限PG嵌套12项通过。DeepSeek模拟响应经过真实checkpointer/model_call落库，重复invoke和人审恢复仅调用一次。初次受限环境单元测试挂起已只结束本轮pytest进程，授权环境复验通过。无真实Key、无DeepSeek请求或费用、无用户服务重启；未重跑未改前端、全Java129或远端CI。配置见专属指南第14节，正式摘要deepseek-provider-2026-10-24.json；仅本地新分支提交，不合并/推送已有G6分支或main。
+
+## 项目图文说明与启动（2026-10-24）
+
+用户要求具体信息文档及功能结构、技术架构、数据库设计和系统流程图，并明确暂不接入DeepSeek。新增根目录项目详细说明.md、四张本地SVG和离线HTML图文版，核对实际pom/依赖锁/SQL/状态与权限，不写入任何运行凭据。架构文档修正Python3.13、FastAPI0.151及业务/checkpoint分库，README补齐图文入口并纠正已有前端生产容器描述。专属指南同步入口和NoInput会话控制说明。
+
+本机日常PG在运行，当前会话缺checkpoint凭据；使用既有demo -NoInput启动完整随机端口、独立临时PG、Java/Python mock与Vite，自动登录演示管理员，保留用户浏览器页和演示服务供体验。原日常数据库、账号、IDEA配置未改动，无DeepSeek请求。核对四图渲染、SVG XML、28张业务表与本文清单、本地文档引用和运行健康；临时文档预览服务/生成脚本结束即清理。不重跑未改业务测试，不推送或合并远端。

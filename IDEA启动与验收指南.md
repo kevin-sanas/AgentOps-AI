@@ -2,6 +2,8 @@
 
 更新日期：2026-10-24。适用版本：G5 + Dark-first UI/UX 工作空间、处置导航修正、G6核心自动验收、一键交互演示及DeepSeek官方API适配，业务库迁移至 V6。本文按你的 Windows、中文 IDEA 和项目位置编写；以后修改启动配置、端口或验收流程时同步更新本文。
 
+项目功能、技术架构、数据库设计与系统流程图见[项目详细说明](项目详细说明.md)，也提供[可离线打开的图文版](docs/project-overview/项目详细说明.html)。本指南继续作为启动命令与验收操作入口。
+
 ## 1. 先记住这些位置
 
 | 项目 | 你这台电脑的配置 |
@@ -413,6 +415,8 @@ Set-Location 'E:\javaProjects\AgentOps AI'
 ```
 
 此模式验证前端代理登录、两种角色、故障/恢复命令、真实Outbox与Python检查点、人审、未执行回填及关闭，共7步；完成后自动退出，不在终端显示密码。`check-result.json` 是本次脱敏结果，`session-result.json` 记录服务关闭及凭据清除。完整代码回归仍使用第12节 `acceptance.ps1`。
+
+如果由助手或脚本使用 `demo.ps1 -NoInput` 在后台启动，终端不会出现 `demo:` 输入提示；可另开终端，用本次启动时给出的 `DEMO_SESSION` 目录控制同一个会话：`node scripts/demo-session.mjs '<本次DEMO_SESSION目录>' status`。最后一个参数也可换成 `down`、`up` 或 `quit`；退出仍会关闭该会话服务并清除临时数据。后台启动与普通演示都不会自动启用DeepSeek。
 
 本入口的503/200是明确标注的**合成检查样本**，目标地址不会发出外部探测；诊断使用Python mock。Java业务流程、Python检查点、审批和审计实际运行，但不作为外网监控、真实模型质量、Kuma或性能验收。本轮未新增迁移或日常环境变量，IDEA日常启动仍按第2节执行。
 

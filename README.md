@@ -12,6 +12,8 @@ DeepSeek官方API适配已提供：Python设置 `AGENT_LLM_PROVIDER=deepseek` �
 
 **在你的电脑上启动项目，请直接看 [IDEA 启动与验收指南](IDEA启动与验收指南.md)。** 该指南随启动配置和项目验收流程同步维护。
 
+**项目完整信息与四类图：** [项目详细说明](项目详细说明.md)；[离线图文版](docs/project-overview/项目详细说明.html)含功能结构、技术架构、数据库ER和系统流程图，可在浏览器打开并放大。
+
 ## 当前进度与方向
 
 先建立 Java 业务事实源和权限边界，再实现检查/事故闭环，随后接入只读诊断与人工流程，最后验证可选 Kuma 和完整 Compose。阶段计划与实际执行记录见 [CODEX_EXECUTION.md](CODEX_EXECUTION.md)，依赖核验见 [15](docs/15-开源许可证与接口核验.md)，测试结果见 [13](docs/13-测试矩阵与阶段门.md)。
@@ -76,7 +78,7 @@ npm run dev
 
 先创建服务目标，再创建并启用检查。默认仅公网 HTTPS；私网服务要在后端设置 `MONITOR_ALLOWED_PRIVATE_CIDRS`，并在目标表单中批准该范围内的 CIDR 和理由。禁止填写 `localhost`、IP literal 或 metadata 地址。
 
-`npm run build` 同时执行类型检查并输出 `frontend/dist`。生产需同源反向代理 `/api`、SPA history fallback 和 HTTPS；当前没有前端生产容器，`npm run preview` 仅预览静态产物，不提供开发 API 代理。
+`npm run build` 同时执行类型检查并输出 `frontend/dist`。前端生产镜像由 `frontend/Dockerfile` 构建并由Compose启动；生产需同源反向代理 `/api`、SPA history fallback和HTTPS。`npm run preview`仅预览静态产物，不提供开发API代理。
 
 当前 `compose.yaml` 包含业务 PostgreSQL、独立 checkpoint PostgreSQL、Java、Python、Vue 静态服务，以及 `--profile kuma` 可选服务。镜像固定版本和摘要。不要同时占用已有 IDEA 的端口；默认数据库使用独立 Compose 数据卷。
 
