@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "mode": "synthetic/live-deepseek",
+  "modelName": "deepseek-flash",
+  "runId": "a4653296-92b9-46aa-963d-65710871a347",
+  "checkedAt": "2026-10-24T10:15:13.853274+00:00",
+  "pythonGuardPassed": true,
+  "requestLimit": 1,
+  "scope": "Model request and Python guard only; Java/checkpoint/human workflow must be verified separately.",
+  "requestAttempts": 1,
+  "usage": {
+    "prompt_tokens": 1919,
+    "completion_tokens": 1029,
+    "total_tokens": 2948,
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 1919
+  },
+  "returnedModel": "deepseek-flash",
+  "elapsedMs": 5702,
+  "peakUncachedCostEstimateUsd": 0.0018105
+}

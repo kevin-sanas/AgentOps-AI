@@ -5,6 +5,7 @@ import { readSession, sessionDirectory } from './demo-session.mjs'
 const root=dirname(dirname(fileURLToPath(import.meta.url))),directory=sessionDirectory(process.argv[2]),port=Number(process.argv[3]),parent=Number(process.argv[4])
 const manifest=await readSession(directory)
 process.env.BACKEND_API_ORIGIN=manifest.backendOrigin;process.env.VITE_AGENTOPS_DEMO='true'
+process.env.VITE_AGENTOPS_LIVE_MODEL=manifest.modelName==='deepseek-flash'?'deepseek-flash':''
 const {createServer}=await import(pathToFileURL(join(root,'frontend/node_modules/vite/dist/node/index.js')))
 const server=await createServer({root:join(root,'frontend'),configFile:join(root,'frontend/vite.config.ts'),server:{host:'127.0.0.1',port,strictPort:true}})
 await server.listen()

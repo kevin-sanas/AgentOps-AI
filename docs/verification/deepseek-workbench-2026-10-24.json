@@ -1,0 +1,117 @@
+{
+  "date": "2026-10-24",
+  "branch": "codex/deepseek-live-workbench",
+  "baseRevision": "991dad6",
+  "testedWorkingTree": true,
+  "status": "PASS_SYNTHETIC_LIVE_WORKFLOW",
+  "authorization": {
+    "sessionsMax": 3,
+    "requestsMaxPerSession": 1,
+    "totalBudgetUsd": 0.05,
+    "directOnly": true
+  },
+  "liveSessionsThisRound": 1,
+  "liveRequestsThisRound": 1,
+  "liveAcceptance": {
+    "status": "PASS",
+    "scope": "One original synthetic incident, direct official DeepSeek HTTP, real Java/Python/LangGraph checkpoint and browser workflow; no production repair or quality benchmark.",
+    "runId": "a4653296-92b9-46aa-963d-65710871a347",
+    "incidentId": "d91f71f0-5155-474b-9a16-d42a94ce4488",
+    "targetId": "879d0f8f-eafa-4686-9fdf-4b3a55fba698",
+    "modelName": "deepseek-flash",
+    "graphVersion": "readonly-review-v2",
+    "runStatus": "COMPLETED",
+    "completedNodes": 6,
+    "outboxState": "DONE",
+    "outboxAttempts": 1,
+    "approvalStatus": "APPROVED",
+    "approvalCheckpointSyncedAt": "2026-10-24T10:16:41.072766Z",
+    "manualOutcome": "NOT_EXECUTED",
+    "incidentStatus": "CLOSED",
+    "incidentVersion": 11,
+    "incidentClosedAt": "2026-10-24T10:21:19.086886Z",
+    "eventCount": 17,
+    "eventTypes": [
+      "INCIDENT_OPENED",
+      "CHECK_FAILED",
+      "INCIDENT_ACKNOWLEDGED",
+      "CHECK_FAILED",
+      "INCIDENT_INVESTIGATING",
+      "AGENT_RUN_REQUESTED",
+      "AGENT_WAITING_HUMAN",
+      "CHECK_FAILED",
+      "CHECK_FAILED",
+      "AGENT_REVIEW_DECIDED",
+      "AGENT_REVIEW_SYNCED",
+      "AGENT_MANUAL_REPORTED",
+      "CHECK_FAILED",
+      "RECOVERY_DETECTED",
+      "INCIDENT_MONITORING",
+      "INCIDENT_RESOLVED",
+      "INCIDENT_CLOSED"
+    ],
+    "pythonGuardPassed": true,
+    "requestAttemptsAfterApprovalManualReportAndClosure": 1,
+    "usage": {
+      "prompt_tokens": 1919,
+      "completion_tokens": 1029,
+      "total_tokens": 2948,
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 1919
+    },
+    "returnedModel": "deepseek-flash",
+    "modelRequestAndPythonGuardMs": 5702,
+    "peakUncachedCostEstimateUsd": 0.0018105,
+    "pricingSource": "https://api-docs.deepseek.com/quick_start/pricing/",
+    "pricingCheckedOn": "2026-10-24",
+    "costIsActualBill": false,
+    "serverSnapshotPinned": false,
+    "automaticSystemChanges": false
+  },
+  "localTests": {
+    "java": 130,
+    "python": 95,
+    "frontend": 10,
+    "targetAndSession": 10,
+    "report": 5,
+    "total": 250,
+    "typecheckAndBuild": "PASS",
+    "coreJourneySteps": 16,
+    "defaultMockDemoSteps": 7
+  },
+  "independentReview": "No blocking or important findings; read-only review only",
+  "preserved": [
+    "Existing mock entry and assertions",
+    "Production app factory and guards",
+    "Daily services, DB, credentials, migrations and target policies"
+  ],
+  "startupGuide": "IDEA启动与验收指南.md section14.1.2",
+  "notRun": [
+    "New remote CI",
+    "20-30 scenario manually labeled quality benchmark",
+    "Performance or capacity benchmark",
+    "Production rollout or main merge"
+  ],
+  "artifacts": [
+    "deepseek-workbench-2026-10-24/core-report.json",
+    "deepseek-workbench-2026-10-24/mock-check-result.json",
+    "deepseek-workbench-2026-10-24/mock-session-result.json",
+    "deepseek-workbench-2026-10-24/model-call.json",
+    "deepseek-workbench-2026-10-24/accepted-run.json",
+    "deepseek-workbench-2026-10-24/closed-incident.json",
+    "deepseek-workbench-2026-10-24/report-waiting.png",
+    "deepseek-workbench-2026-10-24/incident-closed.png"
+  ],
+  "retainedLiveSession": {
+    "purpose": "User can inspect the accepted report in the existing browser tab; request allowance consumed.",
+    "lifetimeHoursMax": 2,
+    "expiresAt": "2026-10-24T12:12:21.360399400Z",
+    "cleanupOnExit": "Existing runtime lifecycle; this live session has intentionally not been stopped yet."
+  },
+  "limitations": [
+    "Single synthetic scenario proves integration only, not diagnostic accuracy.",
+    "5702 ms covers model request and Python guard, not full human workflow.",
+    "Cost is a conservative peak uncached estimate, not a platform invoice.",
+    "Previous three failed preflight calls are preserved separately in deepseek-live-2026-10-24.json."
+  ]
+}

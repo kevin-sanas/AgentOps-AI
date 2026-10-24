@@ -1,0 +1,255 @@
+{
+  "id": "a4653296-92b9-46aa-963d-65710871a347",
+  "incidentId": "d91f71f0-5155-474b-9a16-d42a94ce4488",
+  "targetId": "879d0f8f-eafa-4686-9fdf-4b3a55fba698",
+  "status": "COMPLETED",
+  "graphVersion": "readonly-review-v2",
+  "modelName": "deepseek-flash",
+  "createdAt": "2026-10-24T10:15:12.657354Z",
+  "startedAt": "2026-10-24T10:15:13.632217Z",
+  "completedAt": "2026-10-24T10:17:02.470141Z",
+  "errorCode": null,
+  "result": {
+    "runId": "a4653296-92b9-46aa-963d-65710871a347",
+    "steps": [
+      "validate",
+      "context",
+      "retrieval",
+      "analyze",
+      "guard",
+      "finalize"
+    ],
+    "status": "COMPLETED",
+    "summary": "该目标在 2026-10-24T10:12:34 前后连续 5 次健康检查返回 503（错误码 UNEXPECTED_STATUS，延迟约 12ms），仅最早一次（10:12:34.227772Z）返回 200。所有 503 响应的延迟均约 12ms，与 200 响应延迟相同，提示服务进程仍在快速应答而非超时或不可达。运行手册说明这是合成检查证据（down 注入三条 503、up 注入四条 200），因此本次观测到的是注入行为而非真实的持久故障。当前证据只能确认“健康检查连续返回 503”这一现象，不足以确认根因。",
+    "citations": [
+      {
+        "id": "a1222158-5e5c-4fea-a76d-11aad176a28c",
+        "hash": null,
+        "kind": "CHECK_RUN",
+        "time": "2026-10-24T10:14:34.456217Z",
+        "version": null
+      },
+      {
+        "id": "c72a6d56-83ac-4a72-991a-ad197df2e764",
+        "hash": null,
+        "kind": "CHECK_RUN",
+        "time": "2026-10-24T10:13:34.333182Z",
+        "version": null
+      },
+      {
+        "id": "a7e9715e-d3f6-4db7-a386-827b8f32cd55",
+        "hash": null,
+        "kind": "CHECK_RUN",
+        "time": "2026-10-24T10:12:34.290298Z",
+        "version": null
+      },
+      {
+        "id": "ac9a2cf0-c99f-469a-aea5-3ee1db377e8b",
+        "hash": null,
+        "kind": "CHECK_RUN",
+        "time": "2026-10-24T10:12:34.272183Z",
+        "version": null
+      },
+      {
+        "id": "b3e45d70-7ced-4ce4-ae7a-c9f6d2a7a531",
+        "hash": null,
+        "kind": "CHECK_RUN",
+        "time": "2026-10-24T10:12:34.255223Z",
+        "version": null
+      },
+      {
+        "id": "5eacc516-cecc-48db-8834-eae9c82cab30",
+        "hash": null,
+        "kind": "CHECK_RUN",
+        "time": "2026-10-24T10:12:34.227772Z",
+        "version": null
+      },
+      {
+        "id": "868af160-0d39-4afc-9a61-2f5b48176814",
+        "hash": "83000fc21fd435e6c279e25db149dfee2be1105ed67bac09eb57fe71d7a3884c",
+        "kind": "RUNBOOK_SECTION",
+        "time": null,
+        "version": 1
+      },
+      {
+        "id": "edbc523d-4e75-4f03-90af-6a39a54a813e",
+        "hash": "93fe1d1928911580c9353d9c4435b3e08d559f48702a507e0cb30b4c2148650d",
+        "kind": "RUNBOOK_SECTION",
+        "time": null,
+        "version": 1
+      }
+    ],
+    "modelName": "deepseek-flash",
+    "nextSteps": [
+      {
+        "risk": "LOW",
+        "text": "由人工复核运行手册中的合成注入说明，确认本次 503 序列是否属于计划内的 down 注入，并核实注入的开始与结束时间。",
+        "requiresHumanReview": true
+      },
+      {
+        "risk": "MEDIUM",
+        "text": "建议由人工使用只读方式补充检索该目标在 10:12–10:15 之间的检查历史与应用日志（仅读取，不修改系统），以判断 503 是注入的还是真实下游故障；本步骤不得自动执行。",
+        "requiresHumanReview": true
+      },
+      {
+        "risk": "HIGH",
+        "text": "如经人工确认需要重启或回滚服务以恢复，属于变更系统状态的高风险操作，必须由人工审批并执行，不可自动触发。",
+        "requiresHumanReview": true
+      }
+    ],
+    "hypotheses": [
+      {
+        "text": "该目标可能是被合成故障注入（down 注入 503）所致：运行手册明确说明 down 注入三条 503、up 注入四条 200，而观测到的 5 次 503 与 1 次 200 的序列与此注入模式高度吻合。因此 503 更可能来自人为注入而非真实的服务崩溃。",
+        "confidence": 0.55,
+        "evidenceIds": [
+          "runbook:868af160-0d39-4afc-9a61-2f5b48176814",
+          "check:b3e45d70-7ced-4ce4-ae7a-c9f6d2a7a531",
+          "check:ac9a2cf0-c99f-469a-aea5-3ee1db377e8b",
+          "check:a7e9715e-d3f6-4db7-a386-827b8f32cd55"
+        ]
+      },
+      {
+        "text": "也可能是上游依赖或路由层主动返回 503（例如网关限流/后端实例不可用），因为所有失败响应延迟都约 12ms 且与成功响应相同，说明检查端点本身仍在快速处理请求，故障可能位于检查端点之后的下游环节。该假设目前无直接证据支持。",
+        "confidence": 0.2,
+        "evidenceIds": [
+          "check:c72a6d56-83ac-4a72-991a-ad197df2e764",
+          "check:a1222158-5e5c-4fea-a76d-11aad176a28c",
+          "check:5eacc516-cecc-48db-8834-eae9c82cab30"
+        ]
+      }
+    ],
+    "evidenceIds": [
+      "check:a1222158-5e5c-4fea-a76d-11aad176a28c",
+      "check:c72a6d56-83ac-4a72-991a-ad197df2e764",
+      "check:a7e9715e-d3f6-4db7-a386-827b8f32cd55",
+      "check:ac9a2cf0-c99f-469a-aea5-3ee1db377e8b",
+      "check:b3e45d70-7ced-4ce4-ae7a-c9f6d2a7a531",
+      "check:5eacc516-cecc-48db-8834-eae9c82cab30",
+      "runbook:868af160-0d39-4afc-9a61-2f5b48176814",
+      "runbook:edbc523d-4e75-4f03-90af-6a39a54a813e"
+    ],
+    "graphVersion": "readonly-review-v2",
+    "uncertainties": [
+      "证据仅为健康检查结果与运行手册文本，缺少应用日志、依赖状态和部署变更记录，无法确认根因。",
+      "运行手册说明本条为合成检查证据（down 注入三条 503、up 注入四条 200），但观测到的 5 次 503 与 1 次 200 与描述的具体条数不完全一致，注入边界和当前注入状态仍不明确。",
+      "503 响应的延迟约为 12ms，与成功响应相同，无法据此区分是服务主动拒绝、下游快速失败还是注入代理返回。",
+      "健康检查不能单独确认根因；单次 200 也不足以说明服务已恢复。"
+    ]
+  },
+  "deliveryState": "DONE",
+  "attempts": 1,
+  "steps": [
+    {
+      "node": "validate",
+      "status": "COMPLETED",
+      "completedAt": "2026-10-24T10:15:19.579625Z"
+    },
+    {
+      "node": "context",
+      "status": "COMPLETED",
+      "completedAt": "2026-10-24T10:15:19.579625Z"
+    },
+    {
+      "node": "retrieval",
+      "status": "COMPLETED",
+      "completedAt": "2026-10-24T10:15:19.579625Z"
+    },
+    {
+      "node": "analyze",
+      "status": "COMPLETED",
+      "completedAt": "2026-10-24T10:15:19.579625Z"
+    },
+    {
+      "node": "guard",
+      "status": "COMPLETED",
+      "completedAt": "2026-10-24T10:15:19.579625Z"
+    },
+    {
+      "node": "finalize",
+      "status": "COMPLETED",
+      "completedAt": "2026-10-24T10:16:41.072766Z"
+    }
+  ],
+  "checkEvidence": [
+    {
+      "runId": "a1222158-5e5c-4fea-a76d-11aad176a28c",
+      "outcome": "DOWN",
+      "statusCode": 503,
+      "latencyMs": 12,
+      "completedAt": "2026-10-24T10:14:34.456217Z",
+      "errorCode": "UNEXPECTED_STATUS"
+    },
+    {
+      "runId": "c72a6d56-83ac-4a72-991a-ad197df2e764",
+      "outcome": "DOWN",
+      "statusCode": 503,
+      "latencyMs": 12,
+      "completedAt": "2026-10-24T10:13:34.333182Z",
+      "errorCode": "UNEXPECTED_STATUS"
+    },
+    {
+      "runId": "a7e9715e-d3f6-4db7-a386-827b8f32cd55",
+      "outcome": "DOWN",
+      "statusCode": 503,
+      "latencyMs": 12,
+      "completedAt": "2026-10-24T10:12:34.290298Z",
+      "errorCode": "UNEXPECTED_STATUS"
+    },
+    {
+      "runId": "ac9a2cf0-c99f-469a-aea5-3ee1db377e8b",
+      "outcome": "DOWN",
+      "statusCode": 503,
+      "latencyMs": 12,
+      "completedAt": "2026-10-24T10:12:34.272183Z",
+      "errorCode": "UNEXPECTED_STATUS"
+    },
+    {
+      "runId": "b3e45d70-7ced-4ce4-ae7a-c9f6d2a7a531",
+      "outcome": "DOWN",
+      "statusCode": 503,
+      "latencyMs": 12,
+      "completedAt": "2026-10-24T10:12:34.255223Z",
+      "errorCode": "UNEXPECTED_STATUS"
+    },
+    {
+      "runId": "5eacc516-cecc-48db-8834-eae9c82cab30",
+      "outcome": "UP",
+      "statusCode": 200,
+      "latencyMs": 12,
+      "completedAt": "2026-10-24T10:12:34.227772Z",
+      "errorCode": null
+    }
+  ],
+  "runbookEvidence": [
+    {
+      "runbookId": "1dd5fd9f-7af3-4207-8eca-f085f105ed56",
+      "version": 1,
+      "sectionId": "868af160-0d39-4afc-9a61-2f5b48176814",
+      "text": "# 合成检查证据\n此目标不发送外部探测。终端down注入三条503，up注入四条200。",
+      "hash": "83000fc21fd435e6c279e25db149dfee2be1105ed67bac09eb57fe71d7a3884c"
+    },
+    {
+      "runbookId": "1dd5fd9f-7af3-4207-8eca-f085f105ed56",
+      "version": 1,
+      "sectionId": "edbc523d-4e75-4f03-90af-6a39a54a813e",
+      "text": "## 人工流程\n确认事故、开始排查、发起deepseek-flash诊断；批准后如实回填未执行。恢复证据不会代替人工确认；健康检查不能单独确认根因。",
+      "hash": "93fe1d1928911580c9353d9c4435b3e08d559f48702a507e0cb30b4c2148650d"
+    }
+  ],
+  "approval": {
+    "id": "8f987a7a-a6b3-4ecb-878f-978a604b8491",
+    "version": 2,
+    "status": "APPROVED",
+    "outputHash": "7a00b8af7f2f28adfb76ee7b7b6937498fb4b3b17b2daf5fb2b8a0361a37eaac",
+    "expiresAt": "2026-10-25T10:15:19.579625Z",
+    "decidedBy": "9f82441d-33fc-4903-8601-695f905e78f1",
+    "reason": "已核对真实DeepSeek报告和冻结引用；仅验证审批链路，不执行任何系统变更，本次将如实回填未执行。",
+    "decidedAt": "2026-10-24T10:16:39.795701Z"
+  },
+  "manualReport": {
+    "outcome": "NOT_EXECUTED",
+    "note": "仅做真实模型及人工流程验收，未执行修复、重启、回滚或配置修改。",
+    "actorId": "9f82441d-33fc-4903-8601-695f905e78f1",
+    "reportedAt": "2026-10-24T10:17:02.470141Z"
+  }
+}

@@ -1,6 +1,7 @@
 ﻿[CmdletBinding()]
-param([switch]$Check,[switch]$NoInput)
+param([switch]$Check,[switch]$NoInput,[switch]$DeepSeek)
 $ErrorActionPreference='Stop'
+if($DeepSeek -and $Check){throw 'LIVE_MODEL_CHECK_FORBIDDEN: real model mode requires explicit local Key input and manual acceptance.'}
 $taskRoot=Split-Path -Parent $PSScriptRoot
 $taskNode=(Get-Command node -ErrorAction Stop).Source
 foreach($taskNeeded in @('agent-service/.venv/Scripts/python.exe','frontend/node_modules/vite/bin/vite.js')){if(!(Test-Path -LiteralPath (Join-Path $taskRoot $taskNeeded))){throw '请先按专属启动指南安装项目Python开发依赖和前端依赖。'}}
@@ -35,11 +36,26 @@ function Stop-DemoProcess([Diagnostics.Process]$Process){
 }
 Push-Location $taskRoot
 try{
-    Write-Host '准备独立演示环境（不连接日常数据库，不调用外部模型）…'
+    if($DeepSeek){Write-Host '准备真实模型隔离验收环境（不连接日常数据库；页面发起诊断时才请求DeepSeek）…'}else{Write-Host '准备独立演示环境（不连接日常数据库，不调用外部模型）…'}
     $taskClasspathFile=Join-Path $taskRun 'classpath.txt'
     & (Join-Path $PSScriptRoot 'backend.ps1') test-compile 'org.apache.maven.plugins:maven-dependency-plugin:3.10.0:build-classpath' '-Dmdep.includeScope=test' "-Dmdep.outputFile=$taskClasspathFile" *> (Join-Path $taskRun 'compile.log')
     $taskClasspath=(Join-Path $taskRoot 'backend/target/test-classes')+';'+(Join-Path $taskRoot 'backend/target/classes')+';'+[IO.File]::ReadAllText($taskClasspathFile).Trim()
-    $taskJavaProcess=Start-DemoProcess $taskJava @("-Dagentops.demo.directory=$taskRun","-Dagentops.demo.parent=$PID",'-cp',$taskClasspath,'dev.agentops.DemoRuntime') (Join-Path $taskRoot 'backend') 'runtime'
+    $taskJavaArgs=@("-Dagentops.demo.directory=$taskRun","-Dagentops.demo.parent=$PID")
+    if($DeepSeek){$taskJavaArgs+='-Dagentops.demo.deepseek=true'}
+    $taskJavaArgs+=@('-cp',$taskClasspath,'dev.agentops.DemoRuntime')
+    if($DeepSeek){
+        Write-Host 'DeepSeek直连验收：仅合成证据；本会话最多1次真实请求，不自动付费重试。请先确认本轮预算。'
+        $taskPreviousDeepSeekKey=$env:AGENT_LLM_API_KEY
+        $taskSecureKey=Read-Host '请输入DeepSeek API Key（输入不显示）' -AsSecureString
+        try{
+            $env:AGENT_LLM_API_KEY=[Net.NetworkCredential]::new('', $taskSecureKey).Password
+            if([string]::IsNullOrWhiteSpace($env:AGENT_LLM_API_KEY)){throw 'LIVE_MODEL_KEY_REQUIRED'}
+            $taskJavaProcess=Start-DemoProcess $taskJava $taskJavaArgs (Join-Path $taskRoot 'backend') 'runtime'
+        }finally{
+            if($null -eq $taskPreviousDeepSeekKey){Remove-Item Env:AGENT_LLM_API_KEY -ErrorAction SilentlyContinue}else{$env:AGENT_LLM_API_KEY=$taskPreviousDeepSeekKey}
+            $taskSecureKey.Dispose();$taskSecureKey=$null;$taskPreviousDeepSeekKey=$null
+        }
+    }else{$taskJavaProcess=Start-DemoProcess $taskJava $taskJavaArgs (Join-Path $taskRoot 'backend') 'runtime'}
     Wait-DemoFile 'ready.json' $taskJavaProcess
     $taskManifest=Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $taskRun 'ready.json') | ConvertFrom-Json
     $taskListener=[Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback,0);$taskListener.Start();$taskFrontendPort=$taskListener.LocalEndpoint.Port;$taskListener.Stop()
@@ -48,6 +64,7 @@ try{
     $taskFrontend=Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $taskRun 'frontend.json') | ConvertFrom-Json
     Write-Host "演示工作台：$($taskFrontend.origin)/login"
     Write-Host "DEMO_SESSION=$taskRun"
+    if($DeepSeek){Write-Host '当前为真实DeepSeek直连模式；页面标明合成检查与真实模型，模型调用上限1次。'}
     if($Check){
         & $taskNode (Join-Path $PSScriptRoot 'demo-smoke.mjs') $taskRun
         if($LASTEXITCODE -ne 0){throw "演示验收未通过，请查看 $taskRun/check-result.json。"}

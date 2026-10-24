@@ -18,11 +18,13 @@ G6新增一条核心自动验收命令：` .\scripts\acceptance.ps1`。使用独
 
 Windows PowerShell 5.1与PowerShell 7均可使用；中文验收入口保持UTF-8 BOM，JSON按UTF-8读取。兼容回归在Windows上调用自带5.1解析两个入口，在Linux上明确跳过该专属检查。
 
-DeepSeek官方API适配已提供：Python设置 `AGENT_LLM_PROVIDER=deepseek` 和本机API Key，Java/Python的 `AGENT_MODEL_NAME` 保持一致。接入及真实调用验收见专属指南第14节。2026-10-24经逐次授权完成3次真实接通尝试：首次取得模型响应和usage但本地报告校验拒绝，第二次不可用，第三次明确为连接失败；**真实报告验收尚未通过**。不将这一个合成场景写成模型质量或性能成绩。
+DeepSeek官方API适配已提供：Python设置 `AGENT_LLM_PROVIDER=deepseek` 和本机API Key，Java/Python的 `AGENT_MODEL_NAME` 保持一致。接入及真实调用验收见专属指南第14节。2026-10-24本轮隔离工作台已通过一次真实直连验收：模型报告经Python与Java校验，完成检查点人审恢复、批准、线下“未执行”回填及合成恢复后事故关闭。仅调用1次 `deepseek-flash`，实际usage为1919输入/1029输出tokens；不将这一个合成场景写成模型质量或性能成绩。此前3次前置检查失败的原始记录继续保留。
 
 首次接通可以在本机运行 ` .\agent-service\.venv\Scripts\python.exe .\agent-service\deepseek_check.py`，安全输入Key后仅请求一次，保存脱敏结果；无需数据库配置。具体范围、费用确认与日常工作台接入区别见专属指南第14.1.1节。三次原始脱敏结果与限制见[真实接通记录](docs/verification/deepseek-live-2026-10-24.json)，后续调用须重新确认，不自动重跑。
 
 模型网络保持直连，不为DeepSeek配置Clash代理；Clash仅用于其他网站。当前连接失败原因尚未确定，不将“没有使用代理”视为故障原因。
+
+完整页面链路新增显式入口 ` .\scripts\demo.ps1 -DeepSeek -NoInput`：隐藏输入一次Key，自动准备隔离服务与临时数据库，页面标明真实模型，每进程会话硬限制1次模型请求；原mock入口不变。用法与本轮预算见[专属指南第14.1.2节](IDEA启动与验收指南.md#1412-隔离工作台页面发起一次真实诊断)，实际结果见[真实工作台验收记录](docs/verification/deepseek-workbench-2026-10-24.json)。本地250项回归、类型/构建、核心16步及默认mock演示7步通过；新远端CI和20–30场景质量评测未运行。
 
 **在你的电脑上启动项目，请直接看 [IDEA 启动与验收指南](IDEA启动与验收指南.md)。** 该指南随启动配置和项目验收流程同步维护。
 

@@ -29,20 +29,24 @@ public final class DemoRuntime {
         new DemoRuntime(directory).run(parent);
     }
     void run(ProcessHandle parent)throws Exception{
+        boolean live=Boolean.getBoolean("agentops.demo.deepseek");
+        String modelName=live?"deepseek-flash":"mock";
+        if(live&&(System.getenv("AGENT_LLM_API_KEY")==null||System.getenv("AGENT_LLM_API_KEY").isBlank()))throw new IllegalArgumentException("LIVE_MODEL_KEY_REQUIRED");
         String token=UUID.randomUUID()+"-"+UUID.randomUUID(),adminPassword=UUID.randomUUID().toString(),observerPassword=UUID.randomUUID().toString();
         Instant expires=Instant.now().plusSeconds(7200);
         try(var pg=EmbeddedPostgres.builder().setDataDirectory(directory.resolve("postgres")).setCleanDataDirectory(true).setPort(0).start();
-            var python=PythonFixture.start(pg,token);
+            var python=live?PythonFixture.startLiveDeepSeek(pg,token,System.getenv("AGENT_LLM_API_KEY"),directory):PythonFixture.start(pg,token);
             var context=(ServletWebServerApplicationContext)SpringApplication.run(AgentOpsApplication.class,
                 "--server.port=0","--server.address=127.0.0.1","--spring.main.banner-mode=off","--logging.level.root=WARN",
                 "--spring.datasource.url=jdbc:postgresql://localhost:"+pg.getPort()+"/postgres","--spring.datasource.username=postgres","--spring.datasource.password=postgres",
                 "--agentops.security.session-pepper="+UUID.randomUUID()+UUID.randomUUID(),"--agentops.security.internal-token="+token,
                 "--agentops.bootstrap.username=","--agentops.bootstrap.password=","--agentops.monitoring.enabled=false","--agentops.kuma.enabled=false",
-                "--agentops.agent.enabled=true","--agentops.agent.model-name=mock","--agentops.agent.origin=http://127.0.0.1:"+python.port)){
+                "--agentops.agent.enabled=true","--agentops.agent.model-name="+modelName,"--agentops.agent.origin=http://127.0.0.1:"+python.port)){
             db=context.getBean(JdbcTemplate.class);store=context.getBean(MonitoringStore.class);
-            seed(context,adminPassword,observerPassword);sample("UP");
+            seed(context,adminPassword,observerPassword,modelName);sample("UP");
+            if(live){mode="DOWN";for(int n=0;n<3;n++)sample(mode);}
             write("ready.json",Map.of("schemaVersion",1,"demo",true,"backendOrigin","http://127.0.0.1:"+context.getWebServer().getPort(),"expiresAt",expires.toString(),"targetId",target,"checkId",check,
-                "admin",Map.of("username","demo-admin","password",adminPassword),"observer",Map.of("username","demo-observer","password",observerPassword)));
+                "admin",Map.of("username","demo-admin","password",adminPassword),"observer",Map.of("username","demo-observer","password",observerPassword),"modelName",modelName));
             System.out.println("DEMO_READY (temporary credentials are in the ignored session manifest)");
             long next=System.nanoTime()+Duration.ofSeconds(60).toNanos();
             while(parent.isAlive()&&!Files.exists(directory.resolve("stop"))&&Instant.now().isBefore(expires)){
@@ -54,7 +58,7 @@ public final class DemoRuntime {
             for(String file:List.of("ready.json","ready.json.tmp","command.json","reply.json","reply.json.tmp","stop"))Files.deleteIfExists(directory.resolve(file));
         }
     }
-    void seed(ServletWebServerApplicationContext context,String adminPassword,String observerPassword){
+    void seed(ServletWebServerApplicationContext context,String adminPassword,String observerPassword,String modelName){
         var encoder=new BCryptPasswordEncoder(4);
         db.update("INSERT INTO app_user(id,username,password_hash,display_name) VALUES(?,'demo-admin',?,'演示管理员'),(?,'demo-observer',?,'演示观察员')",admin,encoder.encode(adminPassword),observer,encoder.encode(observerPassword));
         for(String role:List.of("OPS_ADMIN","ON_CALL"))db.update("INSERT INTO user_role SELECT ?,id FROM app_role WHERE code=?",admin,role);
@@ -64,7 +68,7 @@ public final class DemoRuntime {
         db.update("INSERT INTO check_definition(id,target_id,method,interval_seconds,timeout_ms,expected_statuses,fail_threshold,recover_threshold,state) VALUES(?,?,'GET',60,3000,ARRAY[200],3,2,'ACTIVE')",check,target);
         var caller=new Caller(admin,UUID.randomUUID(),"demo-admin","演示管理员",Set.of("OPS_ADMIN","ON_CALL"));
         var books=context.getBean(RunbookService.class);
-        var book=books.create(caller,target,new RunbookController.Create("交互式演示验收手册","# 合成检查证据\n此目标不发送外部探测。终端down注入三条503，up注入四条200。\n## 人工流程\n确认事故、开始排查、发起mock诊断；批准后如实回填未执行。恢复证据不会代替人工确认。"),UUID.randomUUID().toString(),"demo-setup");
+        var book=books.create(caller,target,new RunbookController.Create("交互式演示验收手册","# 合成检查证据\n此目标不发送外部探测。终端down注入三条503，up注入四条200。\n## 人工流程\n确认事故、开始排查、发起"+modelName+"诊断；批准后如实回填未执行。恢复证据不会代替人工确认；健康检查不能单独确认根因。"),UUID.randomUUID().toString(),"demo-setup");
         books.publish(caller,book.id(),new RunbookController.Publish(book.revision(),"发布独立演示手册"),"demo-setup");
     }
     void command()throws Exception{

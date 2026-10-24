@@ -29,7 +29,7 @@ try{
     Invoke-AcceptanceStep 'python' {& (Join-Path $PSScriptRoot 'agent.ps1') Test}
     Invoke-AcceptanceStep 'frontend-tests' {& npm.cmd --prefix frontend test;if($LASTEXITCODE -ne 0){throw '前端回归失败，详见本阶段日志。'}}
     Invoke-AcceptanceStep 'frontend-build' {& npm.cmd --prefix frontend run build;if($LASTEXITCODE -ne 0){throw '前端类型/构建失败，详见本阶段日志。'}}
-    Invoke-AcceptanceStep 'demo-target' {& node --test scripts/demo-target.test.mjs scripts/demo-session.test.mjs;if($LASTEXITCODE -ne 0){throw '演示目标/会话契约失败，详见本阶段日志。'}}
+    Invoke-AcceptanceStep 'demo-target' {& node --test scripts/demo-target.test.mjs scripts/demo-session.test.mjs scripts/demo-live.test.mjs;if($LASTEXITCODE -ne 0){throw '演示目标/会话契约失败，详见本阶段日志。'}}
     Invoke-AcceptanceStep 'report-tests' {& node --test scripts/acceptance-report.test.mjs;if($LASTEXITCODE -ne 0){throw '报告回归失败，详见本阶段日志。'}}
     $taskJourneyData=$null
     if(Test-Path -LiteralPath $taskJourney){try{$taskJourneyData=Get-Content -Raw -Encoding UTF8 -LiteralPath $taskJourney | ConvertFrom-Json}catch{Write-Warning '本次旅程记录无法解析，报告会标为未通过。'}}

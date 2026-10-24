@@ -458,3 +458,17 @@ Compose逻辑项目名与数据身份分离：新增DAWNWATCH_DATA_PREFIX，默�
 随后用户明确：DeepSeek本来就保持直连，Clash只用于其他网站。撤回将模型改走Clash的建议；源码原本未启用模型代理，不改动该行为。专属启动指南和README已写明直连约定，保留原始失败/探针证据，不据此认定连接错误的具体原因。本次仅澄清文档，无新增网络请求、模型调用或服务重启。
 
 先RED后GREEN；最终完整acceptance（.cache/acceptance/20261024-171905-6ad70ef9）Java129、Python89、前端10、目标/会话9、报告5，共242项及类型/构建、核心16步通过。15项新增回归覆盖单调用、失败停止、无usage保持未知、Key不落盘、重定向输入、合法引用说明与诊断不包含敏感原文。独立只读初审无重复调用/Key泄露阻塞，指出提示缺口与过时文案，已离线修正并回归；不能称真实模型修复已验证。启动指南、README、模型文档同步；正式三次记录及限制见verification/deepseek-live-2026-10-24.json。真实报告、Java全链路与20–30样本质量评测仍未通过/未运行，不关闭阶段5，不合并main。
+
+## DeepSeek真实工作台接入（2026-10-24，合成场景链路已验收）
+
+用户再次要求继续真实接入，并确认直连。无Key探针：DNS两个地址TCP/TLS均通过，相同异步HTTP路径连续两次401。用户批准本轮最多3个独立真实验收会话、每会话最多1次模型请求、总预算US$0.05；不自动重试，不切Clash或关闭TLS。
+
+从991dad6创建codex/deepseek-live-workbench。计划见docs/superpowers/plans/2026-10-24-deepseek-live-workbench.md。新增开发专用Python工厂与线程安全单请求限额，复用Store/DeepSeekProvider/输出护栏；Java fixture提供显式真实模型工厂，运行时预置合成故障，前端从会话模式显示真实模型；PowerShell仅显式-DeepSeek时隐藏输入Key，子进程环境传递后恢复父环境，禁止-DeepSeek -Check。原mock入口和业务断言保留。
+
+先RED后GREEN，Python新增6项覆盖并发/重复/失败后单调用、引用拒绝和安全回执；Java新增真实工厂启动1项，Node新增付费模式禁止无人值守Check用例1项。离线回归均模拟HTTP或仅启动隔离服务读404/401，不产生模型费用。
+
+实现阶段验证完成：完整acceptance250项（Java130、Python95、前端10、目标/会话10、报告5）、类型/构建及核心16步通过；原默认mock演示7步通过并确认服务关闭/凭据清除。独立只读评审无阻塞/重要问题。
+
+用户隐藏输入Key启动本轮第1个真实会话后，浏览器实际完成确认事故→开始排查→真实模型诊断→Python/Java校验→等待人工审阅→批准→检查点恢复→NOT_EXECUTED回填→合成up恢复观察/解决→人工关闭。任务COMPLETED、六节点COMPLETED、outbox DONE且attempts=1、审批APPROVED、事故CLOSED v11。最终模型回执仍requestAttempts=1；未执行修复、重启、回滚或配置变更。deepseek-flash实际1919输入/1029输出tokens，模型及本地护栏5702ms，峰时未命中保守估算US$0.0018105（不是实际账单或性能基准）。1/3个会话和1次请求足以完成本轮，不追加付费调用。保留隔离页面供用户查看，最长两小时自动退出；日常服务/库保持原样。
+
+启动指南、README、模型与测试文档已同步。正式摘要verification/deepseek-workbench-2026-10-24.json，附脱敏模型回执、Java已接受报告、事故时间线及两张页面证据。此前三次失败记录保留；新远端CI、20–30样本人工标注质量评测及性能测试未运行，不关闭完整阶段5、不合并main。

@@ -450,6 +450,26 @@ Set-Location 'E:\javaProjects\AgentOps AI'
 
 接通检查不会把当前独立演示切换成真实模型。用于日常工作台时，继续按下文分别设置Python与IDEA的模型名称；新任务才会使用新模型。
 
+### 14.1.2 隔离工作台：页面发起一次真实诊断
+
+保持DeepSeek直连，不使用Clash。此入口自动准备临时业务库、独立受限checkpoint库、Java、Python和前端；在项目根目录的IDEA终端执行：
+
+```powershell
+.\scripts\demo.ps1 -DeepSeek -NoInput
+```
+
+编译后出现隐藏Key输入提示，再粘贴本机Key并回车，不把Key写入命令。Key只传给本次拥有的子进程，不进入文件、浏览器或Git；父终端的原环境会恢复。等待打印 `DEMO_SESSION` 和本次随机端口网址，不用打开固定5174。后台模式的临时账号在该会话Git忽略的 `ready.json`；账号仍为 `demo-admin` / `demo-observer`，不能用于日常库。
+
+页面应显示“真实模型验收环境”“合成检查样本 · DeepSeek直连 · 每会话最多1次模型请求”。已预置一条待确认的合成故障：确认事故 → 开始排查 → 发起AI诊断 → 等待人工审阅 → 核对真实模型名、冻结证据和手册 → 批准或拒绝。批准仅允许线下处理，纯验收回填“未执行”。通过会话控制命令 `up` 注入恢复证据，核对恢复观察和关闭。
+
+每个进程会话最多一次模型HTTP请求，跨并发诊断、失败及重复投递共用同一上限；无自动付费重试，不回退mock。已有报告、人审和回填不再调用模型。失败后不要反复点击发起新诊断；先读取会话内 `live-model-call.json` 的脱敏错误，再决定下一步。回执的 `pythonGuardPassed` 只代表Python校验，完整接入还须看到Java任务进入等待人审，并核对审批、回填与检查点。
+
+`-DeepSeek -Check` 被明确禁止，避免自动化验收意外付费；原 `demo.ps1` / `demo.ps1 -Check` 继续使用mock。本轮另行批准最多3个独立真实会话，总预算上限US$0.05，每会话最多1次请求；此前三次单次检查不代表新的授权。模型请求限制12000 UTF-8字节、4096输出tokens及25秒；按2026-10-24已核对的峰时单价保守估算每次低于US$0.01，实际以usage和平台账单为准。
+
+控制与退出沿用第13节：`node scripts/demo-session.mjs '<本次DEMO_SESSION>' up` / `status` / `quit`。会话最长两小时，退出删除临时凭据和数据库，脱敏模型回执保留。此入口不改变日常IDEA配置、已有账号或数据库；20–30样本质量评测仍需单独安排。
+
+**2026-10-24本轮实际验收通过：** 使用1个隔离会话、1次 `deepseek-flash` 直连请求，报告通过Python护栏与Java引用校验，进入等待人工审阅；批准后检查点恢复，回填“未执行”，六个节点全部确认。再注入合成200恢复证据，观察、解决并关闭事故；审批、回填与恢复关闭未增加模型请求。实际1919输入/1029输出tokens，模型请求及本地护栏共5702ms；按峰时未命中单价保守估算US$0.0018105，非平台实际账单、非整条流程时延或性能基准。只证明这一个合成样本的链路；报告仍保留根因未知与模型自评未经校准的提示。正式记录见 `docs/verification/deepseek-workbench-2026-10-24.json`。该会话额度已经用完，可继续看已有报告，不要再次点击发起诊断。
+
 ### 14.2 在Python启动终端设置
 
 在第2节已经配置checkpoint DSN和内部token的同一个PowerShell终端中，先用Ctrl+C停止原Python服务，再执行：
@@ -491,4 +511,4 @@ Remove-Variable taskDeepSeekKey
 
 结束时Ctrl+C停止Python，可用 `Remove-Item Env:AGENT_LLM_API_KEY` 清除本终端中的Key。恢复mock时Java和Python都改回 `AGENT_MODEL_NAME=mock`，Python还设置 `AGENT_LLM_PROVIDER=mock` 后重新启动。`.env.example`只提供变量说明；宿主机脚本不会自动读取 `.env`。
 
-2026-10-24真实接通记录：第1次返回deepseek-flash、1286输入/755输出tokens、耗时5091ms，但输出被本地校验拒绝，具体原因未留存，不能确定；第2次PROVIDER_UNAVAILABLE、577ms、usage未知；第3次CONNECT_ERROR、765ms、usage未知。首笔按峰时未命中单价估算US$0.0012918，不是实际账单，后两笔不能记为零费用。已补齐合法引用ID清单及安全错误码，不放宽护栏；后两次未取得模型响应，修正后的真实报告仍待验收。无Key的直连探针出现过连接失败，随后401；经本机Clash的HEAD也返回401，只证明探针当时可达，不证明模型调用成功。当前程序仍不自动使用Clash/系统代理，不会关闭TLS验证，也未切换当前mock演示。详情见docs/verification/deepseek-live-2026-10-24.json。
+2026-10-24此前三次前置接通检查记录：第1次返回deepseek-flash、1286输入/755输出tokens、耗时5091ms，但输出被本地校验拒绝，具体原因未留存，不能确定；第2次PROVIDER_UNAVAILABLE、577ms、usage未知；第3次CONNECT_ERROR、765ms、usage未知。首笔按峰时未命中单价估算US$0.0012918，不是实际账单，后两笔不能记为零费用。已补齐合法引用ID清单及安全错误码，不放宽护栏；这些失败记录保留在docs/verification/deepseek-live-2026-10-24.json。本轮后续经单独授权的隔离工作台已通过真实报告、人审与恢复关闭验收，见第14.1.2节；不能据此倒推此前三次失败的具体根因。无Key的直连/Clash HEAD探针只证明探针当时可达，不证明带Key模型调用成功；程序始终保持DeepSeek直连与TLS验证，默认演示仍为mock，只有显式 `-DeepSeek` 使用真实模型。
