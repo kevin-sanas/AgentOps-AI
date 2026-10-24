@@ -18,4 +18,4 @@ export const router=createRouter({history:createWebHistory(),scrollBehavior(to,f
  {path:'/:pathMatch(.*)*',component:()=>import('./pages/NotFoundPage.vue'),meta:{title:'页面不存在'}},
 ]})
 router.beforeEach((to,from)=>{if(auth.user&&!from.meta.public)useNavigation().positions[from.fullPath]={top:window.scrollY,left:window.scrollX};if(auth.token&&Date.parse(auth.expiresAt)<=Date.now())clearSession('登录已过期，请重新登录。');if(!to.meta.public&&!auth.token)return {path:'/login',query:{redirect:to.fullPath}};if(to.meta.admin&&!hasRole('OPS_ADMIN'))return '/overview';if(to.path==='/login'&&auth.token&&auth.user)return '/overview'})
-router.afterEach(to=>{document.title=`${to.meta.title||'工作台'} · AgentOps AI`})
+router.afterEach(to=>{document.title=`${to.meta.title||'工作台'} · Dawnwatch`})

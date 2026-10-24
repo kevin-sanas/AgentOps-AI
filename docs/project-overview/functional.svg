@@ -30,7 +30,7 @@
 <text x="356" y="697" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">用户与角色</text>
 <text x="356" y="721" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">账号启停 · 四类角色 · 目标读取/操作ACL</text>
 <rect x="30" y="365" width="220" height="110" rx="10" fill="#eff6ff" stroke="#cbd5e1"/><path d="M42,366 H238" stroke="#5b8cff" stroke-width="3"/>
-<text x="46" y="392" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">AgentOps AI</text>
+<text x="46" y="392" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">Dawnwatch</text>
 <text x="46" y="416" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">智能运维与事故协作</text>
 <text x="46" y="435" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">只读诊断，人工掌控</text>
 <text x="340" y="790" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">共享能力：工作页签 / 左侧子页面 / 全局搜索 / 时间范围 / 深浅主题 / 排序过滤分页 / 加载与错误态</text>

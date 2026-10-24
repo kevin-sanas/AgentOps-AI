@@ -5,7 +5,7 @@
     <groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-parent</artifactId><version>4.1.1</version><relativePath/>
   </parent>
   <groupId>dev.agentops</groupId><artifactId>agentops-backend</artifactId><version>0.1.0-SNAPSHOT</version>
-  <name>AgentOps AI backend</name>
+  <name>Dawnwatch backend</name>
   <properties>
     <java.version>21</java.version><embedded-postgres.version>2.2.2</embedded-postgres.version><postgres-binaries.version>17.11.0</postgres-binaries.version>
     <!-- Same-line security patches; see docs/verification/dependencies-2026-10-20/advisories.json. -->

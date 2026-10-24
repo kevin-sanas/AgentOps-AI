@@ -62,7 +62,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
-      COMPOSE_PROJECT_NAME: agentops-ci
+      COMPOSE_PROJECT_NAME: dawnwatch-ci
+      DAWNWATCH_DATA_PREFIX: dawnwatch-ci
       BACKEND_PORT: '18184'
       FRONTEND_PORT: '5184'
       AGENT_ENABLED: 'true'
@@ -71,6 +72,11 @@ jobs:
       KUMA_ENABLED: 'false'
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.0'
+      - name: Verify project rename preserves data volume identities
+        run: node --test scripts/compose-identity.test.mjs
       - name: Generate isolated CI credentials
         shell: python
         run: |

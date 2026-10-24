@@ -1,4 +1,14 @@
-# B｜AgentOps AI 智能运维平台
+# Dawnwatch
+
+陪值班人员守到天亮的 AI 运维协作平台。
+
+*An AI operations companion for on-call teams, through the night.*
+
+[![application-verify](https://github.com/kevin-sanas/Dawnwatch/actions/workflows/backend.yml/badge.svg?branch=codex%2Fdawnwatch-rename)](https://github.com/kevin-sanas/Dawnwatch/actions/workflows/backend.yml?query=branch%3Acodex%2Fdawnwatch-rename)
+
+当前徽章对应改名分支；主分支尚未合并本阶段。
+
+阶段 1 已切换品牌与仓库链接，兼容的技术包名、数据库及历史证据保留；Compose 升级前请阅读[数据卷兼容说明](docs/12-本地部署运维与CI-CD.md)。核心叙事是 Agent 可靠性、证据校验与人工掌控；后续阶段依次整理设计系统、改善界面、完善演示与开展真实模型评测。
 
 > 当前为 G5 + Dark-first UI/UX：后台工作页签、左侧子菜单、显著处理入口、主题下拉框、真实图表与诊断证据工作台；在 G4 监控、诊断和人审闭环上增加可选 Kuma Push、完整 Compose 和隔离恢复演练。默认 mock、Kuma 关闭；真实模型效果与容量/性能仍待验证，远端CI按提交记录。实际证据见阶段测试文档。
 
@@ -83,7 +93,7 @@ npm run dev
 当前 `compose.yaml` 包含业务 PostgreSQL、独立 checkpoint PostgreSQL、Java、Python、Vue 静态服务，以及 `--profile kuma` 可选服务。镜像固定版本和摘要。不要同时占用已有 IDEA 的端口；默认数据库使用独立 Compose 数据卷。
 
 1. 将 `.env.example` 复制为 `.env`，在本地自行设置数据库密码、两个彼此不同且至少 32 字符的随机 secret、checkpoint owner/application 两个不同密码，以及至少 12 字符、至多 72 UTF-8 字节的管理员密码。启用诊断时设置 `AGENT_ENABLED=true`，保持 mock；不要提交 `.env`。
-2. 在确认使用本项目新数据库卷后执行 `docker compose up --build`。只会在空用户表且明确配置 bootstrap 凭据时建立首个 `OPS_ADMIN`；已有账户不会重置。
+2. 按数据卷兼容说明核对卷归属、前缀及旧项目停止状态，再执行 `docker compose up --build`。只会在空用户表且明确配置 bootstrap 凭据时建立首个 `OPS_ADMIN`；已有账户不会重置。
 3. API 默认 [http://127.0.0.1:18080](http://127.0.0.1:18080)，公共存活检查 [health](http://127.0.0.1:18080/actuator/health)。数据库没有宿主机端口。
 4. `POST /api/v1/auth/login` 获取 token，仅由客户端内存保存；后续请求使用 `Authorization: Bearer ...`，退出时调用 `POST /api/v1/auth/logout`。
 
@@ -180,7 +190,7 @@ Agent 只整理已有证据、检索授权运行手册并生成诊断/行动建�
 - 每个 Agent 工具仅能读取预先注册的服务、检查结果和已授权运行手册。
 - MVP 不存在可写运维工具；高影响行动只生成建议，由人在线下执行。
 - Kuma Push Token 是秘密，禁止进入日志、前端、提示、审计 metadata。
-- Uptime Kuma 不作为 AgentOps 的数据源或事实库；集成关闭/故障时 AgentOps 核心流程继续。
+- Uptime Kuma 不作为 Dawnwatch 的数据源或事实库；集成关闭/故障时 Dawnwatch 核心流程继续。
 - 上游核验快照截至 2026-10-20；开发时重新核对稳定版本、许可证和接口契约。
 
 ## G4：人工审阅与线下结果回填（2026-10-21）

@@ -1,4 +1,4 @@
-AgentOps AI third-party notices
+Dawnwatch third-party notices
 
 Includes installed build dependencies for attribution. Optional packages for other platforms are listed in the lockfile/SBOM and are not distributed in this build.
 

@@ -1,4 +1,4 @@
-AgentOps Python runtime dependencies - actual installed wheel notices
+Dawnwatch Python runtime dependencies - actual installed wheel notices
 
 ========================================================================
 annotated-doc==0.0.5

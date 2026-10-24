@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "mode": "synthetic/mock",
+  "steps": [
+    {
+      "id": "frontend-proxy-login",
+      "status": "PASS"
+    },
+    {
+      "id": "down-opens-incident",
+      "status": "PASS"
+    },
+    {
+      "id": "observer-cannot-operate",
+      "status": "PASS"
+    },
+    {
+      "id": "acknowledge-investigate",
+      "status": "PASS"
+    },
+    {
+      "id": "real-outbox-python-review",
+      "status": "PASS"
+    },
+    {
+      "id": "manual-approval-and-report",
+      "status": "PASS"
+    },
+    {
+      "id": "up-recovers-and-manual-close",
+      "status": "PASS"
+    }
+  ]
+}

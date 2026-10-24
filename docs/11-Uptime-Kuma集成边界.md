@@ -2,9 +2,9 @@
 
 ## 目的和方向
 
-Uptime Kuma 可为现有使用者显示 AgentOps 定期检查到的服务状态，并继续使用 Kuma 自己配置的通知。数据方向只有 **AgentOps → Kuma Push Monitor**。管理员在 Kuma UI 中预先创建 Push monitor，再将其 Push URL/token 以 secret reference 配置到对应 AgentOps `ServiceTarget`。
+Uptime Kuma 可为现有使用者显示 Dawnwatch 定期检查到的服务状态，并继续使用 Kuma 自己配置的通知。数据方向只有 **Dawnwatch → Kuma Push Monitor**。管理员在 Kuma UI 中预先创建 Push monitor，再将其 Push URL/token 以 secret reference 配置到对应 Dawnwatch `ServiceTarget`。
 
-AgentOps 不从 Kuma 导入 monitor、不通过 Socket.IO 登录、不修改 Kuma 通知规则、不把 Kuma heartbeat/incident 当作自己的事实记录。AgentOps 自己的 `CheckRun`/`Incident` 才是本系统数据源。
+Dawnwatch 不从 Kuma 导入 monitor、不通过 Socket.IO 登录、不修改 Kuma 通知规则、不把 Kuma heartbeat/incident 当作自己的事实记录。Dawnwatch 自己的 `CheckRun`/`Incident` 才是本系统数据源。
 
 ## 上游接口核验
 
@@ -27,7 +27,7 @@ AgentOps 不从 Kuma 导入 monitor、不通过 Socket.IO 登录、不修改 Kum
 | 从 Kuma 读取 heartbeat/事件或 monitor 列表 | 不支持 |
 | 自动创建 monitor/改通知策略 | 不支持 |
 | 通过 Socket.IO 内部协议调用 | 禁止 |
-| Kuma 不在线时保留 AgentOps 结果并重试 push | 支持 |
+| Kuma 不在线时保留 Dawnwatch 结果并重试 push | 支持 |
 
 如果未来要做双向数据同步，需要新增版本化 adapter、回放/去重、认证安全评估和明确契约；不能以“内部 API 可用”推断为稳定支持。
 

@@ -1,4 +1,4 @@
-name: agentops-platform
+name: dawnwatch
 services:
   postgres:
     image: postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826
@@ -109,6 +109,11 @@ networks:
   egress: {}
   edge: {}
 volumes:
-  postgres-data: {}
-  checkpoint-data: {}
-  kuma-data: {}
+  # Preserve the original physical volumes when only the product/project name changes.
+  # Existing custom deployments can set DAWNWATCH_DATA_PREFIX to their old project name.
+  postgres-data:
+    name: ${DAWNWATCH_DATA_PREFIX:-agentops-platform}_postgres-data
+  checkpoint-data:
+    name: ${DAWNWATCH_DATA_PREFIX:-agentops-platform}_checkpoint-data
+  kuma-data:
+    name: ${DAWNWATCH_DATA_PREFIX:-agentops-platform}_kuma-data

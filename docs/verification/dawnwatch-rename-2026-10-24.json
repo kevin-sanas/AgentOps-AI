@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-24",
+  "recordedAt": "2026-10-24T06:05:16.794995+00:00",
+  "stage": 1,
+  "branch": "codex/dawnwatch-rename",
+  "baseRevision": "f915d58",
+  "testedWorkingTree": true,
+  "product": "Dawnwatch",
+  "repository": "https://github.com/kevin-sanas/Dawnwatch",
+  "validation": {
+    "java": {
+      "passed": 129,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "pythonUnit": {
+      "passed": 74
+    },
+    "frontend": {
+      "passed": 10
+    },
+    "targetAndSession": {
+      "passed": 9
+    },
+    "report": {
+      "passed": 5
+    },
+    "coreSuiteTotal": 227,
+    "composeIdentity": {
+      "passed": 2,
+      "requiresEngine": false
+    },
+    "typecheckAndBuild": "PASS",
+    "coreJourneySteps": 16,
+    "demoSteps": 7,
+    "browserLoginAndBrand": "PASS",
+    "localLinksChecked": 96,
+    "svgXmlValid": 4,
+    "unclassifiedOldBrandOccurrences": 0
+  },
+  "preserved": {
+    "databaseMigrations": "unchanged",
+    "dependencyLock": "metadata name only",
+    "historicalEvidence": "unchanged",
+    "technicalIdentifiers": "see docs/12 compatibility list",
+    "existingUserServicesAndData": "not operated on"
+  },
+  "testChangeApproval": "User explicitly approved only the Kuma message prefix branding assertion; other existing assertions unchanged.",
+  "review": {
+    "critical": 0,
+    "important": 0,
+    "minor": 1,
+    "minorResolution": "Updated stale current-branch prose in Markdown and offline HTML."
+  },
+  "scope": "Synthetic checks, real Java/Python/checkpoint workflow, mock provider; no real model or external target calls.",
+  "remoteCi": {
+    "localEngine": "Docker daemon unavailable; no local containers or volumes operated on",
+    "resultsSource": "Corresponding pushed commit in GitHub Actions; not inferred from this local report",
+    "workflow": "https://github.com/kevin-sanas/Dawnwatch/actions/workflows/backend.yml"
+  },
+  "artifacts": [
+    "dawnwatch-rename/core-report.json",
+    "dawnwatch-rename/demo-check-result.json",
+    "dawnwatch-rename/login.png",
+    "dawnwatch-rename/overview.png"
+  ]
+}

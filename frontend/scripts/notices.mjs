@@ -4,7 +4,7 @@ import path from 'node:path'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 const lock = JSON.parse(await readFile(path.join(root, 'package-lock.json'), 'utf8'))
-const sections = ['AgentOps AI third-party notices\n\nIncludes installed build dependencies for attribution. Optional packages for other platforms are listed in the lockfile/SBOM and are not distributed in this build.\n']
+const sections = ['Dawnwatch third-party notices\n\nIncludes installed build dependencies for attribution. Optional packages for other platforms are listed in the lockfile/SBOM and are not distributed in this build.\n']
 for (const [location, metadata] of Object.entries(lock.packages).sort(([a], [b]) => a.localeCompare(b))) {
   if (!location) continue
   const directory = path.join(root, location)

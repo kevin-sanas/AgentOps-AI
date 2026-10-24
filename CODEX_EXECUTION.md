@@ -440,3 +440,11 @@ Task P/Q/R完成：tokens/共享源组件、Dark/Light、六区导航、键盘�
 用户要求具体信息文档及功能结构、技术架构、数据库设计和系统流程图，并明确暂不接入DeepSeek。新增根目录项目详细说明.md、四张本地SVG和离线HTML图文版，核对实际pom/依赖锁/SQL/状态与权限，不写入任何运行凭据。架构文档修正Python3.13、FastAPI0.151及业务/checkpoint分库，README补齐图文入口并纠正已有前端生产容器描述。专属指南同步入口和NoInput会话控制说明。
 
 本机日常PG在运行，当前会话缺checkpoint凭据；使用既有demo -NoInput启动完整随机端口、独立临时PG、Java/Python mock与Vite，自动登录演示管理员，保留用户浏览器页和演示服务供体验。原日常数据库、账号、IDEA配置未改动，无DeepSeek请求。核对四图渲染、SVG XML、28张业务表与本文清单、本地文档引用和运行健康；临时文档预览服务/生成脚本结束即清理。不重跑未改业务测试，不推送或合并远端。
+
+## Dawnwatch 阶段 1：品牌改名（2026-10-24）
+
+用户确认六阶段整改方案，本轮先执行阶段1。以f915d58在原目录新建codex/dawnwatch-rename，不先合并main；GitHub仓库已由用户改名，本轮只更新origin和文档链接。展示品牌、登录页、title、包展示名、报告/第三方告知页头及文档图统一为Dawnwatch。Java入口/artifactId、Python模块、数据库/角色/schema、V1–V6及既有配置标识保留，兼容清单集中在部署文档。用户单独确认仅替换Kuma消息前缀及其测试品牌断言，其他断言不改。
+
+Compose逻辑项目名与数据身份分离：新增DAWNWATCH_DATA_PREFIX，默认复用原三个物理卷，自定义安装须先指定原前缀；CI项目与卷前缀均为dawnwatch-ci。配置回归先RED，发现Compose自动注入项目名后改为独立前缀，最终2/2通过。不运行/迁移用户数据卷；本机Docker引擎不可用，本轮容器运行结果以新提交的远端Compose CI为准。
+
+完整基线与改名后acceptance均通过；最终Java129、Python74、前端10、目标/会话9、报告5，共227项，类型/构建和核心16步通过。全新隔离演示七步自检通过，并在浏览器用本次临时管理员登录，核对Dawnwatch登录页、标题和侧栏。四SVG XML、96条本地链接、锁文件仅包名变化、迁移不变及未分类旧品牌0项已核对。独立只读评审无Critical/Important，1处旧分支文案已同步Markdown/离线版。正式证据verification/dawnwatch-rename-2026-10-24.json及子目录；专属启动指南和README同步。无真实模型请求、无日常服务或数据操作。保留本阶段分支，不合并main；设计系统和其余阶段尚未执行。

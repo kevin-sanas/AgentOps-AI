@@ -1,6 +1,8 @@
-# 你的 AgentOps AI：IDEA 启动与验收指南
+# 你的 Dawnwatch：IDEA 启动与验收指南
 
-更新日期：2026-10-24。适用版本：G5 + Dark-first UI/UX 工作空间、处置导航修正、G6核心自动验收、一键交互演示及DeepSeek官方API适配，业务库迁移至 V6。本文按你的 Windows、中文 IDEA 和项目位置编写；以后修改启动配置、端口或验收流程时同步更新本文。
+更新日期：2026-10-24。适用版本：Dawnwatch 改名阶段 1、G5 + Dark-first UI/UX 工作空间、处置导航修正、G6核心自动验收、一键交互演示及DeepSeek官方API适配，业务库迁移至 V6。本文按你的 Windows、中文 IDEA 和项目位置编写；以后修改启动配置、端口或验收流程时同步更新本文。
+
+本轮只更换产品展示名：IDEA 仍使用 `AgentOpsApplication` 和原 artifactId/JAR，数据库、已有账号、环境变量、端口与本地目录保持兼容。Compose 逻辑项目名改为 `dawnwatch`，数据卷默认保留原物理名称；已有 Compose 用户启动前必须先阅读[改名与数据卷兼容说明](docs/12-本地部署运维与CI-CD.md)。
 
 项目功能、技术架构、数据库设计与系统流程图见[项目详细说明](项目详细说明.md)，也提供[可离线打开的图文版](docs/project-overview/项目详细说明.html)。本指南继续作为启动命令与验收操作入口。
 
@@ -129,7 +131,7 @@ npm ci --ignore-scripts --no-fund --no-audit
 
 在左侧找到 **backend → pom.xml**，右键选择 **添加为 Maven 项目**。也可以在右侧 Maven 窗口点击 `+`，选择这个文件。
 
-右侧应出现 **AgentOps AI backend**。如果出现之前误导入的 **Apache Commons IO**，右键该条目 → **取消链接 Maven 项目**，再导入正确的 `backend/pom.xml`。不要导入 `.cache` 或 `.tools` 内依赖包自带的 POM。
+右侧应出现 **Dawnwatch backend**。如果出现之前误导入的 **Apache Commons IO**，右键该条目 → **取消链接 Maven 项目**，再导入正确的 `backend/pom.xml`。不要导入 `.cache` 或 `.tools` 内依赖包自带的 POM。
 
 打开 **文件 → 设置 → 构建、执行、部署 → 构建工具 → Maven**：
 
@@ -290,8 +292,10 @@ IDEA 后端还需以下环境变量，修改后重启后端：
 
 这是 IDEA 日常启动之外的另一种运行方式。先停止本项目 IDEA 后端和两个应用终端，避免 18080/5174 冲突；不要停止其他项目。
 
+已有 Compose 安装升级时，先按[数据卷兼容说明](docs/12-本地部署运维与CI-CD.md)核对 `DAWNWATCH_DATA_PREFIX` 并停止旧项目的容器；不要同时启动两套挂载相同卷的 PostgreSQL。下面的“首次”只指全新安装，改名不会重置已有账号。
+
 1. 根目录复制 `.env.example` 为 `.env`，填写业务库密码、pepper、内部 token、首次管理员密码，以及不同的 `CHECKPOINT_OWNER_PASSWORD` 和 `CHECKPOINT_PASSWORD`。设置 `AGENT_ENABLED=true`；模型保持 `mock`，Kuma 初次仍关闭。
-2. 执行 `docker compose up --build -d --wait`。首次会创建本项目的两个独立 PostgreSQL 数据卷，保留原本 IDEA 使用的数据库。
+2. 执行 `docker compose config --quiet` 核对配置，再执行 `docker compose up --build -d --wait`。已有安装复用已核对的卷；全新安装才会创建业务与 checkpoint 两个独立 PostgreSQL 数据卷，保留原本 IDEA 使用的数据库。
 3. 打开 5174 登录；新 Compose 数据库首次初始化的账号密码取自该 `.env`，不会复制 IDEA 数据库的账号。数据库与 Python 没有宿主机端口。
 4. 需要 Kuma 时执行 `docker compose --profile kuma up -d`，在 `http://127.0.0.1:3001` 建立自己的用户和 Push Monitor。容器中的后端可以使用 `http://kuma.agentops.test:3001`；设置 `KUMA_ALLOW_HTTP=true` 并核对 Kuma 容器实际私网 IP 的精确 CIDR。容器重建后 IP 可能变化，不能抄用开发验收地址。
 5. 更新 `.env` 后用 `docker compose up -d backend` 重建后端配置；映射表单使用相同 origin 和 `env:KUMA_PUSH_TOKEN_DEMO`。不要以 `restart` 代替环境变量重建。

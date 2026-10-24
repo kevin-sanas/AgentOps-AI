@@ -1,5 +1,34 @@
 # 12｜本地部署、运维与 CI/CD
 
+## 2026-10-24：品牌改名与兼容说明
+
+AgentOps AI 改名为 **Dawnwatch**。仓库为 <https://github.com/kevin-sanas/Dawnwatch>；本阶段更新展示品牌、页面标题、文档图、包展示名与 Compose 逻辑项目名，不迁移用户数据库。
+
+为保护现有配置和数据，下列旧技术标识属于明确保留的兼容项，不能按品牌字符串批量替换：
+
+| 保留位置 | 标识与原因 |
+|---|---|
+| Java | `dev.agentops`、`AgentOpsApplication`、`agentops-backend` artifactId/JAR 名；现有 IDEA 配置继续有效 |
+| Python | `agentops_agent` 模块及内部 schema/表名；保留导入和 checkpoint 兼容性 |
+| 数据库 | `agentops`、`agentops_checkpoint`、原角色、Flyway V1–V6；不更改已有迁移及校验和 |
+| 配置与协议 | 既有环境变量（含 `VITE_AGENTOPS_DEMO`）、`agentops.theme` 本地主题键、内部属性/测试 fixture 标识和 `kuma.agentops.test`；保持已保存配置与测试协议兼容 |
+| 本地目录 | 专属 IDEA 指南中的实际项目目录保持原位置，避免破坏工作目录和虚拟环境 |
+| 历史证据 | `docs/verification/` 内原始报告、SBOM、截图中的旧标识保留；新结果单独归档，不修改旧成绩 |
+| Compose 数据 | 原有物理卷前缀 `agentops-platform` 默认保留，详见下节 |
+
+### Compose 升级：先核对卷，再启动
+
+逻辑项目名已改为 `dawnwatch`。三个物理卷默认仍为 `agentops-platform_postgres-data`、`agentops-platform_checkpoint-data`、`agentops-platform_kuma-data`，不会仅因改名自动选择一套空卷。新增非敏感变量 `DAWNWATCH_DATA_PREFIX` 将数据身份和产品名称分开：
+
+- 原先使用默认项目名：沿用 `.env.example` 的 `DAWNWATCH_DATA_PREFIX=agentops-platform`。
+- 原先通过 `-p` 或 `COMPOSE_PROJECT_NAME` 使用自定义项目名：先用 `docker volume ls` 和 `docker volume inspect` 核对实际卷，将 `DAWNWATCH_DATA_PREFIX` 设置为原前缀。自定义的三个卷不符合此前缀规则时，先准备显式卷映射覆盖配置，不直接启动。
+- 全新、独立安装：可以选择唯一的新前缀，例如 `dawnwatch-local`；不要与其他安装共享前缀。
+- CI 同时设置 `COMPOSE_PROJECT_NAME=dawnwatch-ci` 和 `DAWNWATCH_DATA_PREFIX=dawnwatch-ci`，只清理其独立测试资源。
+
+升级前保存配套备份，并停止旧 Compose 项目中的服务，再启动新项目。禁止两个 PostgreSQL 实例同时挂载同一个数据卷；不要执行 `down --volumes`，不要用删库或重建卷解决登录问题。开发工具本轮不会替用户停止服务或操作数据卷。
+
+配置回归命令为 `node --test scripts/compose-identity.test.mjs`，需要 Docker Compose CLI，但不要求 Docker 引擎启动；验证默认卷身份及自定义前缀。容器实际启动与恢复演练仍须由对应提交的 Compose CI 单独证明。
+
 ## 本地运行
 
 完整 MVP 的 Compose 必需服务为 `postgres`、`backend`、`agent-service`、`frontend`。诊断可走无需外部密钥的 mock provider；实际检查只打本机 fixture 测试站点。Kuma 放到 `--profile kuma` 可选 profile，便于展示推送边界。建议 8 GiB RAM；Docling 未使用，不下载模型。

@@ -33,7 +33,7 @@ public class UptimeKumaPushAdapter implements AutoCloseable {
     public Result push(TargetUrlPolicy.Endpoint endpoint,String token,String outcome,Integer latency,UUID delivery){
         if(token==null||!token.matches("[A-Za-z0-9_-]{8,256}"))return new Result(false,null,"KUMA_SECRET_UNAVAILABLE",false);
         if(!List.of("UP","DOWN").contains(outcome))return new Result(false,null,"KUMA_OUTCOME_INVALID",false);
-        String query="status="+outcome.toLowerCase(Locale.ROOT)+"&msg=AgentOps-"+delivery+(latency==null?"":"&ping="+Math.max(0,latency));
+        String query="status="+outcome.toLowerCase(Locale.ROOT)+"&msg=Dawnwatch-"+delivery+(latency==null?"":"&ping="+Math.max(0,latency));
         URI uri=endpoint.uri().resolve("/api/push/"+token+"?"+query);String host=uri.getHost();var addresses=endpoint.addresses();
         DnsResolver pinned=new DnsResolver(){public InetAddress[] resolve(String name)throws UnknownHostException{if(!host.equalsIgnoreCase(name)||addresses.length==0)throw new UnknownHostException("UNAPPROVED_HOST");return new InetAddress[]{addresses[0]};}public String resolveCanonicalHostname(String name)throws UnknownHostException{if(!host.equalsIgnoreCase(name))throw new UnknownHostException("UNAPPROVED_HOST");return host;}};
         var timeout=Timeout.ofMilliseconds(timeoutMs);
@@ -44,7 +44,7 @@ public class UptimeKumaPushAdapter implements AutoCloseable {
         var deadline=deadlines.schedule(()->{expired.set(true);request.cancel();},timeoutMs,TimeUnit.MILLISECONDS);
         var client=HttpClients.custom().setConnectionManager(connection).setRoutePlanner(new DefaultRoutePlanner(DefaultSchemePortResolver.INSTANCE))
             .setDefaultRequestConfig(RequestConfig.custom().setResponseTimeout(timeout).setConnectionRequestTimeout(timeout).setAuthenticationEnabled(false).build())
-            .disableRedirectHandling().disableAutomaticRetries().disableCookieManagement().disableAuthCaching().disableContentCompression().setUserAgent("AgentOps-Kuma/0.1").build();
+            .disableRedirectHandling().disableAutomaticRetries().disableCookieManagement().disableAuthCaching().disableContentCompression().setUserAgent("Dawnwatch-Kuma/0.1").build();
         ClassicHttpResponse response=null;Integer status=null;
         try{
             response=client.executeOpen(null,request,null);status=response.getCode();

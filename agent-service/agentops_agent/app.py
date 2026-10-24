@@ -21,7 +21,7 @@ def create_app(store: Store, token: str):
         store.setup()
         yield
 
-    app = FastAPI(title="AgentOps internal diagnosis", docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan)
+    app = FastAPI(title="Dawnwatch internal diagnosis", docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan)
 
     @app.middleware("http")
     async def protect(request: Request, call_next):
