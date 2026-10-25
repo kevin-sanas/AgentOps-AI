@@ -10,10 +10,11 @@ from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 from .models import Invocation, Resume, Cancel
 from .store import Store, InputConflict
-from .provider import ModelOutcomeUnknown
+from .provider import DeepSeekProvider, ModelOutcomeUnknown
+from .provider_admin import DeepSeekAdminGateway
 
 
-def create_app(store: Store, token: str):
+def create_app(store: Store, token: str, *, provider_transport=None):
     if len(token.encode()) < 32: raise ValueError("INTERNAL_TOKEN_TOO_SHORT")
 
     @asynccontextmanager
@@ -46,23 +47,74 @@ def create_app(store: Store, token: str):
     async def validation_error(request, exc):
         return JSONResponse({"code": "VALIDATION_FAILED"}, status_code=400)
 
-    @app.post("/internal/v1/runs/{run_id}/invoke")
-    def invoke(run_id: UUID, body: Invocation):
-        if run_id != body.runId: raise HTTPException(400, "RUN_ID_MISMATCH")
+    @app.exception_handler(HTTPException)
+    async def http_error(request, exc):
+        code = exc.detail if isinstance(exc.detail, str) and re.fullmatch(r"[A-Z0-9_]{1,80}", exc.detail) else "REQUEST_REJECTED"
+        return JSONResponse({"code": code}, status_code=exc.status_code)
+
+    def model_credential(request: Request):
+        credential = request.headers.get("x-dawnwatch-model-credential", "")
+        if not credential:
+            return None
+        if len(credential.encode()) > 512 or "\r" in credential or "\n" in credential:
+            raise HTTPException(400, "MODEL_CREDENTIAL_INVALID")
+        return credential
+
+    @app.post("/internal/v1/providers/deepseek/test")
+    def test_provider(request: Request):
+        credential = model_credential(request)
+        if credential is None: return JSONResponse({"code": "MODEL_CREDENTIAL_REQUIRED"}, status_code=400)
         try:
-            result = store.invoke(body.model_dump(mode="json"))
+            return DeepSeekAdminGateway(transport=provider_transport).test_connection(
+                credential, request.headers["x-request-id"])
+        finally:
+            credential = None
+
+    @app.get("/internal/v1/providers/deepseek/balance")
+    def provider_balance(request: Request):
+        credential = model_credential(request)
+        if credential is None: return JSONResponse({"code": "MODEL_CREDENTIAL_REQUIRED"}, status_code=400)
+        try:
+            return DeepSeekAdminGateway(transport=provider_transport).balance(
+                credential, request.headers["x-request-id"])
+        finally:
+            credential = None
+
+    @app.post("/internal/v1/runs/{run_id}/invoke")
+    def invoke(run_id: UUID, body: Invocation, request: Request):
+        if run_id != body.runId: raise HTTPException(400, "RUN_ID_MISMATCH")
+        credential = model_credential(request)
+        provider = None
+        try:
+            if credential is not None:
+                if body.modelName != "deepseek-flash": raise ValueError("MODEL_CONFIGURATION_MISMATCH")
+                provider = DeepSeekProvider("deepseek-flash", credential, transport=provider_transport)
+            result = store.invoke(body.model_dump(mode="json"), provider=provider,
+                                  request_id=request.headers["x-request-id"])
             return JSONResponse(result, status_code=202 if result["status"] == "RUNNING" else 200)
         except ModelOutcomeUnknown:
-            return JSONResponse({"code": "MODEL_OUTCOME_UNKNOWN"}, status_code=409)
+            return JSONResponse(invoke_error(run_id, "MODEL_OUTCOME_UNKNOWN"), status_code=409)
         except InputConflict:
-            return JSONResponse({"code": "INPUT_CONFLICT"}, status_code=409)
+            return JSONResponse(invoke_error(run_id, "INPUT_CONFLICT"), status_code=409)
         except (ValidationError, ValueError):
-            return JSONResponse({"code": "AGENT_SCHEMA_INVALID"}, status_code=400)
+            return JSONResponse(invoke_error(run_id, "AGENT_SCHEMA_INVALID"), status_code=400)
         except TimeoutError:
-            return JSONResponse({"code": "AGENT_GRAPH_TIMEOUT"}, status_code=503)
+            return JSONResponse(invoke_error(run_id, "AGENT_GRAPH_TIMEOUT"), status_code=503)
         except Exception:
             # No DSN, payload or traceback in the HTTP response.
-            return JSONResponse({"code": "DEPENDENCY_UNAVAILABLE"}, status_code=503)
+            return JSONResponse(invoke_error(run_id, "DEPENDENCY_UNAVAILABLE"), status_code=503)
+        finally:
+            if provider is not None: provider.key = ""
+            credential = None
+
+    def invoke_error(run_id, code):
+        body = {"code": code}
+        reader = getattr(store, "model_request", None)
+        if reader is not None:
+            try: metadata = reader(run_id)
+            except Exception: metadata = None
+            if metadata is not None: body["providerRequest"] = metadata
+        return body
 
     @app.get("/internal/v1/runs/{run_id}")
     def read(run_id: UUID):

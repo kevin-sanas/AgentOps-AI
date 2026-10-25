@@ -107,11 +107,23 @@ def test_deepseek_uses_official_json_output_and_validates_the_same_evidence():
         assert all(name in request["messages"][0]["content"] for name in Analysis.model_fields)
         assert "tools" not in request and "json_schema" not in request["response_format"]
         assert "fixture-secret-123" not in json.dumps(request) and "[REDACTED]" in json.dumps(request)
-        return httpx.Response(200, json={"choices": [{"finish_reason": "stop", "message": {"content": json.dumps(answer(body))}}]})
+        return httpx.Response(200, json={"model": "deepseek-flash", "usage": {
+            "prompt_tokens": 120, "completion_tokens": 30, "total_tokens": 150,
+            "prompt_cache_hit_tokens": 20, "prompt_cache_miss_tokens": 100,
+        }, "choices": [{"finish_reason": "stop", "message": {"content": json.dumps(answer(body))}}]})
     invocation = Invocation.model_validate(body)
-    report = validate_result(DeepSeekProvider("deepseek-flash", "fixture-key", transport=httpx.MockTransport(handle)).analyze(invocation), invocation)
+    provider = DeepSeekProvider("deepseek-flash", "fixture-key", transport=httpx.MockTransport(handle))
+    report = validate_result(provider.analyze(invocation), invocation)
     assert report["modelName"] == "deepseek-flash" and len(seen) == 1
     assert report["citations"][0]["id"] == body["checks"][0]["runId"]
+    assert "usage" not in report and "providerRequest" not in report
+    assert provider.last_request == {
+        "outcome": "SUCCEEDED", "errorCode": None, "httpStatus": 200,
+        "model": "deepseek-flash", "usage": {
+            "promptTokens": 120, "completionTokens": 30, "totalTokens": 150,
+            "cacheHitTokens": 20, "cacheMissTokens": 100,
+        },
+    }
 
 
 @pytest.mark.parametrize("content", ["", "not valid JSON"])

@@ -1,6 +1,7 @@
 """A single structured-output HTTP call. No model-selected tools or URLs are exposed."""
 import asyncio
 import json
+import re
 from typing import Annotated
 from urllib.parse import urlsplit
 import httpx
@@ -39,6 +40,7 @@ class CompatibleProvider:
             raise ValueError("INVALID_MODEL_CONFIGURATION")
         self.url = base_url.rstrip("/") + "/chat/completions"
         self.model, self.key, self.transport, self.budget = model, key, transport, budget
+        self.last_request = None
 
     async def _request(self, body):
         try:
@@ -73,6 +75,7 @@ class CompatibleProvider:
                   "State uncertainty. Every next step requires human review. Any operation changing a system, deleting data or restarting services is HIGH risk. "
                   "No next step may be automatically executed. With insufficient evidence, say so explicitly.")
         response = asyncio.run(self._request(self._body(prompt, evidence)))
+        self.last_request = self._safe_request_metadata(response)
         try:
             choices = response["choices"]
             if len(choices) != 1 or choices[0]["finish_reason"] != "stop" or choices[0]["message"].get("refusal"):
@@ -90,6 +93,26 @@ class CompatibleProvider:
                 citations.append({"kind": "RUNBOOK_SECTION", "id": str(section.sectionId), "time": None, "version": section.version, "hash": section.hash})
         return result | {"runId": str(invocation.runId), "status": "COMPLETED", "graphVersion": invocation.graphVersion,
                          "modelName": self.model, "citations": citations, "steps": NODES}
+
+    def _safe_request_metadata(self, response):
+        returned = response.get("model") if isinstance(response, dict) else None
+        if not isinstance(returned, str) or not re.fullmatch(r"[A-Za-z0-9._:/-]{1,80}", returned):
+            returned = self.model
+        usage = response.get("usage") if isinstance(response, dict) else None
+        safe_usage = None
+        if isinstance(usage, dict):
+            names = {
+                "promptTokens": "prompt_tokens", "completionTokens": "completion_tokens",
+                "totalTokens": "total_tokens", "cacheHitTokens": "prompt_cache_hit_tokens",
+                "cacheMissTokens": "prompt_cache_miss_tokens",
+            }
+            values = {target: usage.get(source) for target, source in names.items()}
+            required = (values["promptTokens"], values["completionTokens"], values["totalTokens"])
+            optional = (values["cacheHitTokens"], values["cacheMissTokens"])
+            if all(type(value) is int and value >= 0 for value in required) and values["totalTokens"] == values["promptTokens"] + values["completionTokens"] and all(value is None or type(value) is int and value >= 0 for value in optional):
+                safe_usage = values
+        return {"outcome": "SUCCEEDED", "errorCode": None, "httpStatus": 200,
+                "model": returned, "usage": safe_usage}
 
 
 class DeepSeekProvider(CompatibleProvider):
