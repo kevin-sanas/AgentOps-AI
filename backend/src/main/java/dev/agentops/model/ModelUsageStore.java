@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 import java.util.Optional;
 import java.util.Set;
@@ -89,6 +92,10 @@ public class ModelUsageStore {
     }
 
     public Summary summary(Instant from, Instant to) {
+        return summary(null, from, to);
+    }
+
+    public Summary summary(String purpose, Instant from, Instant to) {
         validateRange(from, to);
         return db.queryForObject("""
             SELECT count(*) requests,
@@ -99,10 +106,11 @@ public class ModelUsageStore {
               coalesce(sum(prompt_tokens),0) prompt_tokens,
               coalesce(sum(completion_tokens),0) completion_tokens,
               coalesce(sum(total_tokens),0) total_tokens
-            FROM model_provider_request WHERE started_at>=? AND started_at<?
+            FROM model_provider_request
+            WHERE started_at>=? AND started_at<? AND (?::varchar IS NULL OR purpose=?)
             """, (row, n) -> new Summary(row.getLong("requests"), row.getLong("succeeded"), row.getLong("failed"),
             row.getLong("unknown"), row.getLong("requests_with_usage"), row.getLong("prompt_tokens"),
-            row.getLong("completion_tokens"), row.getLong("total_tokens")), Timestamp.from(from), Timestamp.from(to));
+            row.getLong("completion_tokens"), row.getLong("total_tokens")), Timestamp.from(from), Timestamp.from(to), purpose, purpose);
     }
 
     public PageResult<Request> list(String purpose, Instant from, Instant to, int page, int size) {
@@ -114,6 +122,41 @@ public class ModelUsageStore {
         Long total = db.queryForObject("SELECT count(*) FROM model_provider_request" + where, Long.class,
             Timestamp.from(from), Timestamp.from(to), purpose, purpose);
         return new PageResult<>(items, total == null ? 0 : total, page, size);
+    }
+
+    public List<TrendBucket> trend(String purpose, Instant from, Instant to) {
+        validateRange(from, to);
+        long rangeSeconds = Duration.between(from, to).getSeconds();
+        int bucketSeconds = rangeSeconds <= Duration.ofHours(48).getSeconds() ? 3600
+            : rangeSeconds <= Duration.ofDays(14).getSeconds() ? 21600 : 86400;
+        int bucketCount = Math.toIntExact((rangeSeconds + bucketSeconds - 1) / bucketSeconds);
+        var grouped = new HashMap<Integer, Aggregate>();
+        db.query("""
+            SELECT floor(extract(epoch FROM (started_at - ?::timestamptz)) / ?)::integer bucket_index,
+              count(*) requests, count(total_tokens) requests_with_usage,
+              coalesce(sum(prompt_tokens),0) prompt_tokens,
+              coalesce(sum(completion_tokens),0) completion_tokens,
+              coalesce(sum(total_tokens),0) total_tokens
+            FROM model_provider_request
+            WHERE started_at>=? AND started_at<? AND (?::varchar IS NULL OR purpose=?)
+            GROUP BY bucket_index ORDER BY bucket_index
+            """, row -> {
+                var aggregate = new Aggregate(row.getLong("requests"), row.getLong("requests_with_usage"),
+                    row.getLong("prompt_tokens"), row.getLong("completion_tokens"), row.getLong("total_tokens"));
+                grouped.put(row.getInt("bucket_index"), aggregate);
+            }, Timestamp.from(from), bucketSeconds, Timestamp.from(from), Timestamp.from(to), purpose, purpose);
+        var result = new ArrayList<TrendBucket>(bucketCount);
+        for (int index = 0; index < bucketCount; index++) {
+            Instant start = from.plusSeconds((long) index * bucketSeconds);
+            Instant end = start.plusSeconds(bucketSeconds);
+            if (end.isAfter(to)) end = to;
+            Aggregate value = grouped.getOrDefault(index, Aggregate.EMPTY);
+            boolean unknown = value.requests() > 0 && value.requestsWithUsage() == 0;
+            result.add(new TrendBucket(start, end, value.requests(), value.requestsWithUsage(),
+                unknown ? null : value.promptTokens(), unknown ? null : value.completionTokens(),
+                unknown ? null : value.totalTokens()));
+        }
+        return List.copyOf(result);
     }
 
     private static void validateRange(Instant from, Instant to) {
@@ -144,9 +187,15 @@ public class ModelUsageStore {
     public record Completion(String outcome, String errorCode, Integer httpStatus, int elapsedMs, Usage usage) {}
     public record Summary(long requests, long succeeded, long failed, long unknown, long requestsWithUsage,
                           long promptTokens, long completionTokens, long totalTokens) {}
+    public record TrendBucket(Instant startedAt, Instant endedAt, long requests, long requestsWithUsage,
+                              Long promptTokens, Long completionTokens, Long totalTokens) {}
     public record Request(UUID id, String requestId, String purpose, String provider, String model,
                           UUID agentRunId, UUID incidentId, UUID actorId, String outcome, String errorCode,
                           Integer httpStatus, Integer elapsedMs, Integer promptTokens, Integer completionTokens,
                           Integer totalTokens, Integer cacheHitTokens, Integer cacheMissTokens,
                           Instant startedAt, Instant completedAt) {}
+    private record Aggregate(long requests, long requestsWithUsage, long promptTokens,
+                             long completionTokens, long totalTokens) {
+        private static final Aggregate EMPTY = new Aggregate(0, 0, 0, 0, 0);
+    }
 }

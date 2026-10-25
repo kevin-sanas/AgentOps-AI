@@ -81,11 +81,44 @@ class ModelUsageApiTest {
         assertThat(summary.path("requests").asInt()).isEqualTo(2);
         assertThat(summary.path("failed").asInt()).isEqualTo(1);
         assertThat(summary.path("requestsWithUsage").asInt()).isZero();
+        JsonNode filteredSummary = ok(get("/admin/model-usage/summary?purpose=CONNECTION_TEST&from=" + from + "&to=" + to, admin));
+        assertThat(filteredSummary.path("requests").asInt()).isEqualTo(1);
+        assertThat(filteredSummary.path("failed").asInt()).isZero();
         JsonNode requests = ok(get("/admin/model-usage/requests?from=" + from + "&to=" + to + "&page=0&size=20", admin));
         assertThat(requests.path("total").asInt()).isEqualTo(2);
         assertThat(requests.path("items").get(0).path("totalTokens").isNull()).isTrue();
         assertThat(get("/admin/model-usage/requests?from=" + Instant.now().minusSeconds(40L * 86400).toString() + "&to=" + to, admin).statusCode()).isEqualTo(400);
         assertThat(get("/admin/model-usage/requests?from=" + from + "&to=" + to + "&size=101", admin).statusCode()).isEqualTo(400);
+    }
+
+    @Test
+    void tokenTrendUsesBoundedBucketsAndKeepsUnreportedUsageUnknown() throws Exception {
+        Instant from = Instant.parse("2026-01-01T01:00:00Z");
+        Instant to = Instant.parse("2026-01-01T04:00:00Z");
+        db.update("UPDATE model_provider_request SET started_at=? WHERE request_id='usage-success'", java.sql.Timestamp.from(from.plusSeconds(900)));
+        db.update("UPDATE model_provider_request SET started_at=? WHERE request_id='usage-failed'", java.sql.Timestamp.from(from.plusSeconds(4500)));
+        UUID measured = usage.begin(new ModelUsageStore.Start("DIAGNOSIS", "deepseek", "deepseek-flash", null, null, ADMIN, "usage-measured"));
+        usage.complete(measured, new ModelUsageStore.Completion("SUCCEEDED", null, 200, 20,
+            new ModelUsageStore.Usage(120, 30, 150, 25, 95)));
+        db.update("UPDATE model_provider_request SET started_at=? WHERE id=?", java.sql.Timestamp.from(from.plusSeconds(8100)), measured);
+
+        assertThat(get("/admin/model-usage/trend?from=" + from + "&to=" + to, null).statusCode()).isEqualTo(401);
+        assertThat(get("/admin/model-usage/trend?from=" + from + "&to=" + to, observer).statusCode()).isEqualTo(403);
+        JsonNode trend = ok(get("/admin/model-usage/trend?from=" + from + "&to=" + to, admin));
+        assertThat(trend.size()).isEqualTo(3);
+        assertThat(trend.get(0).path("requests").asInt()).isEqualTo(1);
+        assertThat(trend.get(0).path("requestsWithUsage").asInt()).isZero();
+        assertThat(trend.get(0).path("totalTokens").isNull()).isTrue();
+        assertThat(trend.get(1).path("totalTokens").isNull()).isTrue();
+        assertThat(trend.get(2).path("promptTokens").asLong()).isEqualTo(120);
+        assertThat(trend.get(2).path("completionTokens").asLong()).isEqualTo(30);
+        assertThat(trend.get(2).path("totalTokens").asLong()).isEqualTo(150);
+
+        JsonNode filtered = ok(get("/admin/model-usage/trend?purpose=CONNECTION_TEST&from=" + from + "&to=" + to, admin));
+        assertThat(filtered.get(0).path("totalTokens").isNull()).isTrue();
+        assertThat(filtered.get(1).path("requests").asInt()).isZero();
+        assertThat(filtered.get(1).path("totalTokens").asLong()).isZero();
+        assertThat(filtered.get(2).path("requests").asInt()).isZero();
     }
 
     String login(String username) throws Exception {

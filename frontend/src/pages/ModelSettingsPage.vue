@@ -2,25 +2,27 @@
 import { computed,onMounted,reactive,ref,watch } from 'vue'
 import { api,errorText } from '../api'
 import { time } from '../composables'
-import { balanceTransition,credentialLabel,emptyBalanceState,formatTokens,outcomeLabels,purposeLabels,usageSource } from '../model-admin'
-import type { ModelBalanceReply,ModelConfigurationStatus,ModelUsageRequest,ModelUsageSummary,Page } from '../types'
+import { balanceTransition,credentialLabel,emptyBalanceState,formatTokens,outcomeLabels,purposeLabels,tokenTrendLabel,usageSource } from '../model-admin'
+import type { ModelBalanceReply,ModelConfigurationStatus,ModelUsageRequest,ModelUsageSummary,ModelUsageTrendBucket,Page } from '../types'
 import AppIcon from '../components/AppIcon.vue'
 import PageState from '../components/PageState.vue'
 import PaginationBar from '../components/PaginationBar.vue'
+import TokenTrendChart from '../components/TokenTrendChart.vue'
 
 const status=ref<ModelConfigurationStatus|null>(null),statusLoading=ref(true),statusError=ref('')
 const form=reactive({apiKey:'',showSecret:false}),saving=ref(false),testing=ref(false),deleting=ref(false),confirmDelete=ref(false)
 const actionError=ref(''),actionSuccess=ref('')
 const balance=ref(emptyBalanceState())
-const summary=ref<ModelUsageSummary|null>(null),requests=ref<Page<ModelUsageRequest>|null>(null),usageLoading=ref(false),usageError=ref('')
+const summary=ref<ModelUsageSummary|null>(null),trend=ref<ModelUsageTrendBucket[]|null>(null),requests=ref<Page<ModelUsageRequest>|null>(null),usageLoading=ref(false),usageError=ref('')
 const range=ref('24'),purpose=ref(''),page=ref(0),size=20
 
 const configuredLabel=computed(()=>status.value?credentialLabel(status.value):'读取中…')
 const canTest=computed(()=>status.value?.configured||form.apiKey.trim().length>=8)
 const rangeQuery=computed(()=>{const to=new Date(),from=new Date(to.getTime()-Number(range.value)*60*60*1000);return `from=${encodeURIComponent(from.toISOString())}&to=${encodeURIComponent(to.toISOString())}`})
+const trendAriaLabel=computed(()=>tokenTrendLabel(summary.value))
 
 async function loadStatus(){statusLoading.value=true;statusError.value='';try{status.value=await api<ModelConfigurationStatus>('/admin/model-config')}catch(e){status.value=null;statusError.value=errorText(e)}finally{statusLoading.value=false}}
-async function loadUsage(){usageLoading.value=true;usageError.value='';try{const query=rangeQuery.value+(purpose.value?`&purpose=${purpose.value}`:'');[summary.value,requests.value]=await Promise.all([api<ModelUsageSummary>(`/admin/model-usage/summary?${rangeQuery.value}`),api<Page<ModelUsageRequest>>(`/admin/model-usage/requests?${query}&page=${page.value}&size=${size}`)])}catch(e){summary.value=null;requests.value=null;usageError.value=errorText(e)}finally{usageLoading.value=false}}
+async function loadUsage(){usageLoading.value=true;usageError.value='';try{const query=rangeQuery.value+(purpose.value?`&purpose=${purpose.value}`:'');[summary.value,trend.value,requests.value]=await Promise.all([api<ModelUsageSummary>(`/admin/model-usage/summary?${query}`),api<ModelUsageTrendBucket[]>(`/admin/model-usage/trend?${query}`),api<Page<ModelUsageRequest>>(`/admin/model-usage/requests?${query}&page=${page.value}&size=${size}`)])}catch(e){summary.value=null;trend.value=null;requests.value=null;usageError.value=errorText(e)}finally{usageLoading.value=false}}
 function resetMessages(){actionError.value='';actionSuccess.value=''}
 async function save(){if(!status.value)return;resetMessages();saving.value=true;try{status.value=await api<ModelConfigurationStatus>('/admin/model-config',{method:'PUT',body:{apiKey:form.apiKey,version:status.value.version}});form.apiKey='';form.showSecret=false;balance.value=emptyBalanceState();actionSuccess.value='模型密钥已加密保存。请执行连接测试，确认当前密钥与网络可用。'}catch(e){actionError.value=errorText(e)}finally{saving.value=false}}
 async function testConnection(){resetMessages();testing.value=true;try{const body=form.apiKey.trim()?{apiKey:form.apiKey}:{};const reply=await api<ModelBalanceReply>('/admin/model-config/test',{method:'POST',body});actionSuccess.value=`连接成功：${reply.model}，耗时 ${reply.elapsedMs} ms。此测试不生成内容，不消耗推理 Token。`;if(!form.apiKey.trim())await loadStatus();await loadUsage()}catch(e){actionError.value=errorText(e);await loadUsage()}finally{testing.value=false}}
@@ -46,7 +48,11 @@ onMounted(()=>{void Promise.all([loadStatus(),loadUsage()])})
   <div v-if="balance.status==='ready'&&balance.rows.length" class="balance-list"><div v-for="row in balance.rows" :key="row.currency"><span>{{ row.currency }}</span><strong>{{ row.total }}</strong><small>赠送 {{ row.granted }} · 充值 {{ row.toppedUp }}</small></div></div><p v-else-if="balance.status==='ready'&&!balance.message" class="muted">服务商未返回余额币种。</p>
  </div></article>
 </section>
-<section class="panel usage-panel"><div class="panel-heading"><div><h2>模型请求审计</h2><p>Token 只统计服务商明确返回用量的请求；未知不会显示为 0。</p></div><div class="usage-filters"><label><span class="sr-only">时间范围</span><select v-model="range"><option value="24">最近 24 小时</option><option value="168">最近 7 天</option><option value="720">最近 30 天</option></select></label><label><span class="sr-only">调用来源</span><select v-model="purpose"><option value="">全部调用</option><option value="DIAGNOSIS">AI 故障诊断</option><option value="CONNECTION_TEST">连接测试</option><option value="BALANCE_QUERY">余额查询</option></select></label><button class="btn small" :disabled="usageLoading" @click="loadUsage"><AppIcon name="refresh" :size="14" />刷新</button></div></div>
+<section class="panel token-trend-panel"><div class="panel-heading"><div><h2>Token 用量趋势</h2><p>按调用时间聚合服务商真实回执；无回执的时间桶保留缺口。</p></div><div class="usage-filters"><label><span class="sr-only">时间范围</span><select v-model="range"><option value="24">最近 24 小时</option><option value="168">最近 7 天</option><option value="720">最近 30 天</option></select></label><label><span class="sr-only">调用来源</span><select v-model="purpose"><option value="">全部调用</option><option value="DIAGNOSIS">AI 故障诊断</option><option value="CONNECTION_TEST">连接测试</option><option value="BALANCE_QUERY">余额查询</option></select></label><button class="btn small" :disabled="usageLoading" @click="loadUsage"><AppIcon name="refresh" :size="14" />刷新</button></div></div>
+ <PageState :loading="usageLoading&&!trend" :error="usageError" @retry="loadUsage"><TokenTrendChart v-if="trend" :buckets="trend" :label="trendAriaLabel" /></PageState>
+ <div class="panel-footnote">{{ trend?.filter(row=>row.requests>0&&row.requestsWithUsage===0).length||0 }} 个时间桶含请求但无 Token 回执 · 图中显示为缺口而非 0</div>
+</section>
+<section class="panel usage-panel"><div class="panel-heading"><div><h2>模型请求审计</h2><p>沿用上方时间和来源筛选；Token 未知不会显示为 0。</p></div></div>
  <div v-if="summary" class="usage-summary"><div><span>请求次数</span><strong>{{ summary.requests.toLocaleString() }}</strong><small>成功 {{ summary.succeeded }} · 失败 {{ summary.failed }} · 未知 {{ summary.unknown }}</small></div><div><span>已用 Token</span><strong>{{ formatTokens(summary.totalTokens) }}</strong><small>输入 {{ formatTokens(summary.promptTokens) }} · 输出 {{ formatTokens(summary.completionTokens) }}</small></div><div><span>含用量回执</span><strong>{{ summary.requestsWithUsage.toLocaleString() }}</strong><small>其余请求的 Token 显示“未知”</small></div></div>
  <PageState :loading="usageLoading&&!requests" :error="usageError" :empty="!!requests&&!requests.items.length" title="所选范围内没有模型请求" @retry="loadUsage"><template v-if="requests"><div class="table-scroll"><table><thead><tr><th>时间 / 结果</th><th>系统调用位置</th><th>模型</th><th>Token</th><th>耗时 / 状态</th></tr></thead><tbody><tr v-for="row in requests.items" :key="row.id"><td><span class="status" :class="statusClass(row.outcome)"><span class="status-dot"></span>{{ outcomeLabels[row.outcome]||row.outcome }}</span><small class="cell-note">{{ time(row.startedAt) }}</small></td><td><RouterLink v-if="source(row).to" class="text-link" :to="source(row).to!">{{ source(row).label }}<AppIcon name="chevron" :size="13" /></RouterLink><span v-else>{{ source(row).label }}</span><small class="cell-note">{{ purposeLabels[row.purpose]||row.purpose }}</small></td><td><strong>{{ row.model }}</strong><small class="cell-note">{{ row.provider }}</small></td><td><strong>{{ formatTokens(row.totalTokens) }}</strong><small class="cell-note">输入 {{ formatTokens(row.promptTokens) }} · 输出 {{ formatTokens(row.completionTokens) }}</small></td><td><span>{{ row.elapsedMs==null?'未知':`${row.elapsedMs} ms` }}</span><small class="cell-note">{{ row.errorCode||row.httpStatus||'—' }}</small></td></tr></tbody></table></div><PaginationBar :page="page" :size="size" :total="requests.total" :loading="usageLoading" @change="p=>{page=p;loadUsage()}" /></template></PageState>
 </section></template>

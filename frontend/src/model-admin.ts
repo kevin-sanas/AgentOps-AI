@@ -1,4 +1,4 @@
-import type { ModelBalanceReply,ModelConfigurationStatus,ModelUsageRequest } from './types'
+import type { ModelBalanceReply,ModelConfigurationStatus,ModelUsageRequest,ModelUsageSummary,ModelUsageTrendBucket } from './types'
 
 export type BalanceRow={currency:string;total:string;granted:string;toppedUp:string}
 export type BalanceState={status:'idle'|'loading'|'ready'|'error';rows:BalanceRow[];message:string}
@@ -21,6 +21,20 @@ export function balanceTransition(_state:BalanceState,event:BalanceEvent):Balanc
   return emptyBalanceState()
 }
 export function formatTokens(value:number|null|undefined){return value==null?'未知':value.toLocaleString('en-US')}
+export function tokenTrendSeries(buckets:ModelUsageTrendBucket[]){
+  const point=(row:ModelUsageTrendBucket,value:number|null):[number,number|null]=>[Date.parse(row.startedAt),value]
+  return {
+    prompt:buckets.map(row=>point(row,row.promptTokens)),
+    completion:buckets.map(row=>point(row,row.completionTokens)),
+    total:buckets.map(row=>point(row,row.totalTokens)),
+    unknownBuckets:buckets.filter(row=>row.requests>0&&row.requestsWithUsage===0).length,
+  }
+}
+export function tokenTrendLabel(summary:Pick<ModelUsageSummary,'requests'|'requestsWithUsage'|'totalTokens'>|null){
+  if(!summary)return 'Token 用量趋势'
+  if(summary.requests>0&&summary.requestsWithUsage===0)return `Token 用量趋势：${summary.requests} 次请求均无 Token 回执`
+  return `Token 用量趋势：${summary.totalTokens.toLocaleString('en-US')} Token，${summary.requestsWithUsage} 次请求含用量回执`
+}
 export function usageSource(request:Pick<ModelUsageRequest,'purpose'|'agentRunId'|'incidentId'>):{label:string;to:string|null}{
   if(request.purpose==='DIAGNOSIS'&&request.agentRunId)return {label:`诊断任务 ${request.agentRunId}`,to:`/agent-runs/${request.agentRunId}`}
   if(request.purpose==='CONNECTION_TEST')return {label:'连接测试',to:null}

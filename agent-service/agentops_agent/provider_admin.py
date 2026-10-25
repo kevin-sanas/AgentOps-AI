@@ -29,7 +29,7 @@ class DeepSeekAdminGateway:
         started = monotonic()
         base = self._base(request_id, "CONNECTION_TEST")
         try:
-            status, data = asyncio.run(self._get("/models", key))
+            status, data = asyncio.run(self._get_with_tls_reconnect("/models", key))
             if status != 200: return self._failure(base, self._status_error(status), status, started)
             models = data.get("data") if isinstance(data, dict) else None
             if not isinstance(models, list) or len(models) > 500:
@@ -46,7 +46,7 @@ class DeepSeekAdminGateway:
         started = monotonic()
         base = self._base(request_id, "BALANCE_QUERY") | {"isAvailable": None, "balances": []}
         try:
-            status, data = asyncio.run(self._get("/user/balance", key))
+            status, data = asyncio.run(self._get_with_tls_reconnect("/user/balance", key))
             if status != 200: return self._failure(base, self._status_error(status), status, started)
             available = data.get("is_available") if isinstance(data, dict) else None
             rows = data.get("balance_infos") if isinstance(data, dict) else None
@@ -58,6 +58,16 @@ class DeepSeekAdminGateway:
                            "elapsedMs": self._elapsed(started), "isAvailable": available, "balances": balances}
         except Exception as error:
             return self._exception(base, error, started)
+
+    async def _get_with_tls_reconnect(self, path, key):
+        """Reconnect once when certificate verification fails; every attempt still verifies TLS."""
+        async with asyncio.timeout(self.timeout):
+            try:
+                return await self._get(path, key)
+            except Exception as error:
+                if not self._has_cause(error, ssl.SSLCertVerificationError):
+                    raise
+                return await self._get(path, key)
 
     async def _get(self, path, key):
         async with asyncio.timeout(self.timeout):

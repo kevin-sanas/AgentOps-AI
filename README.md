@@ -10,7 +10,7 @@
 
 阶段 1 已切换品牌与仓库链接，兼容的技术包名、数据库及历史证据保留；Compose 升级前请阅读[数据卷兼容说明](docs/12-本地部署运维与CI-CD.md)。核心叙事是 Agent 可靠性、证据校验与人工掌控；后续阶段依次整理设计系统、改善界面、完善演示与开展真实模型评测。
 
-> 当前为 G7 + Dark-first UI/UX：管理员可在工作台加密保存 DeepSeek Key、测试连接、查询余额，并查看请求次数、Token 与诊断来源；监控、诊断、人审、可选 Kuma Push、Compose 和隔离恢复演练保持原有边界。未配置模型时新诊断使用 mock，Kuma 默认关闭；真实模型质量与容量/性能仍待完整评测。
+> 当前为 G7 + Dark-first UI/UX：管理员可在工作台加密保存 DeepSeek Key、测试连接、查询余额，并查看请求次数、Token 趋势与诊断来源；监控、诊断、人审、可选 Kuma Push、Compose 和隔离恢复演练保持原有边界。未配置模型时新诊断使用 mock，Kuma 默认关闭；真实模型质量与容量/性能仍待完整评测。
 
 G6新增一条核心自动验收命令：` .\scripts\acceptance.ps1`。使用独立临时数据库、随机端口和Python mock，串起故障阈值、事故、人审、回填与恢复，生成本次HTML/JSON报告；不需要填写新的数据库密码或token。启动与用法见专属指南第12节。首次GitHub CI已核实通过（39c1948），新功能分支仍需单独验证，不能沿用旧提交的绿灯。
 
@@ -22,7 +22,7 @@ DeepSeek 官方 API 现由页面管理：使用 `OPS_ADMIN` 登录，进入“AI
 
 首次接通可以在本机运行 ` .\agent-service\.venv\Scripts\python.exe .\agent-service\deepseek_check.py`，安全输入Key后仅请求一次，保存脱敏结果；无需数据库配置。具体范围、费用确认与日常工作台接入区别见专属指南第14.1.1节。三次原始脱敏结果与限制见[真实接通记录](docs/verification/deepseek-live-2026-10-24.json)，后续调用须重新确认，不自动重跑。
 
-模型网络保持直连，不为DeepSeek配置Clash代理；Clash仅用于其他网站。当前连接失败原因尚未确定，不将“没有使用代理”视为故障原因。
+模型网络保持直连，不为DeepSeek配置Clash代理；Clash仅用于其他网站。连接测试或余额查询遇到握手阶段的瞬时证书校验失败时，只新建一次连接并重新执行严格校验；连续失败仍关闭失败并返回安全错误，不会关闭TLS校验。历史 `CONNECT_ERROR` 的具体原因仍未确定，不将“没有使用代理”视为故障原因。
 
 隔离页面链路使用 ` .\scripts\demo.ps1 -DeepSeek -NoInput`：脚本不再读取 Key，直接打印网址、`DEMO_SESSION`、管理员和观察员的本次随机密码；登录后在模型配置页输入并测试 Key。每个隔离会话硬限制1次模型推理请求，退出后临时数据库与其中的加密配置一并删除；原 mock 入口不变。历史真实验收结果见[真实工作台验收记录](docs/verification/deepseek-workbench-2026-10-24.json)，不代表新的调用授权或完整质量评测。
 
@@ -58,7 +58,7 @@ DeepSeek 官方 API 现由页面管理：使用 `OPS_ADMIN` 登录，进入“AI
 - 运行手册草稿、乐观锁、发布不可变版本/段落 UUID 与 SHA-256；停用不破坏旧引用。
 - AgentRun + 事务 Outbox、租约/有限重试/DEAD 明确重试、Python LangGraph + 独立 PostgreSQL checkpoint；同 runId 恢复，Java 二次核验引用。
 - 报告区分观测、推断和未知，提供稳定手册引用；管理员可在页面配置 `deepseek-flash`，未配置时使用 mock，无运维写工具。
-- 模型 Key 加密持久化且不回显；页面提供无推理内容的连接测试、服务商余额查询、请求次数、精确回执 Token 和诊断任务来源审计。未知 Token 不记为零，余额不是 Dawnwatch 账单。
+- 模型 Key 加密持久化且不回显；页面提供无推理内容的连接测试、服务商余额查询、请求次数、按时间/来源筛选的 Token 动态趋势和诊断任务来源审计。未知 Token 形成图表缺口而不记为零，余额不是 Dawnwatch 账单。
 - 持久化人工审阅、批准/拒绝/过期和线下结果回填；模型调用记录支持结果复用，不确定结果停止重发。
 
 检查新建后默认禁用，管理员需明确启用。事故人工处理需要 `ON_CALL` 及目标 `can_operate`；管理员也需显式获得这两项权限。活动事故期间冻结目标网络和检查配置，暂停检查会中断恢复观察。
@@ -125,7 +125,7 @@ npm run dev
 | `POST /auth/login`、`GET /me`、`POST /auth/logout` | 登录、当前身份、撤销当前会话 |
 | `GET/POST /admin/users` | OPS_ADMIN 查看/建立用户；响应不包含密码 hash |
 | `GET/PUT/DELETE /admin/model-config`、`POST .../test`、`GET .../balance` | OPS_ADMIN 查看脱敏配置、保存/删除 Key、测试连接及查询服务商余额；完整 Key 不回显 |
-| `GET /admin/model-usage/summary`、`GET .../requests` | OPS_ADMIN 按时间/用途查看请求次数、Token 与诊断来源 |
+| `GET /admin/model-usage/summary`、`GET .../trend`、`GET .../requests` | OPS_ADMIN 按时间/用途查看请求次数、Token 汇总/趋势与诊断来源 |
 | `PUT /admin/users/{id}/roles`、`PUT .../active` | OPS_ADMIN 管理明确角色列表/停用用户，变更审计 |
 | `GET/POST /targets`、`GET /targets/{id}` | 管理员登记/配置视图，其他角色仅看到已授权目标 |
 | `PUT /targets/{id}/access/{userId}` | OPS_ADMIN 授予目标读取/操作权限，要求理由 |
@@ -220,7 +220,7 @@ Agent 只整理已有证据、检索授权运行手册并生成诊断/行动建�
 
 默认 mock 可以完整验收上述闭环。G7 起 DeepSeek 不再通过 Java、Python 或 Compose 环境变量配置；管理员在“AI 故障诊断 → 模型配置与用量”保存并测试 Key。保存成功后的**新任务**固定使用 `deepseek-flash`，删除配置后的新任务回到 mock，已建立任务不改变模型快照。官方 HTTPS 固定直连、校验证书、不跟随重定向，也不读取 Clash 或系统代理。单次推理总预算25秒、响应64KiB；连接测试和余额查询不生成诊断内容，但属于外部请求并写入审计台账。
 
-密钥使用由 `SESSION_TOKEN_PEPPER` 派生的独立 AES-GCM 密钥加密；请保持 pepper 稳定并保护数据库备份。更换 pepper 后旧密文无法解密，需要管理员重新保存 Key。余额按服务商返回的币种逐行展示，不换算、不推算；Token 只记录服务商明确回执，未知值保持“未知”而不是 0。
+密钥使用由 `SESSION_TOKEN_PEPPER` 派生的独立 AES-GCM 密钥加密；请保持 pepper 稳定并保护数据库备份。更换 pepper 后旧密文无法解密，需要管理员重新保存 Key。余额按服务商返回的币种逐行展示，不换算、不推算；连接测试和余额查询只在握手阶段明确证书校验失败时安全重连一次，两次均必须通过TLS校验。Token 只记录服务商明确回执，动态趋势中的未知值显示为缺口而不是 0。
 
 模型请求前先持久化调用记录，已验证的结果先写入独立checkpoint库，再交给图继续。进程在图检查点提交前崩溃时可复用原模型结果。如果响应超时、进程退出或数据库故障导致调用是否完成不确定，任务返回 `AGENT_MODEL_OUTCOME_UNKNOWN`，停止自动重试，管理员也不能强制将同一任务重发。先核对模型服务的调用记录，需要重新诊断时再从事故详情明确发起新任务。已知的连接失败或HTTP 429/5xx仍按有界策略重试；不宣称与远端服务能组成跨系统的 exactly-once 事务。
 

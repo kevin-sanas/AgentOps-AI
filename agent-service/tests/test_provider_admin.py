@@ -89,6 +89,47 @@ def test_connection_maps_transport_failures_without_exception_text(case, code):
     assert "sensitive" not in json.dumps(result)
 
 
+def test_connection_reconnects_once_after_a_tls_verification_failure():
+    """A transient TLS edge failure must not require a second operator click."""
+    from agentops_agent.provider_admin import DeepSeekAdminGateway
+    calls = []
+
+    def respond(request):
+        calls.append(request)
+        if len(calls) == 1:
+            try:
+                raise ssl.SSLCertVerificationError("fixture certificate chain failure")
+            except ssl.SSLCertVerificationError as cause:
+                raise httpx.ConnectError("fixture TLS failure", request=request) from cause
+        return httpx.Response(200, json={
+            "object": "list", "data": [{"id": "deepseek-flash", "object": "model"}],
+        })
+
+    result = DeepSeekAdminGateway(transport=httpx.MockTransport(respond)).test_connection(
+        "fixture-key", "request-connection-reconnect")
+    assert result["outcome"] == "SUCCEEDED"
+    assert len(calls) == 2
+
+
+def test_connection_stops_after_one_tls_reconnect_and_keeps_the_safe_error():
+    """A persistently invalid certificate must still fail closed after two strict handshakes."""
+    from agentops_agent.provider_admin import DeepSeekAdminGateway
+    calls = []
+
+    def respond(request):
+        calls.append(request)
+        try:
+            raise ssl.SSLCertVerificationError("fixture certificate chain failure")
+        except ssl.SSLCertVerificationError as cause:
+            raise httpx.ConnectError("fixture TLS failure", request=request) from cause
+
+    result = DeepSeekAdminGateway(transport=httpx.MockTransport(respond)).test_connection(
+        "fixture-key", "request-connection-fail-closed")
+    assert result["outcome"] == "FAILED"
+    assert result["errorCode"] == "MODEL_TLS_VERIFY_FAILED"
+    assert len(calls) == 2
+
+
 def test_balance_validates_multi_currency_decimal_rows():
     from agentops_agent.provider_admin import DeepSeekAdminGateway
 
@@ -109,6 +150,50 @@ def test_balance_validates_multi_currency_decimal_rows():
         "currency": "CNY", "totalBalance": "12.34", "grantedBalance": "2.34", "toppedUpBalance": "10.00"
     }
     assert result["usage"] is None
+
+
+def test_balance_reconnects_once_after_a_tls_verification_failure():
+    """A bad edge certificate must not force the operator to click refresh manually."""
+    from agentops_agent.provider_admin import DeepSeekAdminGateway
+    calls = []
+
+    def respond(request):
+        calls.append(request)
+        if len(calls) == 1:
+            try:
+                raise ssl.SSLCertVerificationError("fixture certificate chain failure")
+            except ssl.SSLCertVerificationError as cause:
+                raise httpx.ConnectError("fixture TLS failure", request=request) from cause
+        return httpx.Response(200, json={
+            "is_available": True,
+            "balance_infos": [{
+                "currency": "CNY", "total_balance": "12.34",
+                "granted_balance": "2.34", "topped_up_balance": "10.00",
+            }],
+        })
+
+    result = DeepSeekAdminGateway(transport=httpx.MockTransport(respond)).balance("fixture-key", "request-reconnect")
+    assert result["outcome"] == "SUCCEEDED"
+    assert result["balances"][0]["totalBalance"] == "12.34"
+    assert len(calls) == 2
+
+
+def test_balance_stops_after_one_tls_reconnect_and_keeps_the_safe_error():
+    """A persistently invalid certificate must still fail closed after the bounded reconnect."""
+    from agentops_agent.provider_admin import DeepSeekAdminGateway
+    calls = []
+
+    def respond(request):
+        calls.append(request)
+        try:
+            raise ssl.SSLCertVerificationError("fixture certificate chain failure")
+        except ssl.SSLCertVerificationError as cause:
+            raise httpx.ConnectError("fixture TLS failure", request=request) from cause
+
+    result = DeepSeekAdminGateway(transport=httpx.MockTransport(respond)).balance("fixture-key", "request-fail-closed")
+    assert result["outcome"] == "FAILED"
+    assert result["errorCode"] == "MODEL_TLS_VERIFY_FAILED"
+    assert len(calls) == 2
 
 
 @pytest.mark.parametrize("value", ["NaN", "Infinity", "-1.00", "not-a-number"])

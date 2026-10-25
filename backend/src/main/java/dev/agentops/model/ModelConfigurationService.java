@@ -90,18 +90,30 @@ public class ModelConfigurationService {
         }
     }
 
-    public ModelUsageStore.Summary summary(Instant from, Instant to) {
+    public ModelUsageStore.Summary summary(String purpose, Instant from, Instant to) {
+        validatePurpose(purpose);
         var range = range(from, to);
-        return usage.summary(range.from(), range.to());
+        return usage.summary(purpose, range.from(), range.to());
     }
 
     public PageResult<ModelUsageStore.Request> requests(String purpose, Instant from, Instant to, int page, int size) {
-        if (purpose != null && !java.util.Set.of("DIAGNOSIS", "CONNECTION_TEST", "BALANCE_QUERY").contains(purpose)) {
-            throw ApiError.badRequest("MODEL_USAGE_PURPOSE_INVALID");
-        }
+        validatePurpose(purpose);
         var range = range(from, to);
         try { return usage.list(purpose, range.from(), range.to(), page, size); }
         catch (IllegalArgumentException | ArithmeticException error) { throw ApiError.badRequest("MODEL_USAGE_RANGE_INVALID"); }
+    }
+
+    public java.util.List<ModelUsageStore.TrendBucket> trend(String purpose, Instant from, Instant to) {
+        validatePurpose(purpose);
+        var range = range(from, to);
+        try { return usage.trend(purpose, range.from(), range.to()); }
+        catch (IllegalArgumentException | ArithmeticException error) { throw ApiError.badRequest("MODEL_USAGE_RANGE_INVALID"); }
+    }
+
+    private static void validatePurpose(String purpose) {
+        if (purpose != null && !java.util.Set.of("DIAGNOSIS", "CONNECTION_TEST", "BALANCE_QUERY").contains(purpose)) {
+            throw ApiError.badRequest("MODEL_USAGE_PURPOSE_INVALID");
+        }
     }
 
     private ModelConfigurationStore.Credential credential() {
