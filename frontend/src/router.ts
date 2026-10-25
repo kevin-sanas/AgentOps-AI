@@ -1,5 +1,6 @@
 import { createRouter,createWebHistory } from 'vue-router'
 import { auth,clearSession,hasRole } from './api'
+import { MODEL_SETTINGS_META,MODEL_SETTINGS_PATH } from './model-admin'
 import { useNavigation } from './stores/navigation'
 export const router=createRouter({history:createWebHistory(),scrollBehavior(to,from,saved){if(saved)return saved;const anchor=to.hash?document.getElementById(to.hash.slice(1)):null;if(anchor)return {el:anchor,top:96};if(to.path===from.path&&to.hash)return false;return useNavigation().positions[to.fullPath]||{top:0}},routes:[
  {path:'/login',component:()=>import('./pages/LoginPage.vue'),meta:{public:true,title:'登录'}},
@@ -14,6 +15,7 @@ export const router=createRouter({history:createWebHistory(),scrollBehavior(to,f
  {path:'/runbooks',component:()=>import('./pages/RunbooksPage.vue'),meta:{title:'运维知识库'}},
  {path:'/runbooks/:id',component:()=>import('./pages/RunbookDetailPage.vue'),meta:{title:'知识与版本'}},
  {path:'/agent-runs/:id',component:()=>import('./pages/AgentRunPage.vue'),meta:{title:'诊断工作台'}},
+ {path:MODEL_SETTINGS_PATH,component:()=>import('./pages/ModelSettingsPage.vue'),meta:MODEL_SETTINGS_META},
  {path:'/admin/users',component:()=>import('./pages/UsersPage.vue'),meta:{title:'用户与角色',admin:true}},
  {path:'/:pathMatch(.*)*',component:()=>import('./pages/NotFoundPage.vue'),meta:{title:'页面不存在'}},
 ]})
