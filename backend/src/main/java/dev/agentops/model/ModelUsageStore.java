@@ -7,8 +7,11 @@ import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
+import java.util.Optional;
+import java.util.Set;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class ModelUsageStore {
@@ -25,17 +28,58 @@ public class ModelUsageStore {
     }
 
     public Request complete(UUID id, Completion completion) {
+        return finish(id, completion, false);
+    }
+
+    @Transactional
+    public Request recordDiagnosis(Start start, Completion completion) {
+        if (!"DIAGNOSIS".equals(start.purpose()) || start.agentRunId() == null || start.incidentId() == null
+            || start.actorId() == null) throw new IllegalArgumentException("MODEL_DIAGNOSIS_SOURCE_REQUIRED");
+        UUID id = UUID.randomUUID();
+        db.update("""
+            INSERT INTO model_provider_request(id,request_id,purpose,provider,model,agent_run_id,incident_id,actor_id)
+            VALUES(?,?,?,?,?,?,?,?)
+            ON CONFLICT (agent_run_id) WHERE purpose='DIAGNOSIS' AND agent_run_id IS NOT NULL DO NOTHING
+            """, id, start.requestId(), start.purpose(), start.provider(), start.model(), start.agentRunId(),
+            start.incidentId(), start.actorId());
+        Request current = byDiagnosisRun(start.agentRunId()).orElseThrow(() -> new IllegalStateException("MODEL_REQUEST_NOT_FOUND"));
+        if (!Set.of("STARTED", "UNKNOWN").contains(current.outcome())) {
+            if (same(current, completion)) return current;
+            throw new IllegalStateException("MODEL_REQUEST_RECONCILIATION_CONFLICT");
+        }
+        return finish(current.id(), completion, true);
+    }
+
+    public Optional<Request> byDiagnosisRun(UUID runId) {
+        return db.query("SELECT * FROM model_provider_request WHERE purpose='DIAGNOSIS' AND agent_run_id=?", this::map, runId)
+            .stream().findFirst();
+    }
+
+    private Request finish(UUID id, Completion completion, boolean allowUnknown) {
         Usage tokens = completion.usage();
         int changed = db.update("""
             UPDATE model_provider_request SET outcome=?,error_code=?,http_status=?,elapsed_ms=?,
               prompt_tokens=?,completion_tokens=?,total_tokens=?,cache_hit_tokens=?,cache_miss_tokens=?,completed_at=now()
-            WHERE id=? AND outcome='STARTED'
+            WHERE id=? AND (outcome='STARTED' OR (? AND outcome='UNKNOWN'))
             """, completion.outcome(), completion.errorCode(), completion.httpStatus(), completion.elapsedMs(),
             tokens == null ? null : tokens.promptTokens(), tokens == null ? null : tokens.completionTokens(),
             tokens == null ? null : tokens.totalTokens(), tokens == null ? null : tokens.cacheHitTokens(),
-            tokens == null ? null : tokens.cacheMissTokens(), id);
+            tokens == null ? null : tokens.cacheMissTokens(), id, allowUnknown);
         if (changed != 1) throw new IllegalStateException("MODEL_REQUEST_NOT_STARTABLE");
         return get(id);
+    }
+
+    private static boolean same(Request current, Completion completion) {
+        Usage usage = completion.usage();
+        return java.util.Objects.equals(current.outcome(), completion.outcome())
+            && java.util.Objects.equals(current.errorCode(), completion.errorCode())
+            && java.util.Objects.equals(current.httpStatus(), completion.httpStatus())
+            && java.util.Objects.equals(current.elapsedMs(), completion.elapsedMs())
+            && java.util.Objects.equals(current.promptTokens(), usage == null ? null : usage.promptTokens())
+            && java.util.Objects.equals(current.completionTokens(), usage == null ? null : usage.completionTokens())
+            && java.util.Objects.equals(current.totalTokens(), usage == null ? null : usage.totalTokens())
+            && java.util.Objects.equals(current.cacheHitTokens(), usage == null ? null : usage.cacheHitTokens())
+            && java.util.Objects.equals(current.cacheMissTokens(), usage == null ? null : usage.cacheMissTokens());
     }
 
     public Request get(UUID id) {

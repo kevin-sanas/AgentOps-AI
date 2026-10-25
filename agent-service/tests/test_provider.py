@@ -1,5 +1,6 @@
 import json
 import hashlib
+import ssl
 from datetime import datetime
 from uuid import uuid4
 import httpx
@@ -85,6 +86,24 @@ def test_provider_distinguishes_connection_failure_from_ambiguous_completion(fai
         provider = CompatibleProvider("https://model.example/v1", "fixture-model", "fixture-key", transport=httpx.MockTransport(handle))
     with pytest.raises(ProviderUnavailable) as error: provider.analyze(Invocation.model_validate(body))
     assert isinstance(error.value, ModelOutcomeUnknown) == (failure == "read")
+
+
+def test_deepseek_tls_verification_failure_has_a_safe_specific_category():
+    from agentops_agent.provider import DeepSeekProvider, ProviderUnavailable
+    from agentops_agent.model_calls import PersistedProvider
+    from agentops_agent.models import Invocation
+    body = review_payload() | {"modelName": "deepseek-flash"}
+    def handle(request):
+        try:
+            raise ssl.SSLCertVerificationError("synthetic certificate detail must not escape")
+        except ssl.SSLCertVerificationError as cause:
+            raise httpx.ConnectError("synthetic transport detail must not escape", request=request) from cause
+    provider = DeepSeekProvider("deepseek-flash", "fixture-key", transport=httpx.MockTransport(handle))
+    with pytest.raises(ProviderUnavailable) as error:
+        provider.analyze(Invocation.model_validate(body))
+    assert error.value.failure_kind == "TLS_VERIFY"
+    assert str(error.value) == "MODEL_UNAVAILABLE"
+    assert PersistedProvider._error_code(error.value) == "MODEL_TLS_VERIFY_FAILED"
 
 
 def test_deepseek_uses_official_json_output_and_validates_the_same_evidence():

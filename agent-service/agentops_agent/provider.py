@@ -2,6 +2,7 @@
 import asyncio
 import json
 import re
+import ssl
 from typing import Annotated
 from urllib.parse import urlsplit
 import httpx
@@ -56,7 +57,14 @@ class CompatibleProvider:
                             if len(data) > 65536: raise ValueError("MODEL_RESPONSE_TOO_LARGE")
                         return json.loads(data)
         except (httpx.ConnectError, httpx.ConnectTimeout) as error:
-            kind = "CONNECT_TIMEOUT" if isinstance(error, httpx.ConnectTimeout) else "CONNECT_ERROR"
+            cause = error
+            tls_failed = False
+            while cause is not None:
+                if isinstance(cause, ssl.SSLCertVerificationError):
+                    tls_failed = True
+                    break
+                cause = cause.__cause__
+            kind = "TLS_VERIFY" if tls_failed else ("CONNECT_TIMEOUT" if isinstance(error, httpx.ConnectTimeout) else "CONNECT_ERROR")
             raise ProviderUnavailable("MODEL_UNAVAILABLE", failure_kind=kind) from None
         except (httpx.HTTPError, TimeoutError):
             raise ModelOutcomeUnknown("MODEL_OUTCOME_UNKNOWN") from None

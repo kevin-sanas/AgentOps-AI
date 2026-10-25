@@ -76,6 +76,7 @@ class PersistedProvider:
     @staticmethod
     def _error_code(error):
         if isinstance(error, ProviderUnavailable):
+            if error.failure_kind == "TLS_VERIFY": return "MODEL_TLS_VERIFY_FAILED"
             if error.failure_kind == "CONNECT_TIMEOUT": return "MODEL_TIMEOUT"
             if error.failure_kind == "CONNECT_ERROR": return "MODEL_CONNECT_FAILED"
             if error.http_status == 429: return "MODEL_RATE_LIMITED"
