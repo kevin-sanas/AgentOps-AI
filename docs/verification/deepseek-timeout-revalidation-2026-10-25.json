@@ -1,0 +1,77 @@
+{
+  "date": "2026-10-25",
+  "branch": "codex/deepseek-risk-diagnostics",
+  "testedRevision": "3fe1667581c213a031e9a35606d2964912dacfcb",
+  "status": "LIVE_SINGLE_SCENARIO_ACCEPTED_HUMAN_REVIEW_PENDING",
+  "authorization": {
+    "repository": "kevin-sanas/Dawnwatch",
+    "scenarioIds": ["request-timeout"],
+    "requestLimit": 1,
+    "budgetEstimateLimitUsd": 0.01,
+    "automaticRetry": false
+  },
+  "plan": {
+    "planHash": "80950de1a16b2bdfb4eeccee546c6a2d0d5e4900576d810e2a7dbc2a9dc904e9",
+    "datasetHash": "0626b8e0e0cbeab1e7a2b812b8ebe6a70aa60fefbd2154edab310d4f3667f650",
+    "inputHash": "5bca075326bcbdd9d210a26b66e9008962108e1532b6011251d399f25f139e5f",
+    "sampleMode": "synthetic",
+    "directOfficialHttps": true,
+    "clashUsedForModel": false,
+    "tlsVerification": true
+  },
+  "liveResult": {
+    "batchStatus": "COMPLETED",
+    "scenarioStatus": "ACCEPTED",
+    "requestAttempts": 1,
+    "acceptedReports": 1,
+    "returnedModel": "deepseek-flash",
+    "usage": {
+      "promptTokens": 1469,
+      "completionTokens": 802,
+      "totalTokens": 2271
+    },
+    "elapsedMs": 5765,
+    "peakUncachedCostEstimateUsd": 0.0014031,
+    "unknownPotentialCharges": false,
+    "costCaveat": "Estimate from the plan pricing snapshot, not the provider invoice or an account spending cap."
+  },
+  "offlineValidation": {
+    "datasetHashMatched": true,
+    "inputHashMatched": true,
+    "scenarioMatched": true,
+    "invocationAndReportGuardAccepted": true,
+    "reportStatus": "COMPLETED",
+    "nextSteps": 3,
+    "citations": 3,
+    "reportHash": "81d0da34ee7e88001299a1669a24af45fa80fbef3710874f03b3f0149438e587",
+    "credentialShapedContentScan": "NO_MATCH"
+  },
+  "qualityReview": {
+    "status": "INCOMPLETE",
+    "datasetCases": 30,
+    "responses": 1,
+    "guardAccepted": 1,
+    "annotationReviewed": 0,
+    "qualityReviewed": 0,
+    "humanJudgmentsInvented": false,
+    "realModelVerifiedField": false,
+    "provenanceCaveat": "The generic offline scorer does not certify provider provenance; the live receipt is recorded separately above."
+  },
+  "verification": {
+    "localPython": "147 passed in 10.09s before the live call",
+    "githubActionsRun": 40167443106,
+    "githubActionsUrl": "https://github.com/kevin-sanas/Dawnwatch/actions/runs/40167443106",
+    "githubJobs": {
+      "verify": "success",
+      "frontend": "success",
+      "compose": "success"
+    }
+  },
+  "limits": [
+    "One accepted synthetic case is not a model quality score or performance benchmark.",
+    "The discarded historical rejected report cannot be reconstructed, so this does not prove the prompt change was its only cause.",
+    "No Java workbench workflow or system action was executed in this revalidation.",
+    "Human annotation and report quality ratings remain pending; the 30-case gate is not closed.",
+    "The one-shot directory is consumed and must not be rerun or resumed."
+  ]
+}

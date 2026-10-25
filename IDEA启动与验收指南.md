@@ -1,6 +1,6 @@
 # 你的 Dawnwatch：IDEA 启动与验收指南
 
-更新日期：2026-10-24。适用版本：Dawnwatch 改名阶段 1、G5 + Dark-first UI/UX 工作空间、处置导航修正、G6核心自动验收、一键交互演示及DeepSeek官方API适配，业务库迁移至 V6。本文按你的 Windows、中文 IDEA 和项目位置编写；以后修改启动配置、端口或验收流程时同步更新本文。
+更新日期：2026-10-25。适用版本：Dawnwatch 改名阶段 1、G5 + Dark-first UI/UX 工作空间、处置导航修正、G6核心自动验收、一键交互演示及DeepSeek官方API适配，业务库迁移至 V6。本文按你的 Windows、中文 IDEA 和项目位置编写；以后修改启动配置、端口或验收流程时同步更新本文。
 
 本轮只更换产品展示名：IDEA 仍使用 `AgentOpsApplication` 和原 artifactId/JAR，数据库、已有账号、环境变量、端口与本地目录保持兼容。Compose 逻辑项目名改为 `dawnwatch`，数据卷默认保留原物理名称；已有 Compose 用户启动前必须先阅读[改名与数据卷兼容说明](docs/12-本地部署运维与CI-CD.md)。
 
@@ -602,5 +602,17 @@ CSV字段中，`annotationStatus` 用PENDING/APPROVED，批准必须填写 `anno
 这里索引1表示**第2条建议**；示例表示该建议匹配重启类别，但风险字段标LOW，触发了现有HIGH文本要求。只定位首个被拒建议，不判断句子是实际操作、历史查询还是否定表述。回执不附拒绝原文、主机名、Key或任意异常文本；旧回执无法补回当时未保存的定位信息。风险类异常仍兼容ValueError，Java/Web内部接口沿用原统一错误响应。
 
 本轮可直接查看 `.cache/risk-diagnostics/diagnostic-preview.json` 的**离线合成示例**，也可运行 ` .\scripts\agent.ps1 Test` 验证回归；该示例不是旧付费报告重放。实际147项Python测试、15项Java定向测试通过，仍没有新增真实模型调用。过去两次调用的接受/拒绝结果不改，尚未证明新版提示能让真实模型稳定满足规则。
+
+### 14.8 探针超时单场景真实复验（2026-10-25）
+
+本轮使用14.6既有入口，离线冻结原始 `request-timeout` 合成输入，并把场景、一次请求、US$0.01预算估算及无重试规则绑定到planHash。用户明确确认范围后，在IDEA项目根目录终端隐藏输入Key并执行一次：
+
+```powershell
+.\agent-service\.venv\Scripts\python.exe .\agent-service\evaluate_live.py run --directory .cache/model-evaluation/timeout-revalidation-20261025 --approve-plan 80950de1a16b2bdfb4eeccee546c6a2d0d5e4900576d810e2a7dbc2a9dc904e9
+```
+
+该目录已经使用，**不得重复运行或续跑**。实际结果为COMPLETED：请求1次、接受报告1份、无重试、无未知用量；返回 `deepseek-flash`，1469输入/802输出/2271 tokens，耗时5765ms，按计划中的2026-10-24峰时未命中单价估算US$0.0014031。估算不是实际账单，耗时不是性能基准。报告重新离线通过当前Invocation、引用和风险护栏校验，3条建议全部要求人工审阅，其中提及变更/重启/回滚的建议标为HIGH；没有执行任何系统操作。
+
+实际报告与空白人工评分包位于 `.cache/model-evaluation/timeout-revalidation-20261025/review-package/`：先打开 `reports.md` 阅读报告，再按14.6说明填写 `review.csv`。当前只有1/30份报告、0条人工标注和0条质量评分；最终离线评分文件 `.cache/model-evaluation/timeout-revalidation-20261025/score.json` 为INCOMPLETE。不能把单场景护栏接受写成模型准确率或质量PASS。正式脱敏摘要见 `docs/verification/deepseek-timeout-revalidation-2026-10-25.json`。本节只记录一次已结束的验收，不改变日常启动、数据库、端口、环境变量或默认mock入口。
 
 现有启动命令、环境变量、端口和数据库要求不变，新增提示与诊断在下次正常启动Python或受控入口时生效。不要重跑已使用的pilot目录；如要再次付费验证，应先明确新的范围与预算。完整记录见 `docs/verification/deepseek-risk-diagnostics-2026-10-24.json`。

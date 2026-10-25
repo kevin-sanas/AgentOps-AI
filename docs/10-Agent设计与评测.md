@@ -92,6 +92,12 @@ DeepSeek提示直接引用当前RISKY.pattern，说明大小写不敏感匹配�
 
 147项Python回归覆盖定位/类别、不保存原文、敏感过滤优先、保守历史/否定匹配及HIGH接受、单请求/批次停止；包含新版提示下5个MockTransport请求仍符合12000字节/4096输出限制。15项Java定向测试验证HTTP与PG检查点兼容。无新增实模调用或人评，不据此声称付费失败已修复，完整质量评测仍未完成。指南14.7和verification/deepseek-risk-diagnostics-2026-10-24.json提供验收入口。
 
+### 探针超时单场景真实复验（2026-10-25）
+
+新版提示完成离线验证后，用户另行批准只对原始 `request-timeout` 合成输入调用1次，预算估算上限US$0.01、无重试。一次性plan绑定datasetHash、inputHash、场景与预算；实际1次请求返回deepseek-flash，1469输入/802输出/2271 tokens，报告通过Pydantic、引用和原风险护栏，回执无未知费用。5765ms和峰时未命中估算US$0.0014031仅描述这次请求，不是性能或账单数据。
+
+这份报告把只读取证写成LOW，把涉及变更、重启或回滚的条件性说明标为HIGH，未触发AGENT_RISK_UNDERESTIMATED。它证明新版提示下该固定场景本次被接受，但不能还原或解释旧报告原文，也不能证明提示变化是旧拒绝的唯一原因。离线review绑定reportHash，人工标注和质量评分仍为0，30场景score保持INCOMPLETE；没有系统操作、Java工作台调用或额外模型请求。正式记录见verification/deepseek-timeout-revalidation-2026-10-25.json。
+
 ## G4 实现与评测边界（2026-10-21）
 
 `readonly-review-v2` 在guard后通过LangGraph interrupt进入review，批准Command(resume)后只执行finalize，拒绝直接END；PG checkpoint和独立决策元数据支持重启/重复请求。真实provider为服务端配置的兼容Chat Completions HTTP，严格JSON Schema，不提供工具。官方契约已核对：[LangGraph interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts)、[Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=chat)。
