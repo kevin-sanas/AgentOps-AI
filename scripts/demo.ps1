@@ -65,14 +65,16 @@ try{
     Write-Host "演示工作台：$($taskFrontend.origin)/login"
     Write-Host "DEMO_SESSION=$taskRun"
     if($DeepSeek){Write-Host '当前为真实DeepSeek直连模式；页面标明合成检查与真实模型，模型调用上限1次。'}
+    if(!$Check){
+        Write-Host "管理员账号：$($taskManifest.admin.username)    本次密码：$($taskManifest.admin.password)"
+        Write-Host "观察员账号：$($taskManifest.observer.username)    本次密码：$($taskManifest.observer.password)"
+    }
     if($Check){
         & $taskNode (Join-Path $PSScriptRoot 'demo-smoke.mjs') $taskRun
         if($LASTEXITCODE -ne 0){throw "演示验收未通过，请查看 $taskRun/check-result.json。"}
     }elseif($NoInput){
         while(!$taskJavaProcess.HasExited -and !(Test-Path -LiteralPath (Join-Path $taskRun 'stop'))){Start-Sleep -Milliseconds 300}
     }else{
-        Write-Host "管理员账号：$($taskManifest.admin.username)    本次密码：$($taskManifest.admin.password)"
-        Write-Host "观察员账号：$($taskManifest.observer.username)    本次密码：$($taskManifest.observer.password)"
         Write-Host 'down 注入3条503；up 注入4条200；status查看；quit退出。每60秒还会记录一条当前模式的合成样本。最长两小时，退出后数据清除。'
         while(!$taskJavaProcess.HasExited){
             $taskCommand=Read-Host 'demo'
