@@ -43,19 +43,8 @@ try{
     $taskJavaArgs=@("-Dagentops.demo.directory=$taskRun","-Dagentops.demo.parent=$PID")
     if($DeepSeek){$taskJavaArgs+='-Dagentops.demo.deepseek=true'}
     $taskJavaArgs+=@('-cp',$taskClasspath,'dev.agentops.DemoRuntime')
-    if($DeepSeek){
-        Write-Host 'DeepSeek直连验收：仅合成证据；本会话最多1次真实请求，不自动付费重试。请先确认本轮预算。'
-        $taskPreviousDeepSeekKey=$env:AGENT_LLM_API_KEY
-        $taskSecureKey=Read-Host '请输入DeepSeek API Key（输入不显示）' -AsSecureString
-        try{
-            $env:AGENT_LLM_API_KEY=[Net.NetworkCredential]::new('', $taskSecureKey).Password
-            if([string]::IsNullOrWhiteSpace($env:AGENT_LLM_API_KEY)){throw 'LIVE_MODEL_KEY_REQUIRED'}
-            $taskJavaProcess=Start-DemoProcess $taskJava $taskJavaArgs (Join-Path $taskRoot 'backend') 'runtime'
-        }finally{
-            if($null -eq $taskPreviousDeepSeekKey){Remove-Item Env:AGENT_LLM_API_KEY -ErrorAction SilentlyContinue}else{$env:AGENT_LLM_API_KEY=$taskPreviousDeepSeekKey}
-            $taskSecureKey.Dispose();$taskSecureKey=$null;$taskPreviousDeepSeekKey=$null
-        }
-    }else{$taskJavaProcess=Start-DemoProcess $taskJava $taskJavaArgs (Join-Path $taskRoot 'backend') 'runtime'}
+    if($DeepSeek){Write-Host 'DeepSeek直连验收：启动后由管理员在页面保存 API Key；仅合成证据，本会话最多1次真实推理请求，不自动付费重试。请先确认本轮预算。'}
+    $taskJavaProcess=Start-DemoProcess $taskJava $taskJavaArgs (Join-Path $taskRoot 'backend') 'runtime'
     Wait-DemoFile 'ready.json' $taskJavaProcess
     $taskManifest=Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $taskRun 'ready.json') | ConvertFrom-Json
     $taskListener=[Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback,0);$taskListener.Start();$taskFrontendPort=$taskListener.LocalEndpoint.Port;$taskListener.Stop()
@@ -64,7 +53,7 @@ try{
     $taskFrontend=Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $taskRun 'frontend.json') | ConvertFrom-Json
     Write-Host "演示工作台：$($taskFrontend.origin)/login"
     Write-Host "DEMO_SESSION=$taskRun"
-    if($DeepSeek){Write-Host '当前为真实DeepSeek直连模式；页面标明合成检查与真实模型，模型调用上限1次。'}
+    if($DeepSeek){Write-Host '当前为真实DeepSeek直连模式；请用管理员登录后打开“AI故障诊断 → 模型配置与用量”保存并测试密钥。模型推理调用上限1次。'}
     if(!$Check){
         Write-Host "管理员账号：$($taskManifest.admin.username)    本次密码：$($taskManifest.admin.password)"
         Write-Host "观察员账号：$($taskManifest.observer.username)    本次密码：$($taskManifest.observer.password)"

@@ -8,7 +8,7 @@ import httpx
 import pytest
 
 from deepseek_check import synthetic_invocation
-from deepseek_demo import SessionProvider
+from deepseek_demo import SessionProvider, SessionProviderFactory
 from test_deepseek_check import response_for
 from agentops_agent.provider import ProviderUnavailable
 
@@ -58,6 +58,18 @@ def test_concurrent_diagnoses_share_the_same_one_request_limit(session_directory
         finally:
             release.set()
         assert first.result(timeout=5)['modelName'] == 'deepseek-flash'
+    assert len(calls) == 1
+
+
+def test_page_managed_provider_instances_share_one_session_limit(session_directory):
+    calls = []
+    def handle(request):
+        calls.append(request)
+        return httpx.Response(200, json=response_for(request))
+    factory = SessionProviderFactory(session_directory, transport=httpx.MockTransport(handle))
+    assert factory('first-page-key').analyze(synthetic_invocation())['modelName'] == 'deepseek-flash'
+    with pytest.raises(ValueError, match='LIVE_MODEL_LIMIT_REACHED'):
+        factory('second-page-key').analyze(synthetic_invocation())
     assert len(calls) == 1
 
 

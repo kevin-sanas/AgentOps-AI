@@ -1,6 +1,6 @@
 # 你的 Dawnwatch：IDEA 启动与验收指南
 
-更新日期：2026-10-25。适用版本：Dawnwatch 改名阶段 1、G5 + Dark-first UI/UX 工作空间、处置导航修正、G6核心自动验收、一键交互演示及DeepSeek官方API适配，业务库迁移至 V6。本文按你的 Windows、中文 IDEA 和项目位置编写；以后修改启动配置、端口或验收流程时同步更新本文。
+更新日期：2026-10-25。适用版本：Dawnwatch G7 页面托管 DeepSeek 配置与用量审计、G6核心自动验收、Dark-first 工作空间及可选 Kuma，业务库迁移至 V7。本文按你的 Windows、中文 IDEA 和项目位置编写；以后修改启动配置、端口或验收流程时同步更新本文。
 
 本轮只更换产品展示名：IDEA 仍使用 `AgentOpsApplication` 和原 artifactId/JAR，数据库、已有账号、环境变量、端口与本地目录保持兼容。Compose 逻辑项目名改为 `dawnwatch`，数据卷默认保留原物理名称；已有 Compose 用户启动前必须先阅读[改名与数据卷兼容说明](docs/12-本地部署运维与CI-CD.md)。
 
@@ -34,7 +34,7 @@
 
 使用现有数据库工具连接本项目实例，能看到 `agentops` 和 `agentops_checkpoint`。沿用现有用户名、密码和端口；不要重复建库。
 
-**本次从旧版本升级到 G5 前，先备份本项目业务库。** 随后首次启动新版 Java 时，Flyway 自动执行尚未应用的迁移至 V6；无需手工重复执行迁移 SQL。Python 独立 checkpoint 库也应配套备份。
+**本次升级到 G7 前，先备份本项目业务库。** 随后首次启动新版 Java 时，Flyway 自动执行尚未应用的迁移至 V7；无需手工重复执行迁移 SQL。V7 新增加密模型配置和模型请求用量表；Python 独立 checkpoint 库也应配套备份。
 
 ### 第二步：启动 Python
 
@@ -72,8 +72,6 @@ $internalSecret = Read-Host '请输入与 IDEA 完全相同的 AGENT_INTERNAL_TO
 ```powershell
 $env:AGENT_INTERNAL_TOKEN = [Net.NetworkCredential]::new('', $internalSecret).Password
 Remove-Variable internalSecret
-$env:AGENT_LLM_PROVIDER = 'mock'
-$env:AGENT_MODEL_NAME = 'mock'
 .\scripts\agent.ps1 Run
 ```
 
@@ -85,7 +83,7 @@ $env:AGENT_MODEL_NAME = 'mock'
 
 1. 打开 `E:\javaProjects\AgentOps AI`。
 2. 右上角选择已有的 **AgentOpsApplication** 运行配置。
-3. 确认其环境变量有 `PORT=18080`、`AGENT_ENABLED=true`、`AGENT_SERVICE_ORIGIN=http://127.0.0.1:8090`、`AGENT_MODEL_NAME=mock`，其余数据库和 secret 保留原值。
+3. 确认其环境变量有 `PORT=18080`、`AGENT_ENABLED=true`、`AGENT_SERVICE_ORIGIN=http://127.0.0.1:8090`，其余数据库和 secret 保留原值。删除旧的 `AGENT_MODEL_NAME`；DeepSeek Key 也不要放进 IDEA。
 4. 点击绿色三角形运行。已有旧进程时，先用 IDEA 红色方块停止该项目后端，再启动。
 5. 等待控制台显示 `Started AgentOpsApplication`，并确认 Tomcat 使用 **18080**。
 6. 打开 [后端健康检查](http://127.0.0.1:18080/actuator/health)，返回 JSON 中 `"status":"UP"` 表示后端健康。
@@ -171,7 +169,6 @@ npm ci --ignore-scripts --no-fund --no-audit
 | `AGENT_INTERNAL_TOKEN` | 保留原值；至少 32 字符，且与 pepper 不同，Python 必须使用相同 token |
 | `AGENT_ENABLED` | `true` |
 | `AGENT_SERVICE_ORIGIN` | `http://127.0.0.1:8090` |
-| `AGENT_MODEL_NAME` | `mock` |
 | `BOOTSTRAP_ADMIN_USERNAME` | 仅首次建管理员时填写，例如 `admin` |
 | `BOOTSTRAP_ADMIN_PASSWORD` | 仅首次建管理员时填写；至少 12 字符、至多 72 UTF-8 字节 |
 
@@ -213,18 +210,9 @@ CREATE DATABASE agentops_checkpoint OWNER agentops_checkpoint;
 
 ### 可选：以后使用真实模型
 
-DeepSeek官方服务已提供专用模式，直接按本文第14节操作；以下表格供其他严格JSON Schema兼容服务使用。
+先确认数据出站范围和费用，再按本文第14节在管理员页面配置 DeepSeek。默认未配置时，新任务使用 mock，不会自动请求外部模型。无需修改 IDEA 或 Python 的模型环境变量，也不支持从页面配置任意 HTTP 模型地址。
 
-先确认服务商、数据出站和费用，再手动配置。默认 mock 不会自动发起外部模型请求。
-
-| 变量 | IDEA Java | Python 终端 |
-|---|---|---|
-| `AGENT_MODEL_NAME` | 实际模型标识 | 与 Java 完全相同 |
-| `AGENT_LLM_PROVIDER` | 无需配置 | `openai-compatible` |
-| `AGENT_LLM_BASE_URL` | 无需配置 | 支持严格 JSON Schema 的 Chat Completions 兼容服务 HTTPS API 前缀 |
-| `AGENT_LLM_API_KEY` | 无需配置 | 服务商密钥，仅在 Python 服务端设置 |
-
-本机模型使用 HTTP 时还需 `AGENT_ALLOW_LOCAL_MODEL_HTTP=true`，且仅允许 localhost/127.0.0.1/::1。修改变量后重启对应服务。新任务冻结当时的模型标识，不会修改旧任务。
+页面保存后的新任务使用 `deepseek-flash`，旧任务保留原模型快照。删除页面配置后，新任务恢复 mock；不必重启 Java 或 Python。
 
 若出现 `AGENT_MODEL_OUTCOME_UNKNOWN`，先核对模型服务的调用记录。该任务不会自动重试，也不能强制重发同一个任务；确认后如有必要，从事故详情明确发起新诊断。
 
@@ -325,7 +313,7 @@ npm ci --ignore-scripts --no-fund --no-audit
 npm run dev
 ```
 
-IDEA仍运行Java21的`dev.agentops.AgentOpsApplication`、PORT18080，Python仍为8090，前端仍为5174。新增只读查询需要IDEA重新运行新版后端；本轮无V7或其他新增迁移，已在V6的数据库不用执行额外SQL。旧版本尚未升V6时仍按前述备份与升级步骤处理。本轮没有替你重启用户服务或迁移用户数据库。Compose用户需要自行重新构建应用镜像后启动，不会由开发工具自动替换你的容器。
+IDEA仍运行Java21的`dev.agentops.AgentOpsApplication`、PORT18080，Python仍为8090，前端仍为5174。当前 G7 需要在备份业务库后重新运行新版后端，由 Flyway 自动迁移到 V7；不要手工重复执行迁移 SQL。本轮开发没有替你重启用户服务或迁移用户数据库。Compose用户需要自行重新构建应用镜像后启动，不会由开发工具自动替换你的容器。
 
 打开 [工作台](http://127.0.0.1:5174/login)，使用已有账号（不在文档保存密码）。默认深色；右上角太阳/月亮切换主题，偏好保存在本浏览器，登录会话仍仅内存。
 
@@ -424,9 +412,9 @@ Set-Location 'E:\javaProjects\AgentOps AI'
 
 本入口的503/200是明确标注的**合成检查样本**，目标地址不会发出外部探测；诊断使用Python mock。Java业务流程、Python检查点、审批和审计实际运行，但不作为外网监控、真实模型质量、Kuma或性能验收。本轮未新增迁移或日常环境变量，IDEA日常启动仍按第2节执行。
 
-## 14. 接入真实DeepSeek（2026-10-24）
+## 14. 接入真实DeepSeek（G7 页面托管，2026-10-25）
 
-本节使用第2节的日常Java/Python/前端环境。`demo.ps1` 使用独立临时数据和mock，真实模型验收请从日常工作台发起新任务。本次无新增依赖或数据库迁移，无需重新建库。
+本节使用第2节的日常 Java/Python/前端环境。G7 新增 V7 迁移，升级前先备份业务库并由你重启 IDEA 后端应用迁移。**当前方式是在页面保存 Key；不要再在 Python 终端、IDEA 或 `.env` 中设置 `AGENT_LLM_API_KEY`、`AGENT_LLM_PROVIDER`、`AGENT_MODEL_NAME`。** 下文历史真实调用结果继续保留，但旧环境变量接入步骤已被页面方式取代。
 
 ### 14.1 准备官方API Key
 
@@ -448,7 +436,7 @@ Set-Location 'E:\javaProjects\AgentOps AI'
 
 `MODEL_REQUEST_REJECTED` 表示服务商拒绝请求；`OUTPUT_REJECTED` 表示输出未通过校验；`OUTCOME_UNKNOWN` 表示远端结果不确定。失败仍可能扣费，脚本不会自动重发。先核对控制台和本机脱敏结果，再决定下一步。命令必须直接运行在交互终端，禁止将Key通过管道输入。
 
-接通检查不会把当前独立演示切换成真实模型。用于日常工作台时，继续按下文分别设置Python与IDEA的模型名称；新任务才会使用新模型。
+接通检查不会把当前工作台切换成真实模型。日常使用请按14.2在页面保存 Key；只有保存后的新任务才会使用新模型。
 
 ### 14.1.2 隔离工作台：页面发起一次真实诊断
 
@@ -458,7 +446,7 @@ Set-Location 'E:\javaProjects\AgentOps AI'
 .\scripts\demo.ps1 -DeepSeek -NoInput
 ```
 
-编译后出现隐藏Key输入提示，再粘贴本机Key并回车，不把Key写入命令。Key只传给本次拥有的子进程，不进入文件、浏览器或Git；父终端的原环境会恢复。等待启动终端直接打印 `DEMO_SESSION`、本次随机端口网址，以及 `demo-admin` / `demo-observer` 两个账号和各自本次随机密码；不用打开固定5174，也不需要进入 `.cache` 查找。账号只属于本次临时库，不能用于日常库。
+脚本不再询问 Key。等待启动终端直接打印 `DEMO_SESSION`、本次随机端口网址，以及 `demo-admin` / `demo-observer` 两个账号和各自本次随机密码；不用打开固定5174，也不需要进入 `.cache` 查找。用 `demo-admin` 登录后，进入“AI 故障诊断 → 模型配置与用量”，在页面输入 Key、测试连接并保存。账号与加密配置只属于本次临时库，不能用于日常库。
 
 页面应显示“真实模型验收环境”“合成检查样本 · DeepSeek直连 · 每会话最多1次模型请求”。已预置一条待确认的合成故障：确认事故 → 开始排查 → 发起AI诊断 → 等待人工审阅 → 核对真实模型名、冻结证据和手册 → 批准或拒绝。批准仅允许线下处理，纯验收回填“未执行”。通过会话控制命令 `up` 注入恢复证据，核对恢复观察和关闭。
 
@@ -466,50 +454,37 @@ Set-Location 'E:\javaProjects\AgentOps AI'
 
 `-DeepSeek -Check` 被明确禁止，避免自动化验收意外付费；原 `demo.ps1` / `demo.ps1 -Check` 继续使用mock。本轮另行批准最多3个独立真实会话，总预算上限US$0.05，每会话最多1次请求；此前三次单次检查不代表新的授权。模型请求限制12000 UTF-8字节、4096输出tokens及25秒；按2026-10-24已核对的峰时单价保守估算每次低于US$0.01，实际以usage和平台账单为准。
 
-控制与退出沿用第13节：`node scripts/demo-session.mjs '<本次DEMO_SESSION>' up` / `status` / `quit`。会话最长两小时，退出删除临时凭据和数据库，脱敏模型回执保留。此入口不改变日常IDEA配置、已有账号或数据库；20–30样本质量评测仍需单独安排。
+控制与退出沿用第13节：`node scripts/demo-session.mjs '<本次DEMO_SESSION>' up` / `status` / `quit`。会话最长两小时，退出删除临时凭据、临时数据库及其中的加密 Key 配置，脱敏模型回执保留。此入口不改变日常IDEA配置、已有账号或数据库；20–30样本质量评测仍需单独安排。
 
 **2026-10-24本轮实际验收通过：** 使用1个隔离会话、1次 `deepseek-flash` 直连请求，报告通过Python护栏与Java引用校验，进入等待人工审阅；批准后检查点恢复，回填“未执行”，六个节点全部确认。再注入合成200恢复证据，观察、解决并关闭事故；审批、回填与恢复关闭未增加模型请求。实际1919输入/1029输出tokens，模型请求及本地护栏共5702ms；按峰时未命中单价保守估算US$0.0018105，非平台实际账单、非整条流程时延或性能基准。只证明这一个合成样本的链路；报告仍保留根因未知与模型自评未经校准的提示。正式记录见 `docs/verification/deepseek-workbench-2026-10-24.json`。该会话额度已经用完，可继续看已有报告，不要再次点击发起诊断。
 
-### 14.2 在Python启动终端设置
+### 14.2 在页面配置、测试并保存
 
-在第2节已经配置checkpoint DSN和内部token的同一个PowerShell终端中，先用Ctrl+C停止原Python服务，再执行：
+1. 按第2节启动 Python、IDEA 后端和前端。Python 终端只设置 `AGENT_CHECKPOINT_DSN`、`AGENT_INTERNAL_TOKEN`；IDEA 保留 `AGENT_ENABLED=true` 与 `AGENT_SERVICE_ORIGIN=http://127.0.0.1:8090`。
+2. 使用带 `OPS_ADMIN` 的账号登录 `http://127.0.0.1:5174/login`，在左侧展开“AI 故障诊断”，进入“模型配置与用量”。非管理员看不到入口，直接访问也会回到总览。
+3. 在 API Key 输入框粘贴 Key，先点“测试连接”。测试调用官方模型列表接口，不生成诊断内容、没有推理 Token，但会留下连接测试请求记录；若服务商对该接口另有规则，以平台为准。
+4. 测试成功后点“保存密钥”。输入框立即清空；之后 API 和页面只显示末四位。Key 使用由 `SESSION_TOKEN_PEPPER` 派生的 AES-GCM 密钥和随机 nonce 加密保存在业务库。
+5. 点“查询余额”查看 DeepSeek 当前返回的各币种总余额、赠送余额和充值余额。余额是服务商实时响应，不是 Dawnwatch 账单；查询失败时页面会清空旧结果，不把旧余额继续当作当前值。
 
-```powershell
-Set-Location 'E:\javaProjects\AgentOps AI'
-$env:AGENT_LLM_PROVIDER = 'deepseek'
-$env:AGENT_MODEL_NAME = 'deepseek-flash'
-$taskDeepSeekKey = Read-Host '请输入DeepSeek API Key（输入不显示）' -AsSecureString
-$env:AGENT_LLM_API_KEY = [Net.NetworkCredential]::new('', $taskDeepSeekKey).Password
-Remove-Variable taskDeepSeekKey
-.\scripts\agent.ps1 Run
-```
+保存配置会在后端重启后继续有效，前提是业务库和 `SESSION_TOKEN_PEPPER` 都未改变。**不要为了轮换会话而随意更换 pepper**；更换后旧密文无法解密，需要管理员重新保存 Key。删除配置只影响之后新建的诊断任务，历史请求与用量记录保留。
 
-看到输入提示后粘贴Key并按回车；不要把Key拼到命令中。上述写法适用于Windows PowerShell5.1和PowerShell7，仅在当前终端环境中设置。若是新终端，仍需先按第2节准备 `AGENT_CHECKPOINT_DSN`、`AGENT_INTERNAL_TOKEN`，两者与原日常环境保持一致。
+### 14.3 IDEA 与 Python 不再配置模型变量
 
-`deepseek` 模式固定使用官方HTTPS接口，无需填写 `AGENT_LLM_BASE_URL`。按2026-10-24[官方入门文档](https://api-docs.deepseek.com/)，示例模型使用 `deepseek-flash`；若自行选择其他官方模型名称，下一步Java配置也要完全一致。现有25秒调用预算下使用非思考模式，输出上限4096 tokens；不跟随重定向，也不会自动采用Clash或系统代理。
+IDEA 的模型相关环境变量全部删除，只保留原数据库、`SESSION_TOKEN_PEPPER`、`AGENT_INTERNAL_TOKEN`、`PORT=18080`、`AGENT_ENABLED=true`、`AGENT_SERVICE_ORIGIN=http://127.0.0.1:8090` 等项目变量。Python 仍按第2节启动，不设置模型 provider、名称或 Key。Compose 同样不向容器传递模型密钥；登录页面后配置即可。
 
-### 14.3 修改IDEA里的Java运行配置
-
-打开“运行 → 编辑配置 → AgentOpsApplication → 环境变量”，修改：
-
-| 名称 | 值 |
-|---|---|
-| `AGENT_ENABLED` | `true` |
-| `AGENT_SERVICE_ORIGIN` | `http://127.0.0.1:8090` |
-| `AGENT_MODEL_NAME` | `deepseek-flash` |
-
-数据库、端口、内部token和其他已有配置保留。Java不填写DeepSeek API Key。重新运行IDEA后端，确认健康检查UP；前端仍按第2节启动并访问 `http://127.0.0.1:5174/login`。
+模型固定为官方 `deepseek-flash`，HTTPS 直连、校验证书、不跟随重定向，也不使用 Clash 或系统代理。单次诊断最多一次模型请求且不确定结果禁止自动重发；连接测试、余额查询与诊断均写入模型请求台账。
 
 ### 14.4 验收真实模型
 
-1. 用有值班角色和目标操作授权的账号，进入已有测试事故，确认有近期检查证据和可引用的已发布手册。
-2. **新发起一次诊断**。旧任务冻结原模型标识，修改启动配置不会把旧mock报告变成DeepSeek报告。
-3. 核对任务顶部模型为 `deepseek-flash`，等待“等待人工审阅”；报告应有实际结论、真实检查/手册引用及不确定项。模型自评需人工核对，不能当作根因已证实。
-4. 到DeepSeek平台核对本次调用及用量；再在工作台批准或拒绝建议。批准后仅在实际线下处理后如实回填，纯验收选择“未执行”。
+1. 用管理员在模型配置页确认状态为“已配置”，先执行连接测试，再查询一次余额；检查失败提示不包含 Key 或服务商原始正文。
+2. 用同时具备值班角色和目标操作授权的账号进入测试事故，确认有近期检查证据和已发布手册，**新发起一次诊断**。旧任务冻结原模型标识，不会被配置变化改写。
+3. 核对任务顶部模型为 `deepseek-flash`，等待“等待人工审阅”；报告应有检查/手册引用及不确定项。模型自评需人工核对，不能当作根因已证实。
+4. 回到管理员的“模型配置与用量”：请求次数增加；诊断行链接到本次任务；有服务商 usage 时分别显示输入、输出和总 Token，没有 usage 时明确显示“未知”而不是 0。连接测试和余额查询也应分别显示来源，但 Token 通常为未知。
+5. 到 DeepSeek 平台核对本次调用与余额，再在工作台批准或拒绝建议。批准后仅在实际线下处理后如实回填，纯验收选择“未执行”。
 
-界面出现 `AGENT_HTTP_400`，表示Python拒绝了本次配置、模型请求或报告；先检查官方Key、额度、两端模型名称及输出结构。服务端将这些错误统一返回，不会向浏览器转发模型服务的原始正文。Python启动时缺少变量会直接提示配置错误。`AGENT_UNAVAILABLE` 先检查8090服务是否启动；`AGENT_HTTP_401` 检查Java/Python内部token是否一致。`AGENT_MODEL_OUTCOME_UNKNOWN` 表示25秒超时等情况导致结果无法确认，先核对DeepSeek调用记录，不要连续点击或重发同一任务；必要时明确发起一个新诊断。拒绝、空结果、截断或结构/引用校验失败会标记失败，不伪装成功或改用mock。
+`MODEL_AUTHENTICATION_FAILED` 表示 Key 被拒绝；`MODEL_TLS_VERIFY_FAILED` 表示证书验证失败且系统不会绕过；`MODEL_TIMEOUT` / `MODEL_PROVIDER_UNAVAILABLE` 先检查官方服务和本机直连网络；`AGENT_UNAVAILABLE` 检查8090服务；`AGENT_HTTP_401` 检查 Java/Python 内部 token。`AGENT_MODEL_OUTCOME_UNKNOWN` 表示结果无法确认，为避免重复扣费同一任务不能重发。拒绝、空结果、截断或结构/引用校验失败会标记失败，不伪装成功或回退 mock。
 
-结束时Ctrl+C停止Python，可用 `Remove-Item Env:AGENT_LLM_API_KEY` 清除本终端中的Key。恢复mock时Java和Python都改回 `AGENT_MODEL_NAME=mock`，Python还设置 `AGENT_LLM_PROVIDER=mock` 后重新启动。`.env.example`只提供变量说明；宿主机脚本不会自动读取 `.env`。
+若要恢复 mock，由管理员在模型配置页执行“删除模型配置”；不需要重启 Python 或修改环境变量。删除前后的已有任务各自保留创建时的模型快照。
 
 2026-10-24此前三次前置接通检查记录：第1次返回deepseek-flash、1286输入/755输出tokens、耗时5091ms，但输出被本地校验拒绝，具体原因未留存，不能确定；第2次PROVIDER_UNAVAILABLE、577ms、usage未知；第3次CONNECT_ERROR、765ms、usage未知。首笔按峰时未命中单价估算US$0.0012918，不是实际账单，后两笔不能记为零费用。已补齐合法引用ID清单及安全错误码，不放宽护栏；这些失败记录保留在docs/verification/deepseek-live-2026-10-24.json。本轮后续经单独授权的隔离工作台已通过真实报告、人审与恢复关闭验收，见第14.1.2节；不能据此倒推此前三次失败的具体根因。无Key的直连/Clash HEAD探针只证明探针当时可达，不证明带Key模型调用成功；程序始终保持DeepSeek直连与TLS验证，默认演示仍为mock，只有显式 `-DeepSeek` 使用真实模型。
 

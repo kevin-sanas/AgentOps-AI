@@ -159,18 +159,15 @@ def test_deepseek_empty_or_malformed_json_is_rejected_without_retry(content):
     assert len(calls) == 1
 
 
-def test_environment_selects_deepseek_without_a_custom_base_url(monkeypatch):
+def test_environment_ignores_legacy_deepseek_secret_and_starts_page_managed(monkeypatch):
     from agentops_agent import app
-    from agentops_agent.provider import DeepSeekProvider
+    seen = {}
     monkeypatch.setenv("AGENT_LLM_PROVIDER", "deepseek")
-    monkeypatch.setenv("AGENT_MODEL_NAME", "deepseek-flash")
-    monkeypatch.setenv("AGENT_LLM_API_KEY", "fixture-key")
-    monkeypatch.delenv("AGENT_LLM_BASE_URL", raising=False)
+    monkeypatch.delenv("AGENT_LLM_API_KEY", raising=False)
     monkeypatch.setenv("AGENT_CHECKPOINT_DSN", "fixture-dsn")
     monkeypatch.setenv("AGENT_INTERNAL_TOKEN", "fixture-internal")
-    monkeypatch.setattr(app, "Store", lambda dsn, provider: provider)
-    monkeypatch.setattr(app, "create_app", lambda store, token: store)
-    provider = app.from_environment()
-    assert isinstance(provider, DeepSeekProvider)
-    assert provider.url == "https://api.deepseek.com/chat/completions"
-    assert provider.model == "deepseek-flash"
+    monkeypatch.setattr(app, "Store", lambda dsn, provider=None: seen.update(dsn=dsn, provider=provider) or "store")
+    monkeypatch.setattr(app, "create_app", lambda store, token: {"store": store, "token": token})
+    result = app.from_environment()
+    assert result["store"] == "store"
+    assert seen == {"dsn": "fixture-dsn", "provider": None}

@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 function render(overrides = {}) {
-  const env = { ...process.env, DB_PASSWORD: 'test-only-not-real', SESSION_TOKEN_PEPPER: 'test-only-not-real', AGENT_INTERNAL_TOKEN: 'test-only-not-real', BOOTSTRAP_ADMIN_PASSWORD: 'test-only-not-real', CHECKPOINT_OWNER_PASSWORD: 'test-only-not-real', CHECKPOINT_PASSWORD: 'test-only-not-real', AGENT_LLM_API_KEY: '', KUMA_PUSH_TOKEN_DEMO: '' }
+  const env = { ...process.env, DB_PASSWORD: 'test-only-not-real', SESSION_TOKEN_PEPPER: 'test-only-not-real', AGENT_INTERNAL_TOKEN: 'test-only-not-real', BOOTSTRAP_ADMIN_PASSWORD: 'test-only-not-real', CHECKPOINT_OWNER_PASSWORD: 'test-only-not-real', CHECKPOINT_PASSWORD: 'test-only-not-real', KUMA_PUSH_TOKEN_DEMO: '' }
   delete env.COMPOSE_PROJECT_NAME
   delete env.DAWNWATCH_DATA_PREFIX
   Object.assign(env, overrides)
@@ -24,4 +24,8 @@ test('explicit data prefix preserves custom volumes independently of the new pro
   const config = render({ COMPOSE_PROJECT_NAME: 'dawnwatch-ci', DAWNWATCH_DATA_PREFIX: 'preserved-installation' })
   assert.equal(config.name, 'dawnwatch-ci')
   assert.deepEqual(volumeNames(config), ['preserved-installation_postgres-data', 'preserved-installation_checkpoint-data', 'preserved-installation_kuma-data'])
+})
+test('compose never passes model credentials through process environment', () => {
+  const environment = render().services['agent-service'].environment
+  for (const name of ['AGENT_LLM_API_KEY','AGENT_LLM_PROVIDER','AGENT_MODEL_NAME','AGENT_LLM_BASE_URL']) assert.equal(environment[name], undefined)
 })

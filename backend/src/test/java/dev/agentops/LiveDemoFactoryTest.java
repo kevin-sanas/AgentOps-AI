@@ -13,7 +13,7 @@ class LiveDemoFactoryTest {
         Path directory=root.resolve(".cache/demo/unit-live-java-"+UUID.randomUUID());
         Files.createDirectories(directory);
         String token="fixture-internal-"+UUID.randomUUID();
-        try(var pg=PostgresFixture.start();var python=PythonFixture.startLiveDeepSeek(pg,token,"fixture-key",directory)){
+        try(var pg=PostgresFixture.start();var python=PythonFixture.startLiveDeepSeek(pg,token,directory)){
             var http=HttpClient.newHttpClient();
             var uri=URI.create("http://127.0.0.1:"+python.port+"/internal/v1/runs/"+UUID.randomUUID());
             var request=HttpRequest.newBuilder(uri).header("Authorization","Bearer "+token).header("X-Request-Id",UUID.randomUUID().toString()).build();

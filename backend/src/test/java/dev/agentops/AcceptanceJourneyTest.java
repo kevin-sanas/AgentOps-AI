@@ -37,7 +37,7 @@ class AcceptanceJourneyTest {
                 "--spring.datasource.username=postgres","--spring.datasource.password=postgres",
                 "--agentops.security.session-pepper="+UUID.randomUUID()+UUID.randomUUID(),"--agentops.security.internal-token="+internal,
                 "--agentops.bootstrap.username=","--agentops.bootstrap.password=","--agentops.monitoring.enabled=false",
-                "--agentops.kuma.enabled=false","--agentops.agent.enabled=true","--agentops.agent.model-name=mock",
+                "--agentops.kuma.enabled=false","--agentops.agent.enabled=true",
                 "--agentops.agent.origin=http://127.0.0.1:"+python.port);
             var client=HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build()){
             db=context.getBean(JdbcTemplate.class);store=context.getBean(MonitoringStore.class);port=context.getWebServer().getPort();http=client;

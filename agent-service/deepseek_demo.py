@@ -38,7 +38,7 @@ def connection_details(error):
 
 
 class SessionProvider(OneRequestProvider):
-    def __init__(self, key, directory, *, transport=None):
+    def __init__(self, key, directory, *, transport=None, claim=None):
         root = Path(__file__).resolve().parents[1]
         base = (root / '.cache/demo').resolve()
         directory = Path(directory).resolve()
@@ -48,13 +48,16 @@ class SessionProvider(OneRequestProvider):
         self.directory = directory
         self._claim_lock = Lock()
         self._claimed = False
+        self._shared_claim = claim
 
     def analyze(self, invocation):
         # Shared across all HTTP worker threads and run IDs in this session.
-        with self._claim_lock:
-            if self._claimed:
-                raise ValueError('LIVE_MODEL_LIMIT_REACHED')
-            self._claimed = True
+        if self._shared_claim is not None:
+            if not self._shared_claim(): raise ValueError('LIVE_MODEL_LIMIT_REACHED')
+        else:
+            with self._claim_lock:
+                if self._claimed: raise ValueError('LIVE_MODEL_LIMIT_REACHED')
+                self._claimed = True
         start = monotonic()
         receipt = {'schemaVersion': 1, 'mode': 'synthetic/live-deepseek', 'modelName': self.model,
                    'runId': str(invocation.runId), 'checkedAt': datetime.now(timezone.utc).isoformat(),
@@ -71,9 +74,11 @@ class SessionProvider(OneRequestProvider):
             raise
         except ProviderUnavailable as error:
             receipt['error'] = 'PROVIDER_UNAVAILABLE'
-            receipt['providerFailureKind'] = error.failure_kind if error.failure_kind in {'CONNECT_ERROR', 'CONNECT_TIMEOUT', 'HTTP_STATUS'} else None
+            receipt['providerFailureKind'] = error.failure_kind if error.failure_kind in {'CONNECT_ERROR', 'CONNECT_TIMEOUT', 'HTTP_STATUS', 'TLS_VERIFY'} else None
             receipt['providerHttpStatus'] = error.http_status if type(error.http_status) is int and 100 <= error.http_status <= 599 else None
-            if error.failure_kind in {'CONNECT_ERROR', 'CONNECT_TIMEOUT'}:
+            if error.failure_kind == 'TLS_VERIFY':
+                receipt['connectionDetails'] = {'category': 'TLS_VERIFY_FAILED'}
+            elif error.failure_kind in {'CONNECT_ERROR', 'CONNECT_TIMEOUT'}:
                 receipt['connectionDetails'] = connection_details(error)
             raise
         except ValueError as error:
@@ -93,8 +98,27 @@ class SessionProvider(OneRequestProvider):
             temporary.replace(self.directory / 'live-model-call.json')
 
 
+class SessionProviderFactory:
+    """Creates providers from page-supplied credentials while sharing one paid-call claim."""
+    def __init__(self, directory, *, transport=None):
+        self.directory = directory
+        self.transport = transport
+        self._lock = Lock()
+        self._claimed = False
+
+    def _claim(self):
+        with self._lock:
+            if self._claimed: return False
+            self._claimed = True
+            return True
+
+    def __call__(self, key):
+        return SessionProvider(key, self.directory, transport=self.transport, claim=self._claim)
+
+
 def from_environment():
     for name in ('LANGSMITH_TRACING', 'LANGCHAIN_TRACING_V2', 'LANGCHAIN_TRACING'):
         os.environ[name] = 'false'
-    provider = SessionProvider(os.environ.pop('AGENT_LLM_API_KEY'), os.environ['DAWNWATCH_LIVE_DIRECTORY'])
-    return create_app(Store(os.environ['AGENT_CHECKPOINT_DSN'], provider=provider), os.environ['AGENT_INTERNAL_TOKEN'])
+    factory = SessionProviderFactory(os.environ['DAWNWATCH_LIVE_DIRECTORY'])
+    return create_app(Store(os.environ['AGENT_CHECKPOINT_DSN'], provider=None), os.environ['AGENT_INTERNAL_TOKEN'],
+                      managed_provider_factory=factory)

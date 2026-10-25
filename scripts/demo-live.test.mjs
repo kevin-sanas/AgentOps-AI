@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { spawn, spawnSync } from 'node:child_process'
-import { writeFile } from 'node:fs/promises'
+import { access, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { sessionDirectory } from './demo-session.mjs'
@@ -15,8 +15,18 @@ test('live mode refuses unattended Check before asking for credentials or starti
   assert.doesNotMatch(result.stdout, /DEMO_SESSION=/)
 })
 
-test('NoInput prints both temporary demo accounts before waiting', { skip: process.platform !== 'win32', timeout: 120000 }, async () => {
-  const child = spawn('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', './scripts/demo.ps1', '-NoInput'], { cwd: root, windowsHide: true })
+test('DeepSeek demo starts in page-managed mode and never reads a model key in PowerShell', async () => {
+  const source = await readFile(join(root, 'scripts', 'demo.ps1'), 'utf8')
+  assert.doesNotMatch(source, /Read-Host[^\r\n]*DeepSeek API Key/i)
+  assert.doesNotMatch(source, /AGENT_LLM_API_KEY/)
+  assert.match(source, /页面[^\r\n]*(保存|配置)[^\r\n]*(API Key|密钥)/i)
+  const agent = await readFile(join(root, 'scripts', 'agent.ps1'), 'utf8')
+  assert.match(agent, /AGENT_LLM_API_KEY/)
+  assert.match(agent, /SetEnvironmentVariable\(\$taskLegacyName,\$null,'Process'\)/)
+})
+
+test('DeepSeek NoInput prints both accounts, waits for page configuration and removes its database', { skip: process.platform !== 'win32', timeout: 120000 }, async () => {
+  const child = spawn('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', './scripts/demo.ps1', '-DeepSeek', '-NoInput'], { cwd: root, windowsHide: true })
   let output = ''
   const exited = new Promise((resolve, reject) => {
     child.on('error', reject)
@@ -45,6 +55,11 @@ test('NoInput prints both temporary demo accounts before waiting', { skip: proce
     const uuid = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
     assert.ok(new RegExp(`demo-admin[^\\r\\n]*${uuid}`, 'i').test(output), 'NoInput must print the temporary administrator credentials')
     assert.ok(new RegExp(`demo-observer[^\\r\\n]*${uuid}`, 'i').test(output), 'NoInput must print the temporary observer credentials')
+    assert.match(output, /API Key/)
+    const result = JSON.parse(await readFile(join(session, 'session-result.json'), 'utf8'))
+    assert.equal(result.servicesStopped, true)
+    assert.equal(result.credentialsRemoved, true)
+    await assert.rejects(access(join(session, 'postgres')))
   } finally {
     if (child.exitCode === null) child.kill()
   }

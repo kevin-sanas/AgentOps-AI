@@ -7,6 +7,9 @@ $taskPython=Join-Path $taskService '.venv/Scripts/python.exe'
 $taskTemp=Join-Path $taskService '.tmp'
 New-Item -ItemType Directory -Force -Path $taskTemp | Out-Null
 $taskPreviousTemp=$env:TEMP; $taskPreviousTmp=$env:TMP; $taskPreviousEncoding=$env:PYTHONUTF8
+$taskLegacyModelNames=@('AGENT_LLM_API_KEY','AGENT_LLM_PROVIDER','AGENT_MODEL_NAME','AGENT_LLM_BASE_URL','AGENT_ALLOW_LOCAL_MODEL_HTTP')
+$taskPreviousModelEnvironment=@{}
+foreach($taskLegacyName in $taskLegacyModelNames){$taskPreviousModelEnvironment[$taskLegacyName]=[Environment]::GetEnvironmentVariable($taskLegacyName,'Process');[Environment]::SetEnvironmentVariable($taskLegacyName,$null,'Process')}
 try {
     $env:TEMP=$taskTemp; $env:TMP=$taskTemp; $env:PYTHONUTF8='1'
     if($Action -eq 'Install'){
@@ -26,4 +29,7 @@ try {
         }finally{Pop-Location}
     }
     if($LASTEXITCODE -ne 0){throw "Agent command failed (exit $LASTEXITCODE)."}
-}finally{$env:TEMP=$taskPreviousTemp;$env:TMP=$taskPreviousTmp;$env:PYTHONUTF8=$taskPreviousEncoding}
+}finally{
+    foreach($taskLegacyName in $taskLegacyModelNames){[Environment]::SetEnvironmentVariable($taskLegacyName,$taskPreviousModelEnvironment[$taskLegacyName],'Process')}
+    $env:TEMP=$taskPreviousTemp;$env:TMP=$taskPreviousTmp;$env:PYTHONUTF8=$taskPreviousEncoding
+}

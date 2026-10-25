@@ -19,9 +19,8 @@ final class PythonFixture implements AutoCloseable {
     static PythonFixture start(EmbeddedPostgres pg,String token,Map<String,String> modelEnvironment)throws Exception{
         return start(pg,token,modelEnvironment,"agentops_agent.app:from_environment");
     }
-    static PythonFixture startLiveDeepSeek(EmbeddedPostgres pg,String token,String key,Path directory)throws Exception{
-        if(key==null||key.isBlank())throw new IllegalArgumentException("LIVE_MODEL_KEY_REQUIRED");
-        return start(pg,token,Map.of("AGENT_LLM_API_KEY",key,"AGENT_MODEL_NAME","deepseek-flash","DAWNWATCH_LIVE_DIRECTORY",directory.toString()),"deepseek_demo:from_environment");
+    static PythonFixture startLiveDeepSeek(EmbeddedPostgres pg,String token,Path directory)throws Exception{
+        return start(pg,token,Map.of("DAWNWATCH_LIVE_DIRECTORY",directory.toString()),"deepseek_demo:from_environment");
     }
     private static PythonFixture start(EmbeddedPostgres pg,String token,Map<String,String> modelEnvironment,String factory)throws Exception{
         var db=new JdbcTemplate(new DriverManagerDataSource("jdbc:postgresql://localhost:"+pg.getPort()+"/postgres","postgres","postgres"));
@@ -31,7 +30,7 @@ final class PythonFixture implements AutoCloseable {
         Path root=Path.of("..").toAbsolutePath().normalize(),log=root.resolve("backend/target/tmp/python-"+suffix+".log");
         var process=new ProcessBuilder(AgentIntegrationTest.python(root).toString(),"-m","uvicorn",factory,"--factory","--host","127.0.0.1","--port",String.valueOf(port),"--no-access-log","--log-level","warning").directory(root.resolve("agent-service").toFile()).redirectErrorStream(true).redirectOutput(log.toFile());
         var env=process.environment();env.put("AGENT_CHECKPOINT_DSN","postgresql://"+name+":"+password+"@127.0.0.1:"+pg.getPort()+"/"+name);env.put("AGENT_INTERNAL_TOKEN",token);env.put("LANGSMITH_TRACING","false");env.put("LANGCHAIN_TRACING_V2","false");env.put("LANGCHAIN_TRACING","false");
-        env.put("AGENT_LLM_PROVIDER","mock");env.put("TEMP",root.resolve("agent-service/.tmp").toString());env.put("TMP",env.get("TEMP"));env.putAll(modelEnvironment);
+        env.put("TEMP",root.resolve("agent-service/.tmp").toString());env.put("TMP",env.get("TEMP"));env.putAll(modelEnvironment);
         PythonFixture fixture=new PythonFixture(port,process.start(),log);
         try{var http=HttpClient.newHttpClient();long deadline=System.nanoTime()+Duration.ofSeconds(25).toNanos();
             while(System.nanoTime()<deadline&&fixture.child.isAlive()){

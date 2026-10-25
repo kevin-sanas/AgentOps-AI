@@ -37,7 +37,6 @@ agentops:
   agent:
     enabled: ${AGENT_ENABLED:false}
     origin: ${AGENT_SERVICE_ORIGIN:http://127.0.0.1:8090}
-    model-name: ${AGENT_MODEL_NAME:mock}
   monitoring:
     enabled: ${MONITORING_ENABLED:true}
     allowed-private-cidrs: ${MONITOR_ALLOWED_PRIVATE_CIDRS:}

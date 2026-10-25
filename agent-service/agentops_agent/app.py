@@ -14,7 +14,7 @@ from .provider import DeepSeekProvider, ModelOutcomeUnknown
 from .provider_admin import DeepSeekAdminGateway
 
 
-def create_app(store: Store, token: str, *, provider_transport=None):
+def create_app(store: Store, token: str, *, provider_transport=None, managed_provider_factory=None):
     if len(token.encode()) < 32: raise ValueError("INTERNAL_TOKEN_TOO_SHORT")
 
     @asynccontextmanager
@@ -88,7 +88,8 @@ def create_app(store: Store, token: str, *, provider_transport=None):
         try:
             if credential is not None:
                 if body.modelName != "deepseek-flash": raise ValueError("MODEL_CONFIGURATION_MISMATCH")
-                provider = DeepSeekProvider("deepseek-flash", credential, transport=provider_transport)
+                provider = (managed_provider_factory(credential) if managed_provider_factory is not None
+                            else DeepSeekProvider("deepseek-flash", credential, transport=provider_transport))
             result = store.invoke(body.model_dump(mode="json"), provider=provider,
                                   request_id=request.headers["x-request-id"])
             return JSONResponse(result, status_code=202 if result["status"] == "RUNNING" else 200)
@@ -152,14 +153,6 @@ def from_environment():
     os.environ["LANGSMITH_TRACING"] = "false"
     os.environ["LANGCHAIN_TRACING_V2"] = "false"
     os.environ["LANGCHAIN_TRACING"] = "false"
-    provider = None
-    kind = os.environ.get("AGENT_LLM_PROVIDER", "mock")
-    if kind == "openai-compatible":
-        from .provider import CompatibleProvider
-        provider = CompatibleProvider(os.environ["AGENT_LLM_BASE_URL"], os.environ["AGENT_MODEL_NAME"], os.environ["AGENT_LLM_API_KEY"],
-                                      allow_local_http=os.environ.get("AGENT_ALLOW_LOCAL_MODEL_HTTP", "false").lower() == "true")
-    elif kind == "deepseek":
-        from .provider import DeepSeekProvider
-        provider = DeepSeekProvider(os.environ["AGENT_MODEL_NAME"], os.environ["AGENT_LLM_API_KEY"])
-    elif kind != "mock": raise ValueError("UNKNOWN_MODEL_PROVIDER")
-    return create_app(Store(os.environ["AGENT_CHECKPOINT_DSN"], provider=provider), os.environ["AGENT_INTERNAL_TOKEN"])
+    # Runtime model credentials are supplied per request by the Java configuration store.
+    # Legacy model environment variables are deliberately ignored.
+    return create_app(Store(os.environ["AGENT_CHECKPOINT_DSN"], provider=None), os.environ["AGENT_INTERNAL_TOKEN"])

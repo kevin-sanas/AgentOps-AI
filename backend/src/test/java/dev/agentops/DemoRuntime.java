@@ -31,17 +31,16 @@ public final class DemoRuntime {
     void run(ProcessHandle parent)throws Exception{
         boolean live=Boolean.getBoolean("agentops.demo.deepseek");
         String modelName=live?"deepseek-flash":"mock";
-        if(live&&(System.getenv("AGENT_LLM_API_KEY")==null||System.getenv("AGENT_LLM_API_KEY").isBlank()))throw new IllegalArgumentException("LIVE_MODEL_KEY_REQUIRED");
         String token=UUID.randomUUID()+"-"+UUID.randomUUID(),adminPassword=UUID.randomUUID().toString(),observerPassword=UUID.randomUUID().toString();
         Instant expires=Instant.now().plusSeconds(7200);
         try(var pg=EmbeddedPostgres.builder().setDataDirectory(directory.resolve("postgres")).setCleanDataDirectory(true).setPort(0).start();
-            var python=live?PythonFixture.startLiveDeepSeek(pg,token,System.getenv("AGENT_LLM_API_KEY"),directory):PythonFixture.start(pg,token);
+            var python=live?PythonFixture.startLiveDeepSeek(pg,token,directory):PythonFixture.start(pg,token);
             var context=(ServletWebServerApplicationContext)SpringApplication.run(AgentOpsApplication.class,
                 "--server.port=0","--server.address=127.0.0.1","--spring.main.banner-mode=off","--logging.level.root=WARN",
                 "--spring.datasource.url=jdbc:postgresql://localhost:"+pg.getPort()+"/postgres","--spring.datasource.username=postgres","--spring.datasource.password=postgres",
                 "--agentops.security.session-pepper="+UUID.randomUUID()+UUID.randomUUID(),"--agentops.security.internal-token="+token,
                 "--agentops.bootstrap.username=","--agentops.bootstrap.password=","--agentops.monitoring.enabled=false","--agentops.kuma.enabled=false",
-                "--agentops.agent.enabled=true","--agentops.agent.model-name="+modelName,"--agentops.agent.origin=http://127.0.0.1:"+python.port)){
+                "--agentops.agent.enabled=true","--agentops.agent.origin=http://127.0.0.1:"+python.port)){
             db=context.getBean(JdbcTemplate.class);store=context.getBean(MonitoringStore.class);
             seed(context,adminPassword,observerPassword,modelName);sample("UP");
             if(live){mode="DOWN";for(int n=0;n<3;n++)sample(mode);}
