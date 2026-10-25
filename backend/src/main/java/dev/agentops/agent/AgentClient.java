@@ -21,9 +21,14 @@ public class AgentClient {
     public AgentClient(SecuritySettings settings,JsonMapper json,@Value("${agentops.agent.origin:http://127.0.0.1:8090}") String origin){this(settings,json,origin,Duration.ofSeconds(60));}
     AgentClient(SecuritySettings settings,JsonMapper json,String origin,Duration timeout){
         this.timeout=timeout;
-        this.token=settings.internalToken();this.json=json;this.origin=URI.create(origin);
-        if(!Set.of("http","https").contains(this.origin.getScheme())||this.origin.getHost()==null||this.origin.getRawUserInfo()!=null||this.origin.getRawQuery()!=null||this.origin.getRawFragment()!=null||!(this.origin.getPath().isEmpty()||this.origin.getPath().equals("/")))throw new IllegalStateException("Invalid agent service origin");
+        this.token=settings.internalToken();this.json=json;this.origin=validatedOrigin(origin);
         http=HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).followRedirects(HttpClient.Redirect.NEVER).proxy(new java.net.ProxySelector(){public java.util.List<java.net.Proxy> select(URI uri){return java.util.List.of(java.net.Proxy.NO_PROXY);}public void connectFailed(URI uri,java.net.SocketAddress address,java.io.IOException error){}}).build();
+    }
+    public static URI validatedOrigin(String value){
+        URI origin=URI.create(value);String host=origin.getHost();
+        boolean loopback=host!=null&&Set.of("127.0.0.1","localhost","::1","[::1]").contains(host.toLowerCase(java.util.Locale.ROOT));
+        if(!Set.of("http","https").contains(origin.getScheme())||host==null||origin.getRawUserInfo()!=null||origin.getRawQuery()!=null||origin.getRawFragment()!=null||!(origin.getPath().isEmpty()||origin.getPath().equals("/"))||("http".equals(origin.getScheme())&&!loopback))throw new IllegalStateException("Invalid agent service origin");
+        return origin;
     }
     public record Reply(String status,JsonNode result){}
     public static final class Failure extends RuntimeException {public final String code;public final boolean retryable;public Failure(String code,boolean retryable){super(code);this.code=code;this.retryable=retryable;}}

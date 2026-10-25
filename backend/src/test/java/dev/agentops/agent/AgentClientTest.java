@@ -36,4 +36,9 @@ class AgentClientTest {
             assertThatThrownBy(()->client(server.getAddress().getPort(),3000).reconcile(task())).isInstanceOfSatisfying(AgentClient.Failure.class,e->{assertThat(e.code).isEqualTo("AGENT_MODEL_OUTCOME_UNKNOWN");assertThat(e.retryable).isFalse();});
         }finally{server.stop(0);}
     }
+    @Test void credentialsCannotBeSentToNonLoopbackPlainHttp(){
+        var settings=new SecuritySettings("test-pepper-0000000000000000000000","test-internal-00000000000000000000",Duration.ofMinutes(30));
+        assertThatThrownBy(()->new dev.agentops.model.ModelProviderClient(settings,new JsonMapper(),"http://example.com",Duration.ofSeconds(1)))
+            .isInstanceOf(IllegalStateException.class).hasMessage("Invalid agent service origin");
+    }
 }
