@@ -30,6 +30,17 @@
   "localCompose": "NOT_RUN",
   "independentReview": {"importantFindings": 2, "minorFindings": 1, "fixedWithRegressionTests": true, "details": ["Clear report-bound judgments when binding changes or report is rejected", "Check frozen report JSON SHA256 and displayed content before importing judgments", "Counters must be nonnegative integers or unknown"]},
   "transientTestIssue": "First post-review Python full run: existing no-usage pilot test hit Windows PermissionError replacing temporary receipts. Fresh project-local basetemp full suite passed 178/12 skipped; no runtime retry policy changed.",
-  "remoteCI": "PENDING",
-  "mainMerge": "PENDING"
+  "remoteCI": {
+    "sourceRevision": "fb76b26b873583e77a4fa8856329388c5e3e5dda",
+    "url": "https://github.com/kevin-sanas/Dawnwatch/actions/runs/41204812165",
+    "verify": "SUCCESS",
+    "frontend": "SUCCESS",
+    "compose": "FAILURE: external backend health never returned valid JSON after container startup",
+    "restoreDrill": "NOT_RUN",
+    "staticConfigurationConflict": "compose.yaml uses http://agent-service:8090; AgentClient.validatedOrigin and ModelProviderClient construction reject non-loopback plain HTTP",
+    "uniqueRuntimeCauseConfirmed": false,
+    "limitation": "Job logs contain container startup and failed external health checks, but do not include backend application logs. Do not claim this is the only runtime cause."
+  },
+  "pullRequest": "https://github.com/kevin-sanas/Dawnwatch/pull/1",
+  "mainMerge": "NOT_PERFORMED: draft PR; Compose security configuration conflict requires deployment follow-up"
 }

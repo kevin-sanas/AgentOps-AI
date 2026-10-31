@@ -32,3 +32,4 @@
 - 本轮隔离demo已正常结束，session-result确认servicesStopped/credentialsRemoved均true。无新模型调用，完整质量成绩保持INCOMPLETE。详细状态见verification/g8-quality-center-2026-10-31.json。
 - 独立只读审阅发现2项Important已修复：报告重新绑定清除旧评分；工作台包携带Python生成的报告JSON，浏览器核对SHA-256与正文一致性，避免沿用修改前的评分。另统一非负整数计数；对应新增回归均观察RED→GREEN。最终前端25项和生产构建通过；Python收尾复跑遇旧用例WinError5文件替换，已保留为环境限制并用全新项目内临时目录再次核实。
 - 最终Python全套178通过/12按约定跳过；后者已由本轮Java143项中的PostgreSQL集成入口覆盖。发布前不据此声称完整30场景真实质量评测或性能通过。
+- 提交fb76b26已推送，草稿PR#1包含G6之后累计29个提交；main仍为39c1948。远端run41204812165的verify/frontend成功，compose在外部后端健康检查失败，恢复演练未运行。静态确认Compose的http://agent-service:8090与G7非回环HTTP拒绝规则冲突；CI缺后端应用日志，尚未证明唯一运行时根因。Task4发布部分未完成，需要进一步确定容器内部HTTPS/证书信任方案，不能为了通过CI降低凭据传输校验。
