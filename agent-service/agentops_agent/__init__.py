@@ -1,1 +1,1 @@
-"""Read-only, locally checkpointed AgentOps diagnosis."""
+"""Read-only, locally checkpointed Dawnwatch diagnosis."""

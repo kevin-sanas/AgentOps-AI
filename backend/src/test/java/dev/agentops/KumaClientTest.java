@@ -31,7 +31,7 @@ class KumaClientTest {
             UUID delivery=UUID.randomUUID();
             assertThat(adapter.push(endpoint(server),"fixture-token","UP",17,delivery).delivered()).isTrue();
             assertThat(adapter.push(endpoint(server),"fixture-token","DOWN",null,delivery).delivered()).isTrue();
-            assertThat(queries).allMatch(q->q.contains("msg=AgentOps")&&!q.contains("target="));
+            assertThat(queries).allMatch(q->q.contains("msg=Dawnwatch")&&!q.contains("target="));
             assertThat(queries.getFirst()).contains("status=up","ping=17");assertThat(queries.getLast()).contains("status=down").doesNotContain("ping=");
             assertThat(calls.get()).isEqualTo(2);assertThat(methods).containsOnly("POST");
         }finally{server.stop(0);}

@@ -32,6 +32,6 @@ for name, version in pins:
         notices.append(f"\n--- {entry['file']} ---\n{entry['text']}\n")
 missing = [p["name"] for p in inventory if p["license"] == "UNKNOWN" or not p["licenseFiles"]]
 (out / "licenses.json").write_text(json.dumps({"components": inventory, "missingEvidence": missing}, indent=2, ensure_ascii=False), encoding="utf-8")
-(root / "agent-service/THIRD_PARTY_NOTICES.txt").write_text("AgentOps Python runtime dependencies - actual installed wheel notices\n" + "".join(notices), encoding="utf-8")
+(root / "agent-service/THIRD_PARTY_NOTICES.txt").write_text("Dawnwatch Python runtime dependencies - actual installed wheel notices\n" + "".join(notices), encoding="utf-8")
 print(f"Collected {len(inventory)} locked distributions; missing evidence: {missing}")
 if missing: raise SystemExit(1)

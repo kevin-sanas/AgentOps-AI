@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1570" height="1260" viewBox="0 0 1570 1260" role="img" aria-labelledby="title desc"><title id="title">数据库ER图：主要实体与外键关系</title><desc id="desc">显示20张主要表；业务共28张表，另8张辅助表及完整字段见正文和Flyway SQL。</desc><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#64748b"/></marker></defs><rect width="100%" height="100%" fill="#f8fafc"/>
+<text x="30" y="36" font-family="Arial,Microsoft YaHei,sans-serif" font-size="25" fill="#0f172a" font-weight="600" text-anchor="start">数据库ER图：主要实体与外键关系</text>
+<text x="30" y="62" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#475569" font-weight="400" text-anchor="start">显示20张主要表；业务共28张表，另8张辅助表及完整字段见正文和Flyway SQL。</text>
+<text x="30" y="95" font-family="Arial,Microsoft YaHei,sans-serif" font-size="15" fill="#1e40af" font-weight="600" text-anchor="start">身份与目标授权</text>
+<text x="430" y="95" font-family="Arial,Microsoft YaHei,sans-serif" font-size="15" fill="#1e40af" font-weight="600" text-anchor="start">服务监控与事故</text>
+<text x="830" y="95" font-family="Arial,Microsoft YaHei,sans-serif" font-size="15" fill="#1e40af" font-weight="600" text-anchor="start">知识、诊断与人审</text>
+<text x="1230" y="95" font-family="Arial,Microsoft YaHei,sans-serif" font-size="15" fill="#1e40af" font-weight="600" text-anchor="start">可选Kuma集成</text>
+<polyline points="180,222 180,280" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="195.0" y="235" width="40" height="19" rx="4" fill="#f8fafc"/>
+<text x="215" y="249" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:N</text>
+<polyline points="180,430 180,372" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="195.0" y="393" width="40" height="19" rx="4" fill="#f8fafc"/>
+<text x="215" y="407" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:N</text>
+<polyline points="330,165 430,165" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="344.0" y="136" width="72" height="19" rx="4" fill="#f8fafc"/>
+<text x="380" y="150" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">创建 1:N</text>
+<polyline points="55,222 10,222 10,614 30,614" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="8.0" y="542" width="40" height="19" rx="4" fill="#f8fafc"/>
+<text x="28" y="556" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:N</text>
+<polyline points="430,185 400,185 400,585 330,585" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="378.0" y="498" width="40" height="19" rx="4" fill="#f8fafc"/>
+<text x="398" y="512" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:N</text>
+<polyline points="580,222 580,280" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="595.0" y="235" width="40" height="19" rx="4" fill="#f8fafc"/>
+<text x="615" y="249" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:N</text>
+<polyline points="580,372 580,430" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="595.0" y="386" width="40" height="19" rx="4" fill="#f8fafc"/>
+<text x="615" y="400" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:N</text>
+<polyline points="730,165 770,165 770,615 730,615" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="750.0" y="515" width="40" height="19" rx="4" fill="#f8fafc"/>
+<text x="770" y="529" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:N</text>
+<polyline points="580,672 580,730" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="595.0" y="687" width="40" height="19" rx="4" fill="#f8fafc"/>
+<text x="615" y="701" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:N</text>
+<polyline points="460,672 410,672 410,915 430,915" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="390.0" y="825" width="40" height="19" rx="4" fill="#f8fafc"/>
+<text x="410" y="839" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:N</text>
+<polyline points="730,315 750,315 750,765 730,765" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="729.0" y="678" width="40" height="19" rx="4" fill="#f8fafc"/>
+<text x="749" y="692" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:N</text>
+<polyline points="730,165 830,165" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="760.0" y="136" width="40" height="19" rx="4" fill="#f8fafc"/>
+<text x="780" y="150" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:N</text>
+<polyline points="980,222 980,280" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="995.0" y="235" width="40" height="19" rx="4" fill="#f8fafc"/>
+<text x="1015" y="249" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:N</text>
+<polyline points="980,372 980,430" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="995.0" y="386" width="40" height="19" rx="4" fill="#f8fafc"/>
+<text x="1015" y="400" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:N</text>
+<polyline points="730,615 830,615" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="760.0" y="586" width="40" height="19" rx="4" fill="#f8fafc"/>
+<text x="780" y="600" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:N</text>
+<polyline points="980,672 980,730" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="986.0" y="688" width="72" height="19" rx="4" fill="#f8fafc"/>
+<text x="1022" y="702" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:0..1</text>
+<polyline points="850,672 810,672 810,915 830,915" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="767.0" y="826" width="72" height="19" rx="4" fill="#f8fafc"/>
+<text x="803" y="840" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:0..1</text>
+<polyline points="1130,672 1180,672 1180,1065 1130,1065" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="1144.0" y="987" width="72" height="19" rx="4" fill="#f8fafc"/>
+<text x="1180" y="1001" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:0..1</text>
+<polyline points="730,133 790,133 790,110 1380,110 1380,130" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="1046.0" y="94" width="108" height="19" rx="4" fill="#f8fafc"/>
+<text x="1100" y="108" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">目标 1:0..1</text>
+<polyline points="1380,222 1380,280" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="1395.0" y="235" width="40" height="19" rx="4" fill="#f8fafc"/>
+<text x="1415" y="249" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:N</text>
+<polyline points="1380,372 1380,430" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="1395.0" y="386" width="40" height="19" rx="4" fill="#f8fafc"/>
+<text x="1415" y="400" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">1:N</text>
+<polyline points="730,465 780,465 780,525 1200,525 1200,315 1230,315" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="952.0" y="505" width="96" height="19" rx="4" fill="#f8fafc"/>
+<text x="1000" y="519" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#475569" font-weight="400" text-anchor="middle">检查结果 1:N</text>
+<rect x="30" y="130" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M42,131 H318" stroke="#5b8cff" stroke-width="3"/>
+<text x="46" y="157" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">app_user</text>
+<text x="46" y="181" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">id PK · username</text>
+<text x="46" y="200" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">password_hash · active</text>
+<rect x="30" y="280" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M42,281 H318" stroke="#5b8cff" stroke-width="3"/>
+<text x="46" y="307" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">user_role</text>
+<text x="46" y="331" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">user_id PK/FK</text>
+<text x="46" y="350" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">role_id PK/FK</text>
+<rect x="30" y="430" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M42,431 H318" stroke="#5b8cff" stroke-width="3"/>
+<text x="46" y="457" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">app_role</text>
+<text x="46" y="481" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">id PK · code</text>
+<text x="46" y="500" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">OBSERVER / ON_CALL / ...</text>
+<rect x="30" y="580" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M42,581 H318" stroke="#5b8cff" stroke-width="3"/>
+<text x="46" y="607" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">target_access</text>
+<text x="46" y="631" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">target_id PK/FK · user_id PK/FK</text>
+<text x="46" y="650" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">can_read · can_operate</text>
+<rect x="430" y="130" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M442,131 H718" stroke="#5b8cff" stroke-width="3"/>
+<text x="446" y="157" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">service_target</text>
+<text x="446" y="181" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">id PK · created_by FK</text>
+<text x="446" y="200" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">base_url · config_version</text>
+<rect x="430" y="280" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M442,281 H718" stroke="#5b8cff" stroke-width="3"/>
+<text x="446" y="307" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">check_definition</text>
+<text x="446" y="331" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">id PK · target_id FK</text>
+<text x="446" y="350" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">状态 / 阈值 / 配置版本</text>
+<rect x="430" y="430" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M442,431 H718" stroke="#5b8cff" stroke-width="3"/>
+<text x="446" y="457" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">check_run</text>
+<text x="446" y="481" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">id PK · check_definition_id FK</text>
+<text x="446" y="500" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">outcome · status_code · latency</text>
+<rect x="430" y="580" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M442,581 H718" stroke="#5b8cff" stroke-width="3"/>
+<text x="446" y="607" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">incident</text>
+<text x="446" y="631" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">id PK · target_id FK</text>
+<text x="446" y="650" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">status · version</text>
+<rect x="430" y="730" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M442,731 H718" stroke="#5b8cff" stroke-width="3"/>
+<text x="446" y="757" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">incident_check_snapshot</text>
+<text x="446" y="781" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">incident_id PK/FK</text>
+<text x="446" y="800" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">check_definition_id PK/FK</text>
+<rect x="430" y="880" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M442,881 H718" stroke="#5b8cff" stroke-width="3"/>
+<text x="446" y="907" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">incident_event</text>
+<text x="446" y="931" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">id PK · incident_id FK</text>
+<text x="446" y="950" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">event_type · event_sequence</text>
+<rect x="830" y="130" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M842,131 H1118" stroke="#5b8cff" stroke-width="3"/>
+<text x="846" y="157" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">runbook</text>
+<text x="846" y="181" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">id PK · target_id FK</text>
+<text x="846" y="200" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">draft · revision</text>
+<rect x="830" y="280" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M842,281 H1118" stroke="#5b8cff" stroke-width="3"/>
+<text x="846" y="307" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">runbook_version</text>
+<text x="846" y="331" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">runbook_id PK/FK · version PK</text>
+<text x="846" y="350" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">不可变发布内容</text>
+<rect x="830" y="430" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M842,431 H1118" stroke="#5b8cff" stroke-width="3"/>
+<text x="846" y="457" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">runbook_section</text>
+<text x="846" y="481" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">id PK · (runbook_id,version) FK</text>
+<text x="846" y="500" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">text · content_hash</text>
+<rect x="830" y="580" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M842,581 H1118" stroke="#5b8cff" stroke-width="3"/>
+<text x="846" y="607" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">agent_run</text>
+<text x="846" y="631" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">id PK · incident_id/target_id FK</text>
+<text x="846" y="650" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">input/result JSON · model_name</text>
+<rect x="830" y="730" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M842,731 H1118" stroke="#5b8cff" stroke-width="3"/>
+<text x="846" y="757" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">outbox_event</text>
+<text x="846" y="781" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">id PK · run_id UNIQUE/FK</text>
+<text x="846" y="800" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">phase · state · lease</text>
+<rect x="830" y="880" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M842,881 H1118" stroke="#5b8cff" stroke-width="3"/>
+<text x="846" y="907" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">approval_request</text>
+<text x="846" y="931" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">id PK · run_id UNIQUE/FK</text>
+<text x="846" y="950" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">version · status · output_hash</text>
+<rect x="830" y="1030" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M842,1031 H1118" stroke="#5b8cff" stroke-width="3"/>
+<text x="846" y="1057" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">manual_action_report</text>
+<text x="846" y="1081" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">run_id PK/FK</text>
+<text x="846" y="1100" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">outcome · note · actor_id FK</text>
+<rect x="1230" y="130" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M1242,131 H1518" stroke="#5b8cff" stroke-width="3"/>
+<text x="1246" y="157" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">integration_config</text>
+<text x="1246" y="181" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">id PK · target_id UNIQUE/FK</text>
+<text x="1246" y="200" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">secret_ref · enabled</text>
+<rect x="1230" y="280" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M1242,281 H1518" stroke="#5b8cff" stroke-width="3"/>
+<text x="1246" y="307" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">integration_delivery</text>
+<text x="1246" y="331" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">id PK · integration_id FK</text>
+<text x="1246" y="350" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">check_run_id FK · state</text>
+<rect x="1230" y="430" width="300" height="92" rx="10" fill="#fff" stroke="#cbd5e1"/><path d="M1242,431 H1518" stroke="#5b8cff" stroke-width="3"/>
+<text x="1246" y="457" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">integration_delivery_attempt</text>
+<text x="1246" y="481" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">id PK · delivery_id FK</text>
+<text x="1246" y="500" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">attempt_no · http_status</text>
+<rect x="30" y="1030" width="700" height="150" rx="10" fill="#ecfeff" stroke="#cbd5e1"/><path d="M42,1031 H718" stroke="#22c6da" stroke-width="3"/>
+<text x="46" y="1057" font-family="Arial,Microsoft YaHei,sans-serif" font-size="16" fill="#0f172a" font-weight="600" text-anchor="start">Python独立数据库（跨库无外键）</text>
+<text x="46" y="1081" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">invocation：run_id、输入指纹、图版本与决定</text>
+<text x="46" y="1100" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">model_call：run_id FK、模型状态和已验证结果</text>
+<text x="46" y="1119" font-family="Arial,Microsoft YaHei,sans-serif" font-size="13" fill="#334155" font-weight="400" text-anchor="start">LangGraph自动管理checkpoint表；使用独立受限角色</text>
+<text x="30" y="1225" font-family="Arial,Microsoft YaHei,sans-serif" font-size="12" fill="#334155" font-weight="400" text-anchor="start">未画出的辅助表：user_session / audit_event / api_idempotency / target_network_policy / probe_host_lease / probe_slot / probe_budget / agent_step</text>
+</svg>

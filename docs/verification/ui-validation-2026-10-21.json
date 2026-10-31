@@ -58,7 +58,11 @@
       "Observer has no admin navigation, no other-user diagnostic index, direct report access produces real error state",
       "Mobile overview, task table, event list/detail and diagnosis have no document horizontal overflow"
     ],
-    "screenshots": "docs/verification/ui-workspace/",
+    "screenshots": [
+      "ui-workspace/overview-dark.png",
+      "ui-workspace/overview-light.png",
+      "ui-workspace/overview-mobile.png"
+    ],
     "environment": "UiPreview disposable random-port PostgreSQL plus real mock Python and Vite 5184",
     "console": "No Vue/page warn/error on final normal path; earlier deliberate denied report tested separately",
     "desktop": {
@@ -148,5 +152,16 @@
     "Fresh OSV query"
   ],
   "cleanup": "PASS: UiPreview exited 0 and removed credential/stop/command files; owned Vite 5184 stopped; temporary ui-work directory/log/classpath files removed; owned verification image tag removed; browser tab closed and viewport reset; formal tests/screenshots retained",
-  "userServices": "Not restarted; user databases not migrated; no remote push"
+  "userServices": "Not restarted; user databases not migrated; no remote push",
+  "artifactRetention": {
+    "updatedAt": "2026-10-24",
+    "removedScreenshotCount": 9,
+    "retainedScreenshots": [
+      "ui-workspace/overview-dark.png",
+      "ui-workspace/overview-light.png",
+      "ui-workspace/overview-mobile.png"
+    ],
+    "restoreFromGitCommit": "cf7c468",
+    "note": "Superseded UI screenshots were pruned. Historical test results and formal test reports are unchanged; retained screenshots refer only to their original verification date."
+  }
 }

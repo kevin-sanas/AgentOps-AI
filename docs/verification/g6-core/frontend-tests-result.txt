@@ -1,0 +1,22 @@
+
+> agentops-workbench@0.2.0 test
+> node --experimental-strip-types --test tests/*.test.mjs
+
+✔ a late response for A cannot label B, or a 24h response label a new 1h range (1.2292ms)
+✔ processing the final waiting task on page two returns to remaining page one (0.1298ms)
+✔ reauthentication returns to the exact internal detail including query and anchor (0.7197ms)
+✔ detail tabs preserve their caller and do not duplicate on anchor or query changes (0.2198ms)
+✔ closing another tab leaves the current diagnosis open and home is pinned (0.1158ms)
+✔ primary task action follows actual workflow and authorization (0.1268ms)
+✔ unknown targets remain a separate category and empty health is not simulated (0.979ms)
+✔ latency keeps real ordering, window boundaries, unknown gaps and zero latency (0.1849ms)
+✔ event aggregation fills empty buckets only inside a successfully queried interval (0.1611ms)
+✔ mock confidence is never displayed and provider self assessment is explicitly uncalibrated (0.1105ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 231.4628

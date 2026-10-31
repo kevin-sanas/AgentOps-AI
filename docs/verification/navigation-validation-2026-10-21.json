@@ -250,15 +250,21 @@
     "frontend/tests/navigation.test.mjs": "30dfb0c290af2a4a8c6e2129ee4bbc9c6e7235fd53dd6b3d3b268ba303697a75"
   },
   "screenshotSha256": {
-    "admin-workspace.png": "ea755683522f1ffdeaa4916543cf6ca6d3ed7a1f593056505185fbcbbb33b224",
-    "diagnosis-actions.png": "adc8b831a72efedcdb204825ab33a46af0cb04694e139e7372f6b653fa032acc",
     "mobile-incident-actions.png": "50f067368d934084d8611d50c9a7784fc7476d18e27a358a280f06f817badaeb",
     "mobile-submenus.png": "5593ffbbffd48b3ce84877181ada31a75b408bf18f000fd47800a900b81ea21e",
-    "observer-readonly.png": "ee1a6bc781f38f266f4dee3c8c108763e49bf6b1e61c49ef3791abc41f223bfe",
-    "review-select-dark.png": "d2fbce61b46094c28c834417759d2fcedf3025c8d8e199cefda1f11260b49642",
     "status-select-dark.png": "8a6842512970d9a5d825c6aa30a816c235795dbfe96d767f2d63d015b3133e4b",
-    "status-select-light.png": "6dbc81088f174e35e89aef8a996fa4676ae9ea171efc94e33ea7ec20a4c638c9",
-    "time-select-dark.png": "9e218eb1aa62ad4fe11673c8e686373a3d755654a051a26a4bcc95ce13676218",
-    "timeline-scroll-preserved.png": "d7abe052785535280f324e1a8cfa8ff852c11bed6d7f6920add9826b8313261f"
+    "status-select-light.png": "6dbc81088f174e35e89aef8a996fa4676ae9ea171efc94e33ea7ec20a4c638c9"
+  },
+  "artifactRetention": {
+    "updatedAt": "2026-10-24",
+    "removedScreenshotCount": 6,
+    "retainedScreenshots": [
+      "navigation-ui/mobile-incident-actions.png",
+      "navigation-ui/mobile-submenus.png",
+      "navigation-ui/status-select-dark.png",
+      "navigation-ui/status-select-light.png"
+    ],
+    "restoreFromGitCommit": "cf7c468",
+    "note": "Superseded UI screenshots were pruned. Historical test results and formal test reports are unchanged; retained screenshots refer only to their original verification date."
   }
 }

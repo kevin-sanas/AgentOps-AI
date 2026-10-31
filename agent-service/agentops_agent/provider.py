@@ -1,12 +1,14 @@
 """A single structured-output HTTP call. No model-selected tools or URLs are exposed."""
 import asyncio
 import json
+import re
+import ssl
 from typing import Annotated
 from urllib.parse import urlsplit
 import httpx
 from pydantic import Field
 from .models import StrictModel, Hypothesis, NextStep, Invocation, NODES
-from .safety import redact
+from .safety import RISKY, redact
 
 
 class Analysis(StrictModel):
@@ -18,7 +20,10 @@ class Analysis(StrictModel):
 
 
 class ProviderUnavailable(RuntimeError):
-    pass
+    def __init__(self, message="MODEL_UNAVAILABLE", *, http_status=None, failure_kind=None):
+        super().__init__(message)
+        self.http_status = http_status
+        self.failure_kind = failure_kind
 
 
 class ModelOutcomeUnknown(ProviderUnavailable):
@@ -36,6 +41,7 @@ class CompatibleProvider:
             raise ValueError("INVALID_MODEL_CONFIGURATION")
         self.url = base_url.rstrip("/") + "/chat/completions"
         self.model, self.key, self.transport, self.budget = model, key, transport, budget
+        self.last_request = None
 
     async def _request(self, body):
         try:
@@ -43,17 +49,29 @@ class CompatibleProvider:
                 async with httpx.AsyncClient(timeout=self.budget, follow_redirects=False, trust_env=False, transport=self.transport) as client:
                     async with client.stream("POST", self.url, headers={"Authorization": "Bearer " + self.key}, json=body) as response:
                         if response.status_code == 429 or response.status_code >= 500:
-                            raise ProviderUnavailable("MODEL_UNAVAILABLE")
+                            raise ProviderUnavailable("MODEL_UNAVAILABLE", http_status=response.status_code, failure_kind="HTTP_STATUS")
                         if response.status_code != 200: raise ValueError("MODEL_REQUEST_REJECTED")
                         data = bytearray()
                         async for chunk in response.aiter_bytes():
                             data.extend(chunk)
                             if len(data) > 65536: raise ValueError("MODEL_RESPONSE_TOO_LARGE")
                         return json.loads(data)
-        except (httpx.ConnectError, httpx.ConnectTimeout):
-            raise ProviderUnavailable("MODEL_UNAVAILABLE") from None
+        except (httpx.ConnectError, httpx.ConnectTimeout) as error:
+            cause = error
+            tls_failed = False
+            while cause is not None:
+                if isinstance(cause, ssl.SSLCertVerificationError):
+                    tls_failed = True
+                    break
+                cause = cause.__cause__
+            kind = "TLS_VERIFY" if tls_failed else ("CONNECT_TIMEOUT" if isinstance(error, httpx.ConnectTimeout) else "CONNECT_ERROR")
+            raise ProviderUnavailable("MODEL_UNAVAILABLE", failure_kind=kind) from None
         except (httpx.HTTPError, TimeoutError):
             raise ModelOutcomeUnknown("MODEL_OUTCOME_UNKNOWN") from None
+
+    def _body(self, prompt, evidence):
+        return {"model": self.model, "messages": [{"role": "system", "content": prompt}, {"role": "user", "content": json.dumps(evidence, ensure_ascii=False)}],
+                "response_format": {"type": "json_schema", "json_schema": {"name": "readonly_diagnosis", "strict": True, "schema": Analysis.model_json_schema()}}}
 
     def analyze(self, invocation: Invocation):
         if invocation.modelName != self.model: raise ValueError("MODEL_CONFIGURATION_MISMATCH")
@@ -64,9 +82,8 @@ class CompatibleProvider:
                   "Respond in Chinese using the exact JSON schema. Each hypothesis must cite supplied evidenceIds. "
                   "State uncertainty. Every next step requires human review. Any operation changing a system, deleting data or restarting services is HIGH risk. "
                   "No next step may be automatically executed. With insufficient evidence, say so explicitly.")
-        body = {"model": self.model, "messages": [{"role": "system", "content": prompt}, {"role": "user", "content": json.dumps(evidence, ensure_ascii=False)}],
-                "response_format": {"type": "json_schema", "json_schema": {"name": "readonly_diagnosis", "strict": True, "schema": Analysis.model_json_schema()}}}
-        response = asyncio.run(self._request(body))
+        response = asyncio.run(self._request(self._body(prompt, evidence)))
+        self.last_request = self._safe_request_metadata(response)
         try:
             choices = response["choices"]
             if len(choices) != 1 or choices[0]["finish_reason"] != "stop" or choices[0]["message"].get("refusal"):
@@ -84,3 +101,45 @@ class CompatibleProvider:
                 citations.append({"kind": "RUNBOOK_SECTION", "id": str(section.sectionId), "time": None, "version": section.version, "hash": section.hash})
         return result | {"runId": str(invocation.runId), "status": "COMPLETED", "graphVersion": invocation.graphVersion,
                          "modelName": self.model, "citations": citations, "steps": NODES}
+
+    def _safe_request_metadata(self, response):
+        returned = response.get("model") if isinstance(response, dict) else None
+        if not isinstance(returned, str) or not re.fullmatch(r"[A-Za-z0-9._:/-]{1,80}", returned):
+            returned = self.model
+        usage = response.get("usage") if isinstance(response, dict) else None
+        safe_usage = None
+        if isinstance(usage, dict):
+            names = {
+                "promptTokens": "prompt_tokens", "completionTokens": "completion_tokens",
+                "totalTokens": "total_tokens", "cacheHitTokens": "prompt_cache_hit_tokens",
+                "cacheMissTokens": "prompt_cache_miss_tokens",
+            }
+            values = {target: usage.get(source) for target, source in names.items()}
+            required = (values["promptTokens"], values["completionTokens"], values["totalTokens"])
+            optional = (values["cacheHitTokens"], values["cacheMissTokens"])
+            if all(type(value) is int and value >= 0 for value in required) and values["totalTokens"] == values["promptTokens"] + values["completionTokens"] and all(value is None or type(value) is int and value >= 0 for value in optional):
+                safe_usage = values
+        return {"outcome": "SUCCEEDED", "errorCode": None, "httpStatus": 200,
+                "model": returned, "usage": safe_usage}
+
+
+class DeepSeekProvider(CompatibleProvider):
+    """Official DeepSeek JSON Output; the same local schema and citation guards apply."""
+
+    def __init__(self, model, key, *, transport=None, budget=25):
+        super().__init__("https://api.deepseek.com", model, key, transport=transport, budget=budget)
+
+    def _body(self, prompt, evidence):
+        allowed = ["check:" + str(check["runId"]) for check in evidence["checks"]]
+        allowed += ["runbook:" + str(section["sectionId"]) for section in evidence["runbooks"]]
+        prompt += ("\nFor every evidenceIds field, use only exact strings from allowedEvidenceIds. "
+                   "Check citations use check:<runId>; runbook citations use runbook:<sectionId>, never runbookId. "
+                   "Every hypothesis citation must also appear in the top-level evidenceIds.")
+        prompt += ("\nLocal risk policy matches nextSteps text case-insensitively with this pattern: " + RISKY.pattern +
+                   ". Any matching mention requires risk=HIGH, including negated, historical or hypothetical mentions. "
+                   "For a read-only request you may instead use precise observation wording without these operation terms. "
+                   "HIGH is a review classification and never authorizes execution; all steps still require human review.")
+        prompt += "\nReturn one JSON object matching this JSON Schema:\n" + json.dumps(Analysis.model_json_schema(), ensure_ascii=False)
+        body = super()._body(prompt, evidence | {"allowedEvidenceIds": allowed})
+        body.update({"response_format": {"type": "json_object"}, "thinking": {"type": "disabled"}, "stream": False, "max_tokens": 4096})
+        return body

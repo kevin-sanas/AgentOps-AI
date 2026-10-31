@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "timezone": "Asia/Shanghai",
+  "baseRevision": "c39014b5df65dea7f142ddc9a955a91f08b2e886",
+  "branch": "codex/g6-repeatable-acceptance",
+  "workingTreeAtVerification": "dirty; code SHA256 below",
+  "mode": "disposable synthetic probes with real Java/Outbox/Python mock/PostgreSQL workflows",
+  "status": "PASS",
+  "core": {
+    "journeySteps": 16,
+    "java": 129,
+    "report": "interactive-demo/core-report.json",
+    "python": 59,
+    "typecheckAndBuild": "PASS",
+    "demoTargetAndSession": 8,
+    "frontend": 10,
+    "reportTests": 5
+  },
+  "demoCheck": {
+    "exitCode": 0,
+    "steps": 7,
+    "report": "interactive-demo/demo-check-result.json"
+  },
+  "manualTerminal": {
+    "exitCode": 0,
+    "commands": [
+      "status",
+      "down",
+      "status",
+      "up",
+      "quit"
+    ],
+    "output": [
+      "合成模式 UP，新增样本 0，最近事故 NONE",
+      "合成模式 DOWN，新增样本 3，最近事故 OPEN",
+      "合成模式 DOWN，新增样本 0，最近事故 OPEN",
+      "合成模式 UP，新增样本 4，最近事故 OPEN",
+      "独立演示已结束；本次日志及脱敏结果保留在DEMO_SESSION目录。"
+    ]
+  },
+  "browser": {
+    "screenshots": [
+      "interactive-demo/diagnosis-dark.png",
+      "interactive-demo/incident-light.png",
+      "interactive-demo/observer-readonly.png"
+    ],
+    "flow": [
+      "admin login",
+      "down opens incident",
+      "ACK",
+      "INVESTIGATE",
+      "diagnose",
+      "WAITING_HUMAN with frozen checks and runbook evidence",
+      "approve",
+      "APPROVED_FOR_MANUAL",
+      "NOT_EXECUTED saved without resolving incident",
+      "up",
+      "RESOLVED with recovery timeline",
+      "CLOSE",
+      "observer read-only without operation/admin buttons",
+      "logout and close owned tab"
+    ],
+    "note": "Concurrent frontend build regenerated public notices and reloaded Vite once. Re-login resumed the same diagnosis and review hash; no persistence change."
+  },
+  "cleanup": [
+    {
+      "session": "20261023-231827-1f3ac63d",
+      "success": true,
+      "servicesStopped": true,
+      "credentialsRemoved": true,
+      "postgresDirectoryRemoved": true
+    },
+    {
+      "session": "20261023-232020-400e1674",
+      "success": true,
+      "servicesStopped": true,
+      "credentialsRemoved": true,
+      "postgresDirectoryRemoved": true
+    },
+    {
+      "session": "20261023-232641-aa31efdb",
+      "success": true,
+      "servicesStopped": true,
+      "credentialsRemoved": true,
+      "postgresDirectoryRemoved": true
+    },
+    {
+      "session": "20261023-232741-a5ed4c49",
+      "success": true,
+      "servicesStopped": true,
+      "credentialsRemoved": true,
+      "postgresDirectoryRemoved": true
+    }
+  ],
+  "notRun": [
+    "mobile viewport this turn",
+    "natural two-hour expiry",
+    "forced parent termination",
+    "independent agent review",
+    "Linux/Compose/Kuma",
+    "new remote CI",
+    "real external probes",
+    "real provider/model quality",
+    "performance and full OS supply-chain audit"
+  ],
+  "sourceHashes": [
+    {
+      "sha256": "498676babffae6c37f252b814076aa104cfe0dbd9c70ac98d65cf974f65a22a3",
+      "path": "scripts/demo.ps1"
+    },
+    {
+      "sha256": "9401be50202f166dfe18a58ee3926fb92f0d1cd93994d1165e0c95541195b944",
+      "path": "scripts/demo-session.mjs"
+    },
+    {
+      "sha256": "99bc3b2b6535ebb8a37ec43dd212e1e15bcf4c9c1231de3b2c58a9fa24bd35f1",
+      "path": "scripts/demo-session.test.mjs"
+    },
+    {
+      "sha256": "54dc1c583f92408a89bbd5f5aba60e53ad153309032970ea84dc0ecc003b1cce",
+      "path": "scripts/demo-smoke.mjs"
+    },
+    {
+      "sha256": "4e6c8709125942581a3004ff4c9c5db5397ab67449540fbf83f7b0484c1b6de4",
+      "path": "scripts/demo-vite.mjs"
+    },
+    {
+      "sha256": "5ce40d4dad9e99a54d9a985f123fcb5b54d1e3274a7e390619f839bed438cc35",
+      "path": "backend/src/test/java/dev/agentops/DemoRuntime.java"
+    },
+    {
+      "sha256": "92f51ed32f68db4c483fccacc835dee9c327ab7dd8724c71aea4865c026601fa",
+      "path": "frontend/src/components/DemoNotice.vue"
+    },
+    {
+      "sha256": "39f10f5bcdee538bbc9982c9b55fb8a91ecc1db9521eb0c05424c331ed892494",
+      "path": "frontend/src/App.vue"
+    },
+    {
+      "sha256": "cf0481cdd3e99e46741f26e699b41e1da7e97140ec1ba9b013ff4a811b7bdf31",
+      "path": "scripts/acceptance.ps1"
+    },
+    {
+      "sha256": "9cf0d5ec6444d2d4322e14a3b05a150cb5af1cbb4e452208ddf5ca51b26ff2e1",
+      "path": "scripts/acceptance-report.mjs"
+    },
+    {
+      "sha256": "a5054d2c18e7e66ca0011a4a242688553fba907884cc8ab025fc95f43aa19147",
+      "path": ".github/workflows/backend.yml"
+    }
+  ]
+}

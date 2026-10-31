@@ -36,4 +36,29 @@ class AgentClientTest {
             assertThatThrownBy(()->client(server.getAddress().getPort(),3000).reconcile(task())).isInstanceOfSatisfying(AgentClient.Failure.class,e->{assertThat(e.code).isEqualTo("AGENT_MODEL_OUTCOME_UNKNOWN");assertThat(e.retryable).isFalse();});
         }finally{server.stop(0);}
     }
+    @Test void credentialsCannotBeSentToNonLoopbackPlainHttp(){
+        var settings=new SecuritySettings("test-pepper-0000000000000000000000","test-internal-00000000000000000000",Duration.ofMinutes(30));
+        assertThatThrownBy(()->new dev.agentops.model.ModelProviderClient(settings,new JsonMapper(),"http://example.com",Duration.ofSeconds(1)))
+            .isInstanceOf(IllegalStateException.class).hasMessage("Invalid agent service origin");
+    }
+    @Test void modelCredentialIsNeverForwardedToResumeOrCancel()throws Exception{
+        var json=new JsonMapper();var original=task();
+        var input=new AgentContracts.Input(original.runId(),original.input().graphVersion(),original.input().incident(),List.of(),List.of(),original.input().constraints(),original.input().capturedAt(),"deepseek-flash");
+        var seen=new java.util.concurrent.CopyOnWriteArrayList<String>();
+        var server=HttpServer.create(new InetSocketAddress("127.0.0.1",0),0);
+        server.createContext("/",x->{
+            seen.add(x.getRequestHeaders().getFirst("X-Dawnwatch-Model-Credential")==null?"<absent>":"present");
+            String status=x.getRequestURI().getPath().endsWith("/resume")?"APPROVED_FOR_MANUAL":"CANCELLED";
+            byte[] body=("{\"runId\":\""+original.runId()+"\",\"graphVersion\":\""+input.graphVersion()+"\",\"status\":\""+status+"\"}").getBytes(java.nio.charset.StandardCharsets.UTF_8);
+            x.sendResponseHeaders(200,body.length);x.getResponseBody().write(body);x.close();
+        });server.start();
+        try{
+            var resumePayload=json.createObjectNode().put("decision","APPROVED");
+            var resume=new AgentOutbox.Task(original.eventId(),original.runId(),original.targetId(),original.incidentId(),original.leaseToken(),1,original.requestId(),input,"RESUME",resumePayload,UUID.randomUUID());
+            assertThat(client(server.getAddress().getPort(),3000).reconcile(resume,"synthetic-credential-must-not-leave-java").status()).isEqualTo("APPROVED_FOR_MANUAL");
+            var cancel=new AgentOutbox.Task(UUID.randomUUID(),original.runId(),original.targetId(),original.incidentId(),UUID.randomUUID(),1,original.requestId(),input,"CANCEL",json.createObjectNode(),UUID.randomUUID());
+            assertThat(client(server.getAddress().getPort(),3000).reconcile(cancel,"synthetic-credential-must-not-leave-java").status()).isEqualTo("CANCELLED");
+            assertThat(seen).containsExactly("<absent>","<absent>");
+        }finally{server.stop(0);}
+    }
 }

@@ -1,0 +1,132 @@
+{
+  "date": "2026-10-23",
+  "status": "PASS",
+  "baseRevision": "9535511625ccfd10c2e4af4c55accea1342797b2",
+  "windowsPowerShell": "5.1.26100.9711",
+  "powerShell7": "7.6.5",
+  "initialRed": {
+    "newRegression": "FAIL before encoding fix",
+    "acceptanceParserErrors": 6,
+    "demoParserErrors": 10
+  },
+  "fix": [
+    "UTF-8 BOM for Chinese PowerShell entry points",
+    "Explicit UTF-8 JSON reads",
+    "Preserve native stderr warnings as logs while checking actual exit codes"
+  ],
+  "negativeCheck": "Invalid Maven lifecycle phase still throws Maven failed (exit ...) in Windows PowerShell 5.1",
+  "intermediateFailure": {
+    "stages": [
+      "backend",
+      "frontend-build"
+    ],
+    "reason": "NativeCommandError from ordinary Mockito/Vite stderr warnings; corrected before final run",
+    "report": ".cache/acceptance/20261023-233811-4bf1c188/report.json"
+  },
+  "finalAcceptance": {
+    "report": ".cache/acceptance/20261023-234223-7fc02b3d/report.json",
+    "java": 129,
+    "stages": [
+      {
+        "id": "backend",
+        "label": "Java / PostgreSQL 与核心旅程",
+        "status": "PASS",
+        "exitCode": 0,
+        "log": "backend.log"
+      },
+      {
+        "id": "python",
+        "label": "Python 图与模型契约",
+        "status": "PASS",
+        "exitCode": 0,
+        "log": "python.log"
+      },
+      {
+        "id": "frontend-tests",
+        "label": "前端状态与导航回归",
+        "status": "PASS",
+        "exitCode": 0,
+        "log": "frontend-tests.log"
+      },
+      {
+        "id": "frontend-build",
+        "label": "前端类型检查与生产构建",
+        "status": "PASS",
+        "exitCode": 0,
+        "log": "frontend-build.log"
+      },
+      {
+        "id": "demo-target",
+        "label": "演示目标与会话契约",
+        "status": "PASS",
+        "exitCode": 0,
+        "log": "demo-target.log"
+      },
+      {
+        "id": "report-tests",
+        "label": "验收报告回归",
+        "status": "PASS",
+        "exitCode": 0,
+        "log": "report-tests.log"
+      }
+    ],
+    "frontend": 10,
+    "reportTests": 5,
+    "journeySteps": 16,
+    "startedAt": "2026-10-23T23:42:23.2853286+08:00",
+    "total": 212,
+    "demoTargetAndSession": 9,
+    "python": 59,
+    "chineseJourneyTextPreserved": true,
+    "status": "PASS",
+    "finishedAt": "2026-10-23T23:44:43.2580052+08:00"
+  },
+  "demoChecks": [
+    {
+      "steps": 7,
+      "credentialsRemoved": true,
+      "postgresDirectoryRemoved": true,
+      "status": "PASS",
+      "session": "20261023-233724-4e455fcc",
+      "servicesStopped": true
+    },
+    {
+      "steps": 7,
+      "credentialsRemoved": true,
+      "postgresDirectoryRemoved": true,
+      "status": "PASS",
+      "session": "20261023-234457-2ce932e7",
+      "servicesStopped": true
+    }
+  ],
+  "parsing": {
+    "powerShell7ThreeChangedScripts": "PASS",
+    "windowsPowerShellAllSixScripts": "PASS",
+    "nodeRegression": "9/9 PASS on Windows; Windows parser test skipped on other platforms"
+  },
+  "notRun": [
+    "application browser rerun",
+    "PowerShell7 full acceptance rerun",
+    "remote CI",
+    "Linux/Compose/Kuma",
+    "real model or performance"
+  ],
+  "hashes": [
+    {
+      "sha256": "4cd49f7589e0a199082c1259f874bf46996b8fc09dec5333b79f90c6e40e4107",
+      "path": "scripts/demo.ps1"
+    },
+    {
+      "sha256": "ce39cb13e19b0257f33bf40819d2b0a8baaa63c7ca237e77f7291fc946073577",
+      "path": "scripts/acceptance.ps1"
+    },
+    {
+      "sha256": "0f8ad50dbeab2b67c3c3f3840bce7da7a45acf75592e36790aff2544961c8a3a",
+      "path": "scripts/backend.ps1"
+    },
+    {
+      "sha256": "33625211836840016cfcaf24f723a0e3d6ae7c3b2d53eb5497cd97169d2224a0",
+      "path": "scripts/demo-session.test.mjs"
+    }
+  ]
+}

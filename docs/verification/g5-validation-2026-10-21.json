@@ -609,5 +609,15 @@
   "cleanup": {
     "testContainersNetworksVolumes": "removed",
     "userServicesTouched": false
+  },
+  "artifactRetention": {
+    "updatedAt": "2026-10-24",
+    "removedScreenshotCount": 1,
+    "retainedScreenshots": [
+      "g5-ui/kuma-desktop.png",
+      "g5-ui/kuma-mobile.png"
+    ],
+    "restoreFromGitCommit": "cf7c468",
+    "note": "Superseded UI screenshots were pruned. Historical test results and formal test reports are unchanged; retained screenshots refer only to their original verification date."
   }
 }

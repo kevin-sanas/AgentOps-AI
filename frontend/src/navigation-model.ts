@@ -1,7 +1,7 @@
 export interface WorkTab {key:string;fullPath:string;title:string;returnTo?:string}
 export function viewKey(path:string) { return path.split(/[?#]/)[0] || '/overview' }
 export function safeReturnPath(value:unknown,fallback='/overview'):string {
-  return typeof value==='string'&&value.length<=2048&&!value.includes('\\')&&/^\/(?:overview|targets(?:\/(?:new|[a-z0-9-]+))?|incidents(?:\/[a-z0-9-]+)?|diagnosis|agents|runbooks(?:\/[a-z0-9-]+)?|agent-runs\/[a-z0-9-]+|admin\/users)(?:[?#].*)?$/.test(value)?value:fallback
+  return typeof value==='string'&&value.length<=2048&&!value.includes('\\')&&/^\/(?:overview|targets(?:\/(?:new|[a-z0-9-]+))?|incidents(?:\/[a-z0-9-]+)?|diagnosis|agents|runbooks(?:\/[a-z0-9-]+)?|agent-runs\/[a-z0-9-]+|admin\/(?:users|model|quality))(?:[?#].*)?$/.test(value)?value:fallback
 }
 export function visitTab(tabs:WorkTab[],entry:{fullPath:string;title:string},from?:string) {
   const key=viewKey(entry.fullPath),found=tabs.find(t=>t.key===key)

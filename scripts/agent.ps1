@@ -7,6 +7,9 @@ $taskPython=Join-Path $taskService '.venv/Scripts/python.exe'
 $taskTemp=Join-Path $taskService '.tmp'
 New-Item -ItemType Directory -Force -Path $taskTemp | Out-Null
 $taskPreviousTemp=$env:TEMP; $taskPreviousTmp=$env:TMP; $taskPreviousEncoding=$env:PYTHONUTF8
+$taskLegacyModelNames=@('AGENT_LLM_API_KEY','AGENT_LLM_PROVIDER','AGENT_MODEL_NAME','AGENT_LLM_BASE_URL','AGENT_ALLOW_LOCAL_MODEL_HTTP')
+$taskPreviousModelEnvironment=@{}
+foreach($taskLegacyName in $taskLegacyModelNames){$taskPreviousModelEnvironment[$taskLegacyName]=[Environment]::GetEnvironmentVariable($taskLegacyName,'Process');[Environment]::SetEnvironmentVariable($taskLegacyName,$null,'Process')}
 try {
     $env:TEMP=$taskTemp; $env:TMP=$taskTemp; $env:PYTHONUTF8='1'
     if($Action -eq 'Install'){
@@ -18,7 +21,7 @@ try {
     }else{
         Push-Location $taskService
         try{
-            if($Action -eq 'Test'){& $taskPython -m pytest tests/test_graph.py tests/test_review.py tests/test_provider.py tests/test_scenarios.py -q -p no:cacheprovider}
+            if($Action -eq 'Test'){& $taskPython -m pytest tests/test_graph.py tests/test_review.py tests/test_provider.py tests/test_provider_admin.py tests/test_scenarios.py tests/test_deepseek_check.py tests/test_deepseek_demo.py tests/test_quality_evaluation.py tests/test_evaluation_pilot.py tests/test_quality_review_package.py tests/test_quality_workbench.py tests/test_risk_diagnostics.py -q -p no:cacheprovider}
             else{
                 if(!$env:AGENT_CHECKPOINT_DSN -or !$env:AGENT_INTERNAL_TOKEN){throw 'Set AGENT_CHECKPOINT_DSN and AGENT_INTERNAL_TOKEN in this terminal first. See README G3.'}
                 & $taskPython -m uvicorn agentops_agent.app:from_environment --factory --host 127.0.0.1 --port $Port --no-access-log
@@ -26,4 +29,7 @@ try {
         }finally{Pop-Location}
     }
     if($LASTEXITCODE -ne 0){throw "Agent command failed (exit $LASTEXITCODE)."}
-}finally{$env:TEMP=$taskPreviousTemp;$env:TMP=$taskPreviousTmp;$env:PYTHONUTF8=$taskPreviousEncoding}
+}finally{
+    foreach($taskLegacyName in $taskLegacyModelNames){[Environment]::SetEnvironmentVariable($taskLegacyName,$taskPreviousModelEnvironment[$taskLegacyName],'Process')}
+    $env:TEMP=$taskPreviousTemp;$env:TMP=$taskPreviousTmp;$env:PYTHONUTF8=$taskPreviousEncoding
+}

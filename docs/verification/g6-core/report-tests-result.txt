@@ -1,0 +1,13 @@
+✔ a report requires all commands and the current successful journey (1.5986ms)
+✔ failed commands or failed journey steps cannot be hidden by an aggregate PASS (0.1688ms)
+✔ the report explicitly distinguishes synthetic contracts and unmeasured model quality (0.1587ms)
+✔ exported HTML escapes all supplied text and only links local stage logs (0.4202ms)
+✔ the CLI exports a failed report and exits nonzero when this run has no journey (119.338ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 227.8122

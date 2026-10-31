@@ -51,7 +51,7 @@ public class SafeHttpProbe implements AutoCloseable {
         var client=HttpClients.custom().setConnectionManager(connection)
             .setRoutePlanner(new DefaultRoutePlanner(DefaultSchemePortResolver.INSTANCE))
             .setDefaultRequestConfig(RequestConfig.custom().setResponseTimeout(timeout).setConnectionRequestTimeout(timeout).setAuthenticationEnabled(false).build())
-            .disableRedirectHandling().disableAutomaticRetries().disableCookieManagement().disableAuthCaching().disableContentCompression().setUserAgent("AgentOps-Health/0.1").build();
+            .disableRedirectHandling().disableAutomaticRetries().disableCookieManagement().disableAuthCaching().disableContentCompression().setUserAgent("Dawnwatch-Health/0.1").build();
         ClassicHttpResponse response=null;Integer status=null;
         try{
             response=client.executeOpen(null,request,null);status=response.getCode();

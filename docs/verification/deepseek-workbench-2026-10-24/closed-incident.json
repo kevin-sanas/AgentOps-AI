@@ -1,0 +1,207 @@
+{
+  "incident": {
+    "id": "d91f71f0-5155-474b-9a16-d42a94ce4488",
+    "targetId": "879d0f8f-eafa-4686-9fdf-4b3a55fba698",
+    "targetName": "交互式故障验收服务",
+    "status": "CLOSED",
+    "severity": "P2",
+    "openedAt": "2026-10-24T10:12:34.290298Z",
+    "lastFailureAt": "2026-10-24T10:17:34.669168Z",
+    "acknowledgedBy": "9f82441d-33fc-4903-8601-695f905e78f1",
+    "recoveredAt": "2026-10-24T10:17:45.260496Z",
+    "resolvedAt": "2026-10-24T10:17:45.276113Z",
+    "closedAt": "2026-10-24T10:21:19.086886Z",
+    "summary": "健康检查连续失败达到阈值",
+    "version": 11
+  },
+  "events": {
+    "items": [
+      {
+        "id": "7fe86167-09ae-4383-8c1d-b790b088a2d9",
+        "actorId": "9f82441d-33fc-4903-8601-695f905e78f1",
+        "eventType": "INCIDENT_CLOSED",
+        "body": "合成恢复证据已满足观察条件，真实模型链路验收结束；未执行任何系统变更。",
+        "metadata": {
+          "to": "CLOSED",
+          "from": "RESOLVED",
+          "version": 11
+        },
+        "createdAt": "2026-10-24T10:21:19.086886Z"
+      },
+      {
+        "id": "27f6a2b8-d14e-4796-8484-595212ada854",
+        "actorId": null,
+        "eventType": "INCIDENT_RESOLVED",
+        "body": null,
+        "metadata": {
+          "source": "RECOVERY_WINDOW",
+          "checkRunId": "e4d6473e-ff3e-4830-b87b-98ccca6e993d"
+        },
+        "createdAt": "2026-10-24T10:17:45.276542Z"
+      },
+      {
+        "id": "6dab9bf0-780f-4616-9a03-3911ac9ee549",
+        "actorId": null,
+        "eventType": "INCIDENT_MONITORING",
+        "body": null,
+        "metadata": {
+          "checkRunId": "7d543b9c-d831-49fd-9271-21e1c5452598"
+        },
+        "createdAt": "2026-10-24T10:17:45.260830Z"
+      },
+      {
+        "id": "65076876-a7c4-4b94-b9cc-098a327e6483",
+        "actorId": null,
+        "eventType": "RECOVERY_DETECTED",
+        "body": null,
+        "metadata": {
+          "checkRunId": "7d543b9c-d831-49fd-9271-21e1c5452598"
+        },
+        "createdAt": "2026-10-24T10:17:45.260830Z"
+      },
+      {
+        "id": "2f13d3c1-3966-4d7d-b212-7c57a643f1d1",
+        "actorId": null,
+        "eventType": "CHECK_FAILED",
+        "body": null,
+        "metadata": {
+          "checkRunId": "b79430df-893f-4777-a451-05fed6b22e16"
+        },
+        "createdAt": "2026-10-24T10:17:34.669669Z"
+      },
+      {
+        "id": "5c43ce0a-f600-44ec-aeef-a0464da963b7",
+        "actorId": "9f82441d-33fc-4903-8601-695f905e78f1",
+        "eventType": "AGENT_MANUAL_REPORTED",
+        "body": "已回填线下处理结果：NOT_EXECUTED",
+        "metadata": {
+          "runId": "a4653296-92b9-46aa-963d-65710871a347",
+          "outcome": "NOT_EXECUTED"
+        },
+        "createdAt": "2026-10-24T10:17:02.470141Z"
+      },
+      {
+        "id": "317fb0cf-46dd-477e-8033-cdc8ae865d30",
+        "actorId": null,
+        "eventType": "AGENT_REVIEW_SYNCED",
+        "body": "人工决定已同步；批准只允许线下处理。",
+        "metadata": {
+          "runId": "a4653296-92b9-46aa-963d-65710871a347",
+          "status": "APPROVED_FOR_MANUAL"
+        },
+        "createdAt": "2026-10-24T10:16:41.072766Z"
+      },
+      {
+        "id": "e2cedff0-20dc-4322-b3a4-cc18035c42eb",
+        "actorId": "9f82441d-33fc-4903-8601-695f905e78f1",
+        "eventType": "AGENT_REVIEW_DECIDED",
+        "body": "人工审阅决定已记录，等待断点同步。",
+        "metadata": {
+          "runId": "a4653296-92b9-46aa-963d-65710871a347",
+          "decision": "APPROVED"
+        },
+        "createdAt": "2026-10-24T10:16:39.795701Z"
+      },
+      {
+        "id": "e53ce1f3-dc0f-4481-a7b2-6065d0c5796a",
+        "actorId": null,
+        "eventType": "CHECK_FAILED",
+        "body": null,
+        "metadata": {
+          "checkRunId": "425a1dea-4be4-4e8a-ac58-d673b3b7ea52"
+        },
+        "createdAt": "2026-10-24T10:16:34.598915Z"
+      },
+      {
+        "id": "4d2802b0-fdae-44b0-a92e-696e4f93e020",
+        "actorId": null,
+        "eventType": "CHECK_FAILED",
+        "body": null,
+        "metadata": {
+          "checkRunId": "d2237e79-a8d4-433f-8676-9871e54735ec"
+        },
+        "createdAt": "2026-10-24T10:15:34.552216Z"
+      },
+      {
+        "id": "01ee0a82-2aa8-449c-b063-93826914e1fd",
+        "actorId": null,
+        "eventType": "AGENT_WAITING_HUMAN",
+        "body": "诊断证据已冻结，等待人工审阅；批准后仍须线下处理。",
+        "metadata": {
+          "runId": "a4653296-92b9-46aa-963d-65710871a347",
+          "outputHash": "7a00b8af7f2f28adfb76ee7b7b6937498fb4b3b17b2daf5fb2b8a0361a37eaac"
+        },
+        "createdAt": "2026-10-24T10:15:19.579625Z"
+      },
+      {
+        "id": "9adbaa75-2cdc-49ae-b6bb-255f6f72c61b",
+        "actorId": "9f82441d-33fc-4903-8601-695f905e78f1",
+        "eventType": "AGENT_RUN_REQUESTED",
+        "body": "已请求只读诊断，模型：deepseek-flash",
+        "metadata": {
+          "runId": "a4653296-92b9-46aa-963d-65710871a347"
+        },
+        "createdAt": "2026-10-24T10:15:12.657354Z"
+      },
+      {
+        "id": "433d2523-9fdb-4f3a-b156-684815affddf",
+        "actorId": "9f82441d-33fc-4903-8601-695f905e78f1",
+        "eventType": "INCIDENT_INVESTIGATING",
+        "body": "检查合成证据和已发布手册，验证真实模型只读诊断与人审。",
+        "metadata": {
+          "to": "INVESTIGATING",
+          "from": "ACKNOWLEDGED",
+          "version": 4
+        },
+        "createdAt": "2026-10-24T10:14:59.675385Z"
+      },
+      {
+        "id": "d8be8814-269c-4752-b3d4-7e98511fddae",
+        "actorId": null,
+        "eventType": "CHECK_FAILED",
+        "body": null,
+        "metadata": {
+          "checkRunId": "a1222158-5e5c-4fea-a76d-11aad176a28c"
+        },
+        "createdAt": "2026-10-24T10:14:34.457449Z"
+      },
+      {
+        "id": "e22b21a5-43c4-4f34-8fa7-449fcf050ee1",
+        "actorId": "9f82441d-33fc-4903-8601-695f905e78f1",
+        "eventType": "INCIDENT_ACKNOWLEDGED",
+        "body": "真实DeepSeek隔离验收：确认合成503故障，不操作真实服务。",
+        "metadata": {
+          "to": "ACKNOWLEDGED",
+          "from": "OPEN",
+          "version": 2
+        },
+        "createdAt": "2026-10-24T10:14:34.276469Z"
+      },
+      {
+        "id": "85ffe1d6-2ef5-4736-ab48-d4e200a1ee03",
+        "actorId": null,
+        "eventType": "CHECK_FAILED",
+        "body": null,
+        "metadata": {
+          "checkRunId": "c72a6d56-83ac-4a72-991a-ad197df2e764"
+        },
+        "createdAt": "2026-10-24T10:13:34.334817Z"
+      },
+      {
+        "id": "3eb31d02-5dbc-424b-9918-d55ad9196ec0",
+        "actorId": null,
+        "eventType": "INCIDENT_OPENED",
+        "body": null,
+        "metadata": {
+          "checkId": "6010607f-bae2-4d38-a082-adfb3ec16ea3",
+          "checkRunId": "a7e9715e-d3f6-4db7-a386-827b8f32cd55",
+          "failThreshold": 3
+        },
+        "createdAt": "2026-10-24T10:12:34.290671Z"
+      }
+    ],
+    "total": 17,
+    "page": 0,
+    "size": 20
+  }
+}

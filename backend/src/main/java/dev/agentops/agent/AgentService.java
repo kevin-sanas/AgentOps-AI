@@ -4,6 +4,7 @@ import dev.agentops.access.Caller;
 import dev.agentops.audit.AuditService;
 import dev.agentops.incidents.IncidentService;
 import dev.agentops.monitoring.TargetGuard;
+import dev.agentops.model.ModelConfigurationStore;
 import dev.agentops.shared.*;
 import dev.agentops.targets.TargetService;
 import java.nio.charset.StandardCharsets;
@@ -17,10 +18,9 @@ import tools.jackson.databind.json.JsonMapper;
 
 @Service
 public class AgentService {
-    private final JdbcTemplate db;private final TargetService targets;private final TargetGuard guard;private final IncidentService incidents;private final Idempotency keys;private final AuditService audit;private final JsonMapper json;
-    public AgentService(JdbcTemplate db,TargetService targets,TargetGuard guard,IncidentService incidents,Idempotency keys,AuditService audit,JsonMapper json){this.db=db;this.targets=targets;this.guard=guard;this.incidents=incidents;this.keys=keys;this.audit=audit;this.json=json;}
+    private final JdbcTemplate db;private final TargetService targets;private final TargetGuard guard;private final IncidentService incidents;private final Idempotency keys;private final AuditService audit;private final JsonMapper json;private final ModelConfigurationStore configurations;
+    public AgentService(JdbcTemplate db,TargetService targets,TargetGuard guard,IncidentService incidents,Idempotency keys,AuditService audit,JsonMapper json,ModelConfigurationStore configurations){this.db=db;this.targets=targets;this.guard=guard;this.incidents=incidents;this.keys=keys;this.audit=audit;this.json=json;this.configurations=configurations;}
     @org.springframework.beans.factory.annotation.Autowired ApprovalService approvals;
-    @org.springframework.beans.factory.annotation.Value("${agentops.agent.model-name:mock}") String modelName;
     public record Requested(UUID runId,String status){}
     public record Step(String node,String status,Instant completedAt){}
     public record Delivery(UUID runId,UUID incidentId,UUID targetId,String targetName,String status,String deliveryState,int attempts,String errorCode,Instant createdAt){}
@@ -32,15 +32,15 @@ public class AgentService {
     @Transactional public Requested start(Caller c,UUID incident,String key,String requestId){
         var initial=incidents.find(incident);guard.lock(initial.targetId());guard.requireOperate(c,initial.targetId());
         UUID id=keys.create(c.userId(),"AGENT_RUN:"+incident,key,Map.of("incidentId",incident),()->{
-            UUID fresh=UUID.randomUUID();var input=snapshot(fresh,incident);String body=json.writeValueAsString(input);
-            db.update("INSERT INTO agent_run(id,incident_id,target_id,requested_by,request_id,graph_version,model_name,input) VALUES(?,?,?,?,?,?,?,?::jsonb)",fresh,incident,input.incident().targetId(),c.userId(),requestId,AgentContracts.REVIEW_GRAPH,modelName,body);
+            UUID fresh=UUID.randomUUID();String selectedModel=configurations.status().configured()?ModelConfigurationStore.MODEL:"mock";var input=snapshot(fresh,incident,selectedModel);String body=json.writeValueAsString(input);
+            db.update("INSERT INTO agent_run(id,incident_id,target_id,requested_by,request_id,graph_version,model_name,input) VALUES(?,?,?,?,?,?,?,?::jsonb)",fresh,incident,input.incident().targetId(),c.userId(),requestId,AgentContracts.REVIEW_GRAPH,selectedModel,body);
             for(int n=0;n<AgentContracts.NODES.size();n++)db.update("INSERT INTO agent_step(run_id,ordinal,node,status) VALUES(?,?,?,'PENDING')",fresh,n,AgentContracts.NODES.get(n));
             db.update("INSERT INTO outbox_event(id,run_id,type) VALUES(?,?,'AGENT_RUN_REQUESTED')",UUID.randomUUID(),fresh);
-            incidents.event(incident,c.userId(),"AGENT_RUN_REQUESTED","已请求只读诊断，模型："+modelName,Map.of("runId",fresh));
-            audit.record(c.userId(),"AGENT_RUN_REQUESTED","AGENT_RUN",fresh,requestId,Map.of("incidentId",incident,"graphVersion",AgentContracts.REVIEW_GRAPH,"modelName",modelName));return fresh;
+            incidents.event(incident,c.userId(),"AGENT_RUN_REQUESTED","已请求只读诊断，模型："+selectedModel,Map.of("runId",fresh));
+            audit.record(c.userId(),"AGENT_RUN_REQUESTED","AGENT_RUN",fresh,requestId,Map.of("incidentId",incident,"graphVersion",AgentContracts.REVIEW_GRAPH,"modelName",selectedModel));return fresh;
         });return new Requested(id,db.queryForObject("SELECT status FROM agent_run WHERE id=?",String.class,id));
     }
-    private AgentContracts.Input snapshot(UUID id,UUID incident){
+    private AgentContracts.Input snapshot(UUID id,UUID incident,String modelName){
         if(modelName==null||!modelName.matches("[A-Za-z0-9._:/-]{1,80}"))throw new IllegalStateException("Invalid agent model name");
         var i=incidents.find(incident);Instant capture=Instant.now();
         var checks=db.query("SELECT r.* FROM check_run r JOIN check_definition d ON d.id=r.check_definition_id WHERE d.target_id=? AND r.completed_at BETWEEN ?::timestamptz-interval '30 minutes' AND ?::timestamptz ORDER BY r.completed_at DESC,r.id LIMIT 20",(r,n)->new AgentContracts.Check(r.getObject("id",UUID.class),r.getString("outcome"),r.getObject("status_code",Integer.class),r.getObject("latency_ms",Integer.class),r.getTimestamp("completed_at").toInstant(),r.getString("error_code")),i.targetId(),capture.toString(),capture.toString());

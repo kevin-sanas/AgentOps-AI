@@ -44,8 +44,19 @@ class Store:
                 conn.execute("""CREATE TABLE IF NOT EXISTS model_call (
                     run_id uuid PRIMARY KEY REFERENCES invocation(run_id), model_name varchar(80) NOT NULL,
                     status varchar(16) NOT NULL CHECK(status IN ('STARTED','COMPLETED','RETRYABLE')),
-                    result jsonb, updated_at timestamptz NOT NULL DEFAULT now(),
+                    result jsonb, request_id varchar(80), outcome varchar(16), error_code varchar(80),
+                    http_status integer, elapsed_ms integer, returned_model varchar(80),
+                    prompt_tokens integer, completion_tokens integer, total_tokens integer,
+                    cache_hit_tokens integer, cache_miss_tokens integer,
+                    updated_at timestamptz NOT NULL DEFAULT now(),
                     CHECK((status='COMPLETED')=(result IS NOT NULL)))""")
+                for definition in (
+                    "request_id varchar(80)", "outcome varchar(16)", "error_code varchar(80)",
+                    "http_status integer", "elapsed_ms integer", "returned_model varchar(80)",
+                    "prompt_tokens integer", "completion_tokens integer", "total_tokens integer",
+                    "cache_hit_tokens integer", "cache_miss_tokens integer",
+                ):
+                    conn.execute("ALTER TABLE model_call ADD COLUMN IF NOT EXISTS " + definition)
             finally:
                 conn.execute("SELECT pg_advisory_unlock(722330120)")
 
@@ -73,7 +84,7 @@ class Store:
         if actual != digest: raise InputConflict("INPUT_CONFLICT")
         return normalized
 
-    def invoke(self, body):
+    def invoke(self, body, provider=None, request_id=None):
         invocation = Invocation.model_validate(body)
         # Claim the immutable input before competing for graph execution, including the first-registration race.
         with self.connect() as registration:
@@ -81,28 +92,29 @@ class Store:
         with self.lock(invocation.runId) as conn, tracing_context(enabled=False):
             if conn is None: return {"runId": str(invocation.runId), "status": "RUNNING", "graphVersion": invocation.graphVersion}
             metadata = self.metadata(conn, invocation.runId)
-            graph = self.graph(conn)
+            graph = self.graph(conn, provider=provider, request_id=request_id)
             config = {"configurable": {"thread_id": str(invocation.runId)}, "recursion_limit": 10, "callbacks": []}
             state = graph.get_state(config)
             if metadata["cancelled"] or state.interrupts or (state.values.get("result") and not state.next):
-                return self._response(invocation.runId, state, metadata)
+                return self._response(invocation.runId, state, metadata, conn)
             # No untracked background task: this request owns the lock through synchronous checkpoint commits.
             started = time.monotonic()
             for _ in graph.stream(None if state.values else {"input": normalized}, config, durability="sync"):
                 if time.monotonic() - started > 45: raise TimeoutError("AGENT_GRAPH_TIMEOUT")
             conn.execute("UPDATE invocation SET updated_at=now() WHERE run_id=%s", (invocation.runId,))
-            return self._response(invocation.runId, graph.get_state(config), metadata)
+            return self._response(invocation.runId, graph.get_state(config), metadata, conn)
 
     def read(self, run_id: UUID):
         with self.connect() as conn, tracing_context(enabled=False):
             metadata = self.metadata(conn, run_id)
             if metadata is None: return None
             graph = self.graph(conn)
-            return self._response(run_id, graph.get_state(self.config(run_id)), metadata)
+            return self._response(run_id, graph.get_state(self.config(run_id)), metadata, conn)
 
-    def graph(self, conn):
+    def graph(self, conn, provider=None, request_id=None):
         from .model_calls import PersistedProvider
-        graph = build_graph(self.saver(conn), provider=PersistedProvider(conn, self.provider))
+        selected = provider if provider is not None else self.provider
+        graph = build_graph(self.saver(conn), provider=PersistedProvider(conn, selected, request_id=request_id))
         graph.step_timeout = 25
         return graph
 
@@ -135,7 +147,7 @@ class Store:
                 graph.invoke(Command(resume={"decision": command.decision}), config, durability="sync")
             elif state.next:
                 graph.invoke(None, config, durability="sync")
-            return self._response(run_id, graph.get_state(config), metadata)
+            return self._response(run_id, graph.get_state(config), metadata, conn)
 
     def cancel(self, run_id: UUID):
         with self.lock(run_id) as conn, tracing_context(enabled=False):
@@ -151,10 +163,26 @@ class Store:
                 raise InputConflict("RUN_ALREADY_COMPLETED")
             conn.execute("UPDATE invocation SET cancelled=true,updated_at=now() WHERE run_id=%s", (run_id,))
             metadata["cancelled"] = True
-            return self._response(run_id, state, metadata)
+            return self._response(run_id, state, metadata, conn)
 
-    @staticmethod
-    def _response(run_id, state, metadata):
+    def model_request(self, run_id, conn=None):
+        if conn is None:
+            with self.connect() as opened: return self.model_request(run_id, opened)
+        row = conn.execute("""SELECT request_id,outcome,error_code,http_status,elapsed_ms,returned_model,
+            prompt_tokens,completion_tokens,total_tokens,cache_hit_tokens,cache_miss_tokens
+            FROM model_call WHERE run_id=%s AND outcome IS NOT NULL""", (run_id,)).fetchone()
+        if row is None: return None
+        usage = None
+        if row["total_tokens"] is not None:
+            usage = {"promptTokens": row["prompt_tokens"], "completionTokens": row["completion_tokens"],
+                     "totalTokens": row["total_tokens"], "cacheHitTokens": row["cache_hit_tokens"],
+                     "cacheMissTokens": row["cache_miss_tokens"]}
+        return {"requestId": row["request_id"], "purpose": "DIAGNOSIS", "provider": "deepseek",
+                "model": row["returned_model"] or "deepseek-flash", "outcome": row["outcome"],
+                "errorCode": row["error_code"], "httpStatus": row["http_status"],
+                "elapsedMs": row["elapsed_ms"], "usage": usage}
+
+    def _response(self, run_id, state, metadata, conn=None):
         response = {"runId": str(run_id), "status": "RUNNING", "graphVersion": metadata["graph_version"]}
         if state.values.get("result"):
             response["result"] = state.values["result"]
@@ -162,4 +190,6 @@ class Store:
             elif not state.next:
                 response["status"] = {"APPROVED": "APPROVED_FOR_MANUAL", "REJECTED": "REJECTED"}.get(state.values.get("reviewDecision"), "COMPLETED")
         if metadata["cancelled"]: response["status"] = "CANCELLED"
+        provider_request = self.model_request(run_id, conn)
+        if provider_request is not None: response["providerRequest"] = provider_request
         return response

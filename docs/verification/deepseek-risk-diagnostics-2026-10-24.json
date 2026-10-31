@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-24",
+  "branch": "codex/deepseek-risk-diagnostics",
+  "baseRevision": "9b59ea2",
+  "testedWorkingTree": true,
+  "status": "OFFLINE_VERIFIED_REAL_MODEL_NOT_REVALIDATED",
+  "actualModelRequestsThisTask": 0,
+  "historicalPilotRequestsUnchanged": 2,
+  "historicalPilotAcceptedUnchanged": 1,
+  "historicalFailureCauseDetermined": false,
+  "pythonTests": {
+    "total": 147,
+    "new": 10,
+    "red": "9 failed,1 passed before implementation",
+    "green": "147 passed"
+  },
+  "javaTests": {
+    "selection": [
+      "AgentIntegrationTest",
+      "AgentApiTest"
+    ],
+    "total": 15,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "scope": "isolated PostgreSQL / Python HTTP and checkpoint persistence",
+    "nestedPythonPostgres": 12
+  },
+  "predicates": {
+    "RISKY": "AST identical to baseline",
+    "SECRETS": "AST identical to baseline",
+    "riskDecisionCondition": "unchanged",
+    "originalAssertions": "unchanged",
+    "automaticRiskUpgrade": false
+  },
+  "diagnosticExample": {
+    "sampleMode": "synthetic-offline-example",
+    "actualNetworkRequests": 0,
+    "historicalFailureReplay": false,
+    "expectedRejection": true,
+    "humanMeaning": "第2条建议（索引1）包含重启词，风险LOW不符合现有HIGH文本规则。仅为新构造的示例，非上次被拒原文。",
+    "diagnostic": {
+      "validationErrorCode": "AGENT_RISK_UNDERESTIMATED",
+      "validationFields": [
+        [
+          "nextSteps",
+          1,
+          "risk"
+        ]
+      ],
+      "riskDiagnostics": {
+        "policyId": "operation-text-high-v1",
+        "stepIndex": 1,
+        "observedRisk": "LOW",
+        "requiredRisk": "HIGH",
+        "operationCategory": "RESTART"
+      }
+    }
+  },
+  "secretHandling": "Only bounded index and whitelisted risk/category metadata; no rejected report text, host names, Key or arbitrary exception strings.",
+  "promptChange": "Clarifies existing text policy, including negative/historical/hypothetical mentions; no automatic execution or changed protocol limits.",
+  "independentReview": "No blocking or important findings; read-only full change review, ValueError/HTTP compatibility and unchanged predicates verified; no extra tests or model calls.",
+  "notRun": [
+    "New live-model verification",
+    "New remote CI",
+    "Local full Java/frontend/Compose/performance suites",
+    "Human-rated model quality benchmark"
+  ],
+  "startupGuide": "IDEA启动与验收指南.md section14.7"
+}

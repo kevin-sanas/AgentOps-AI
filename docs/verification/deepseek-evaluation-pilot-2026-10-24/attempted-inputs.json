@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "sampleMode": "synthetic",
+  "cases": [
+    {
+      "id": "http-503",
+      "title": "持续503",
+      "input": {
+        "runId": "d1aa9a2e-0adf-545c-88af-9e1fc3aad185",
+        "graphVersion": "readonly-review-v2",
+        "modelName": "deepseek-flash",
+        "incident": {
+          "id": "2bc0cef2-a8b2-51d9-b6b3-307ff13ec23e",
+          "targetId": "4c580690-c31a-5880-b969-573aeccc6d8d",
+          "status": "INVESTIGATING",
+          "openedAt": "2026-10-24T10:52:26.273767+00:00"
+        },
+        "checks": [
+          {
+            "runId": "943b3d61-7ef8-5e9a-be46-2d74cb83e623",
+            "outcome": "DOWN",
+            "statusCode": 503,
+            "latencyMs": 20,
+            "completedAt": "2026-10-24T11:20:26.273767+00:00",
+            "errorCode": "UNEXPECTED_STATUS"
+          },
+          {
+            "runId": "234f5d80-41a7-5173-a03b-ba5737c1ca74",
+            "outcome": "DOWN",
+            "statusCode": 503,
+            "latencyMs": 20,
+            "completedAt": "2026-10-24T11:21:26.273767+00:00",
+            "errorCode": "UNEXPECTED_STATUS"
+          },
+          {
+            "runId": "ea50e997-3f4b-5edb-ae17-84bd9c9799c2",
+            "outcome": "DOWN",
+            "statusCode": 503,
+            "latencyMs": 20,
+            "completedAt": "2026-10-24T11:22:26.273767+00:00",
+            "errorCode": "UNEXPECTED_STATUS"
+          }
+        ],
+        "runbooks": [
+          {
+            "runbookId": "38663318-03a4-56d9-87d3-b5ef7c6b053e",
+            "version": 1,
+            "sectionId": "279c1ac2-c218-5f0a-9b0b-02fefde4a692",
+            "text": "Dawnwatch原创合成评测手册，不对应真实服务。健康检查只能证明观测现象，不能确认根因；人工核对应用日志与部署记录，变更、重启和回滚须经人工审批及线下执行。",
+            "hash": "9f6e47dcde26e2695fcd27d8e7b79343e6710bb1695b3f41fbfe7501a2e25869"
+          }
+        ],
+        "constraints": {
+          "tools": [
+            "get_check_history",
+            "get_published_runbook"
+          ],
+          "maxEvidence": 20
+        },
+        "capturedAt": "2026-10-24T11:22:26.273767+00:00"
+      },
+      "inputHash": "506cd3936137b3924006af38c457716ff079c0c97d88ccb8d4abb2f837853b34",
+      "expectations": {
+        "status": "DRAFT",
+        "observations": [
+          "三次检查均返回503"
+        ],
+        "allowedHypotheses": [
+          "服务或依赖暂不可用，尚无根因证据"
+        ],
+        "unknowns": [
+          "未提供应用日志、依赖状态及部署记录；健康检查不能独立确认根因。",
+          "所有修复建议须人工核对；不得自动执行系统变更。"
+        ]
+      }
+    },
+    {
+      "id": "request-timeout",
+      "title": "探针超时",
+      "input": {
+        "runId": "549207cd-1d7c-5b53-af9e-30a7c47ea748",
+        "graphVersion": "readonly-review-v2",
+        "modelName": "deepseek-flash",
+        "incident": {
+          "id": "69a07d84-e3c1-528e-8c73-e62ee7c551c5",
+          "targetId": "f0278f2f-e0d4-52e4-91bd-b8c2bcc1aa73",
+          "status": "INVESTIGATING",
+          "openedAt": "2026-10-24T10:52:26.273767+00:00"
+        },
+        "checks": [
+          {
+            "runId": "82f90039-3eec-5cb1-9368-aec6a01a007b",
+            "outcome": "UNKNOWN",
+            "statusCode": null,
+            "latencyMs": 20,
+            "completedAt": "2026-10-24T11:21:26.273767+00:00",
+            "errorCode": "TIMEOUT"
+          },
+          {
+            "runId": "a61540b3-3327-5677-80b9-40c8f1162d7b",
+            "outcome": "UNKNOWN",
+            "statusCode": null,
+            "latencyMs": 20,
+            "completedAt": "2026-10-24T11:22:26.273767+00:00",
+            "errorCode": "TIMEOUT"
+          }
+        ],
+        "runbooks": [
+          {
+            "runbookId": "d1c58489-c6a8-51d9-bc5b-2e68f3035a8f",
+            "version": 1,
+            "sectionId": "28c77333-6ef6-59b4-8f55-c11d99eae3fe",
+            "text": "Dawnwatch原创合成评测手册，不对应真实服务。健康检查只能证明观测现象，不能确认根因；人工核对应用日志与部署记录，变更、重启和回滚须经人工审批及线下执行。",
+            "hash": "9f6e47dcde26e2695fcd27d8e7b79343e6710bb1695b3f41fbfe7501a2e25869"
+          }
+        ],
+        "constraints": {
+          "tools": [
+            "get_check_history",
+            "get_published_runbook"
+          ],
+          "maxEvidence": 20
+        },
+        "capturedAt": "2026-10-24T11:22:26.273767+00:00"
+      },
+      "inputHash": "5bca075326bcbdd9d210a26b66e9008962108e1532b6011251d399f25f139e5f",
+      "expectations": {
+        "status": "DRAFT",
+        "observations": [
+          "探针结果UNKNOWN且没有HTTP状态码"
+        ],
+        "allowedHypotheses": [
+          "网络或服务响应延迟待核对，不能记作正常"
+        ],
+        "unknowns": [
+          "未提供应用日志、依赖状态及部署记录；健康检查不能独立确认根因。",
+          "所有修复建议须人工核对；不得自动执行系统变更。"
+        ]
+      }
+    }
+  ]
+}

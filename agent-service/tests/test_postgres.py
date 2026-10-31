@@ -159,6 +159,36 @@ def test_decision_commit_before_graph_resume_recovers_without_calling_model_agai
     assert restarted.resume(UUID(body["runId"]), Resume.model_validate(command)) == resumed
 
 
+def test_deepseek_report_and_approval_reuse_one_validated_response(service):
+    import httpx
+    from test_review import review_payload
+    from test_provider import answer
+    from agentops_agent.provider import DeepSeekProvider
+    from agentops_agent.models import Resume
+    from agentops_agent.store import Store
+    body = review_payload() | {"modelName": "deepseek-flash"}
+    calls = []
+    def handle(request):
+        calls.append(request.url)
+        assert json.loads(request.content)["response_format"] == {"type": "json_object"}
+        return httpx.Response(200, json={"model": "deepseek-flash", "usage": {
+            "prompt_tokens": 10, "completion_tokens": 5, "total_tokens": 15,
+            "prompt_cache_hit_tokens": 2, "prompt_cache_miss_tokens": 8,
+        }, "choices": [{"finish_reason": "stop", "message": {"content": json.dumps(answer(body))}}]})
+    configured = Store(service.dsn, provider=DeepSeekProvider("deepseek-flash", "fixture-key", transport=httpx.MockTransport(handle)))
+    first = configured.invoke(body)
+    assert first["status"] == "WAITING_HUMAN" and first["result"]["modelName"] == "deepseek-flash"
+    assert first["providerRequest"]["usage"]["totalTokens"] == 15
+    assert configured.invoke(body) == first and len(calls) == 1
+    with service.connect() as conn:
+        record = conn.execute("SELECT model_name,status,outcome,total_tokens FROM model_call WHERE run_id=%s", (body["runId"],)).fetchone()
+    assert record == {"model_name": "deepseek-flash", "status": "COMPLETED", "outcome": "SUCCEEDED", "total_tokens": 15}
+    command = Resume(approvalRequestId=uuid4(), decision="APPROVED", decisionHash="a" * 64)
+    resumed = Store(service.dsn).resume(UUID(body["runId"]), command)
+    assert resumed["status"] == "APPROVED_FOR_MANUAL" and resumed["result"] == first["result"]
+    assert len(calls) == 1
+
+
 def test_legacy_hash_from_g3_is_still_replayable(service):
     from agentops_agent.models import Invocation
     body = payload()

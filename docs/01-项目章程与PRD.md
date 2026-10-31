@@ -4,7 +4,7 @@
 
 | 项目项 | 决策 |
 |---|---|
-| 名称 | AgentOps AI 智能运维平台（B） |
+| 名称 | Dawnwatch 智能运维平台（B） |
 | 目标 | 为小型开发团队汇总健康检查、事故记录、运行手册和可审查的 AI 诊断建议 |
 | 用户 | 值班工程师、运维管理员、只读观察者、审计员 |
 | 形态 | 单组织、自托管、本地演示优先；可选连接单实例 Uptime Kuma |
@@ -17,7 +17,7 @@
 
 小型团队的健康信号、事故历史和处理手册分散，值班人员难以快速解释“发生了什么、有哪些证据、接下来应检查什么”。系统收集登记服务的 HTTP 检查结果，基于时间窗口聚合事故，再让 Agent 按固定图读取服务元信息/检查历史/授权手册并写出带证据的建议。
 
-Uptime Kuma 是可选的现有监控面板：Operator 在 Kuma 手工创建 Push Monitor，把 Push Token 配置到对应目标；AgentOps 将自己的检查状态推送给 Kuma。AgentOps 自身数据不依赖 Kuma 回读。
+Uptime Kuma 是可选的现有监控面板：Operator 在 Kuma 手工创建 Push Monitor，把 Push Token 配置到对应目标；Dawnwatch 将自己的检查状态推送给 Kuma。Dawnwatch 自身数据不依赖 Kuma 回读。
 
 ## MVP
 

@@ -1,0 +1,203 @@
+{
+  "date": "2026-10-23",
+  "timezone": "Asia/Shanghai",
+  "baseCommit": "39c194878b4e37a8ba2a6486e8ce2eb09cac3760",
+  "branch": "codex/g6-repeatable-acceptance",
+  "command": ".\\scripts\\acceptance.ps1",
+  "overall": "PASS",
+  "startedAt": "2026-10-23T13:54:40.7106334+00:00",
+  "finishedAt": "2026-10-23T13:57:13.2026534+00:00",
+  "backend": {
+    "totals": {
+      "tests": 129,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "suites": [
+      {
+        "name": "dev.agentops.AcceptanceJourneyTest",
+        "tests": "1",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "19.378"
+      },
+      {
+        "name": "dev.agentops.agent.AgentClientTest",
+        "tests": "4",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "1.334"
+      },
+      {
+        "name": "dev.agentops.AgentApiTest",
+        "tests": "14",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "18.795"
+      },
+      {
+        "name": "dev.agentops.AgentIntegrationTest",
+        "tests": "1",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "18.824"
+      },
+      {
+        "name": "dev.agentops.AgentOutboxTest",
+        "tests": "5",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "8.31"
+      },
+      {
+        "name": "dev.agentops.BootstrapTest",
+        "tests": "1",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "8.187"
+      },
+      {
+        "name": "dev.agentops.FoundationTest",
+        "tests": "19",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "12.274"
+      },
+      {
+        "name": "dev.agentops.KumaApiTest",
+        "tests": "10",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "10.263"
+      },
+      {
+        "name": "dev.agentops.KumaClientTest",
+        "tests": "6",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "0.516"
+      },
+      {
+        "name": "dev.agentops.monitoring.SafeHttpProbeTest",
+        "tests": "7",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "1.294"
+      },
+      {
+        "name": "dev.agentops.monitoring.TlsProbeTest",
+        "tests": "2",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "1.022"
+      },
+      {
+        "name": "dev.agentops.MonitoringApiTest",
+        "tests": "23",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "15.327"
+      },
+      {
+        "name": "dev.agentops.targets.PrivateNetworkPolicyTest",
+        "tests": "5",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "0.019"
+      },
+      {
+        "name": "dev.agentops.TargetUrlPolicyTest",
+        "tests": "26",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "0.084"
+      },
+      {
+        "name": "dev.agentops.WorkspaceQueryTest",
+        "tests": "5",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "8.534"
+      }
+    ],
+    "finishedAt": "2026-10-23T21:56:54+08:00",
+    "duration": "2m11s",
+    "nestedPythonPgScenarios": 11
+  },
+  "pythonUnit": 59,
+  "frontendTests": 10,
+  "demoTargetTests": 4,
+  "reportTests": 5,
+  "typecheck": "PASS",
+  "productionBuild": "PASS",
+  "newJourneySteps": 16,
+  "sourceDirtyDuringRun": true,
+  "baselineRemoteCi": {
+    "head": "39c194878b4e37a8ba2a6486e8ce2eb09cac3760",
+    "runId": 39602947392,
+    "url": "https://github.com/kevin-sanas/AgentOps-AI/actions/runs/39602947392",
+    "jobs": {
+      "verify": "success",
+      "frontend": "success",
+      "compose": "success"
+    },
+    "appliesToNewBranch": false
+  },
+  "browserReport": {
+    "stages": 6,
+    "steps": 16,
+    "clientWidth": 1265,
+    "scrollWidth": 1265,
+    "scripts": 0,
+    "pythonLogLink": "59 passed",
+    "fullPageScreenshot": "capture unavailable; viewport screenshot retained"
+  },
+  "notRun": [
+    "外部目标实际网络探测",
+    "真实模型质量与人工评分",
+    "性能与容量基准",
+    "本轮 Compose / Kuma 运行验收",
+    "本轮远端 CI（另见 GitHub Actions）",
+    "New full OS supply-chain audit",
+    "Independent agent review this round",
+    "Application UI browser regression this round (no application code changed)"
+  ],
+  "constraints": {
+    "newDependencies": false,
+    "newMigrations": false,
+    "userServicesRestarted": false,
+    "userDatabaseUsed": false,
+    "dockerUsedThisRound": false,
+    "externalModelUsed": false,
+    "probeObservations": "synthetic through real MonitoringStore / IncidentAggregator"
+  },
+  "cleanup": {
+    "testData": "temporary PG directories removed by fixtures; formal reports retained",
+    "reportPreview": "own tab closed, own preview process ended",
+    "debugFiles": "removed after evidence archive"
+  },
+  "sourceSha256": {
+    "scripts/acceptance.ps1": "275baef621081a9e732c813be9adec96906a57610f0ce81140632102096b983c",
+    "scripts/acceptance-report.mjs": "cf3e76d4c663b7ea368762be1c46e9f7400d8175b017e47e1d077fe02bcfe6dc",
+    "scripts/acceptance-report.test.mjs": "5664fd942c63f4eb1c58b7ea7edcaae8e86b30e2b5e89800cbd3044d3c65bc24",
+    "backend/src/test/java/dev/agentops/AcceptanceJourneyTest.java": "cf00d18fea5c615718ed8b9bb03ac7e7398bee44fca6e80b027b36a5c2f8672b",
+    ".github/workflows/backend.yml": "af29f9ecaa5b3bfdb50aa164f72169bd377392fb56863757145b34c364cd2228"
+  },
+  "screenshotSha256": "8655b8b9ee7bca6b84648f69250607fe8e9f9538a5a8fb6fa398384dceacd751"
+}

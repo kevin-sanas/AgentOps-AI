@@ -17,14 +17,20 @@ final class PythonFixture implements AutoCloseable {
         return start(pg,token,Map.of());
     }
     static PythonFixture start(EmbeddedPostgres pg,String token,Map<String,String> modelEnvironment)throws Exception{
+        return start(pg,token,modelEnvironment,"agentops_agent.app:from_environment");
+    }
+    static PythonFixture startLiveDeepSeek(EmbeddedPostgres pg,String token,Path directory)throws Exception{
+        return start(pg,token,Map.of("DAWNWATCH_LIVE_DIRECTORY",directory.toString()),"deepseek_demo:from_environment");
+    }
+    private static PythonFixture start(EmbeddedPostgres pg,String token,Map<String,String> modelEnvironment,String factory)throws Exception{
         var db=new JdbcTemplate(new DriverManagerDataSource("jdbc:postgresql://localhost:"+pg.getPort()+"/postgres","postgres","postgres"));
         String suffix=UUID.randomUUID().toString().replace("-",""),name="agent_"+suffix,password=UUID.randomUUID().toString();
         db.execute("CREATE ROLE "+name+" LOGIN PASSWORD '"+password+"' NOSUPERUSER NOCREATEDB NOCREATEROLE");db.execute("CREATE DATABASE "+name+" OWNER "+name);
         int port;try(var socket=new java.net.ServerSocket(0,50,InetAddress.getByName("127.0.0.1"))){port=socket.getLocalPort();}
         Path root=Path.of("..").toAbsolutePath().normalize(),log=root.resolve("backend/target/tmp/python-"+suffix+".log");
-        var process=new ProcessBuilder(AgentIntegrationTest.python(root).toString(),"-m","uvicorn","agentops_agent.app:from_environment","--factory","--host","127.0.0.1","--port",String.valueOf(port),"--no-access-log","--log-level","warning").directory(root.resolve("agent-service").toFile()).redirectErrorStream(true).redirectOutput(log.toFile());
+        var process=new ProcessBuilder(AgentIntegrationTest.python(root).toString(),"-m","uvicorn",factory,"--factory","--host","127.0.0.1","--port",String.valueOf(port),"--no-access-log","--log-level","warning").directory(root.resolve("agent-service").toFile()).redirectErrorStream(true).redirectOutput(log.toFile());
         var env=process.environment();env.put("AGENT_CHECKPOINT_DSN","postgresql://"+name+":"+password+"@127.0.0.1:"+pg.getPort()+"/"+name);env.put("AGENT_INTERNAL_TOKEN",token);env.put("LANGSMITH_TRACING","false");env.put("LANGCHAIN_TRACING_V2","false");env.put("LANGCHAIN_TRACING","false");
-        env.put("AGENT_LLM_PROVIDER","mock");env.put("TEMP",root.resolve("agent-service/.tmp").toString());env.put("TMP",env.get("TEMP"));env.putAll(modelEnvironment);
+        env.put("TEMP",root.resolve("agent-service/.tmp").toString());env.put("TMP",env.get("TEMP"));env.putAll(modelEnvironment);
         PythonFixture fixture=new PythonFixture(port,process.start(),log);
         try{var http=HttpClient.newHttpClient();long deadline=System.nanoTime()+Duration.ofSeconds(25).toNanos();
             while(System.nanoTime()<deadline&&fixture.child.isAlive()){

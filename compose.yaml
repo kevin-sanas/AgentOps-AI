@@ -1,4 +1,4 @@
-name: agentops-platform
+name: dawnwatch
 services:
   postgres:
     image: postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826
@@ -29,7 +29,6 @@ services:
       MONITOR_ALLOWED_PRIVATE_CIDRS: ${MONITOR_ALLOWED_PRIVATE_CIDRS:-}
       AGENT_ENABLED: ${AGENT_ENABLED:-true}
       AGENT_SERVICE_ORIGIN: http://agent-service:8090
-      AGENT_MODEL_NAME: ${AGENT_MODEL_NAME:-mock}
       KUMA_ENABLED: ${KUMA_ENABLED:-false}
       KUMA_BASE_URL: ${KUMA_BASE_URL:-}
       KUMA_ALLOW_HTTP: ${KUMA_ALLOW_HTTP:-false}
@@ -68,11 +67,6 @@ services:
     environment:
       CHECKPOINT_PASSWORD: ${CHECKPOINT_PASSWORD:?Set CHECKPOINT_PASSWORD}
       AGENT_INTERNAL_TOKEN: ${AGENT_INTERNAL_TOKEN:?Set AGENT_INTERNAL_TOKEN}
-      AGENT_LLM_PROVIDER: ${AGENT_LLM_PROVIDER:-mock}
-      AGENT_MODEL_NAME: ${AGENT_MODEL_NAME:-mock}
-      AGENT_LLM_BASE_URL: ${AGENT_LLM_BASE_URL:-}
-      AGENT_LLM_API_KEY: ${AGENT_LLM_API_KEY:-}
-      AGENT_ALLOW_LOCAL_MODEL_HTTP: ${AGENT_ALLOW_LOCAL_MODEL_HTTP:-false}
     depends_on:
       checkpoint-db:
         condition: service_healthy
@@ -109,6 +103,11 @@ networks:
   egress: {}
   edge: {}
 volumes:
-  postgres-data: {}
-  checkpoint-data: {}
-  kuma-data: {}
+  # Preserve the original physical volumes when only the product/project name changes.
+  # Existing custom deployments can set DAWNWATCH_DATA_PREFIX to their old project name.
+  postgres-data:
+    name: ${DAWNWATCH_DATA_PREFIX:-agentops-platform}_postgres-data
+  checkpoint-data:
+    name: ${DAWNWATCH_DATA_PREFIX:-agentops-platform}_checkpoint-data
+  kuma-data:
+    name: ${DAWNWATCH_DATA_PREFIX:-agentops-platform}_kuma-data

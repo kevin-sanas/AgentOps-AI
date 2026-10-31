@@ -88,6 +88,7 @@ class AgentApiTest {
         assertThat(ok(request("POST",path,operator,Map.of(),"run-1"),202).path("runId").asText()).isEqualTo(id.toString());
         assertThat(db.queryForObject("SELECT count(*) FROM outbox_event",Integer.class)).isEqualTo(1);
         assertThat(db.queryForObject("SELECT count(*) FROM agent_step WHERE run_id=?",Integer.class,id)).isEqualTo(6);
+        assertThat(db.queryForObject("SELECT model_name FROM agent_run WHERE id=?",String.class,id)).isEqualTo("mock");
         assertThat(ok(req("GET","/agent-runs/"+id,operator,null),200).path("input").isMissingNode()).isTrue();
         assertThat(req("GET","/agent-runs/"+id,reader,null).statusCode()).isEqualTo(404);
         db.update("DELETE FROM target_access WHERE user_id=?",OPERATOR);
@@ -246,41 +247,5 @@ class AgentApiTest {
                 assertThat(db.queryForObject("SELECT count(*) FROM agent_run",Integer.class)).isZero();
             }
         }
-    }
-    @Test void modelHttpOutageKeepsIncidentAndResumesSameRunAfterRecovery()throws Exception{
-        var unavailable=new java.util.concurrent.atomic.AtomicBoolean(true);
-        var calls=new java.util.concurrent.atomic.AtomicInteger();
-        var model=com.sun.net.httpserver.HttpServer.create(new java.net.InetSocketAddress("127.0.0.1",0),0);
-        model.createContext("/v1/chat/completions",exchange->{
-            try{
-                calls.incrementAndGet();
-                if(unavailable.get()){exchange.sendResponseHeaders(503,-1);return;}
-                var input=json.readTree(exchange.getRequestBody().readAllBytes());
-                assertThat(input.path("model").asText()).isEqualTo("fixture-model");
-                var analysis=Map.of("summary","当前没有检查证据，无法判定根因。","hypotheses",List.of(),"evidenceIds",List.of(),"nextSteps",List.of(Map.of("text","人工核对最近检查历史。","risk","LOW","requiresHumanReview",true)),"uncertainties",List.of("insufficient_evidence"));
-                byte[] body=json.writeValueAsBytes(Map.of("choices",List.of(Map.of("finish_reason","stop","message",Map.of("content",json.writeValueAsString(analysis))))));
-                exchange.getResponseHeaders().set("Content-Type","application/json");exchange.sendResponseHeaders(200,body.length);exchange.getResponseBody().write(body);
-            }finally{exchange.close();}
-        });model.start();
-        var runs=context.getBean(dev.agentops.agent.AgentService.class);
-        try(var python=PythonFixture.start(PG,"fixture-internal-"+TARGET,Map.of("AGENT_LLM_PROVIDER","openai-compatible","AGENT_MODEL_NAME","fixture-model","AGENT_LLM_BASE_URL","http://127.0.0.1:"+model.getAddress().getPort()+"/v1","AGENT_LLM_API_KEY","synthetic-model-fixture-only","AGENT_ALLOW_LOCAL_MODEL_HTTP","true"))){
-            UUID id;
-            org.springframework.test.util.ReflectionTestUtils.setField(runs,"modelName","fixture-model");
-            try{id=UUID.fromString(ok(request("POST","/incidents/"+INCIDENT+"/agent-runs",operator,Map.of(),"model-http-outage"),202).path("runId").asText());}
-            finally{org.springframework.test.util.ReflectionTestUtils.setField(runs,"modelName","mock");}
-            var client=new dev.agentops.agent.AgentClient(context.getBean(dev.agentops.access.SecuritySettings.class),context.getBean(JsonMapper.class),"http://127.0.0.1:"+python.port);
-            var outbox=context.getBean(dev.agentops.agent.AgentOutbox.class);var first=outbox.claim().orElseThrow();
-            try{client.reconcile(first);fail("Expected model unavailable");}catch(dev.agentops.agent.AgentClient.Failure e){assertThat(e.code).isEqualTo("AGENT_HTTP_503");assertThat(e.retryable).isTrue();outbox.fail(first,e.code,e.retryable);}
-            assertThat(calls.get()).isEqualTo(1);
-            assertThat(db.queryForObject("SELECT status FROM incident WHERE id=?",String.class,INCIDENT)).isEqualTo("OPEN");
-            assertThat(db.queryForObject("SELECT state FROM outbox_event WHERE run_id=?",String.class,id)).isEqualTo("PENDING");
-            assertThat(db.queryForObject("SELECT count(*) FROM agent_run WHERE id=?",Integer.class,id)).isEqualTo(1);
-            unavailable.set(false);db.update("UPDATE outbox_event SET available_at=now()-interval '1 second' WHERE run_id=?",id);
-            var retry=outbox.claim().orElseThrow();assertThat(retry.runId()).isEqualTo(id);assertThat(retry.attempt()).isEqualTo(2);
-            var recovered=client.reconcile(retry);assertThat(recovered.status()).isEqualTo("WAITING_HUMAN");assertThat(outbox.complete(retry,recovered.result())).isTrue();
-            assertThat(calls.get()).isEqualTo(2);
-            var run=ok(req("GET","/agent-runs/"+id,operator,null),200);assertThat(run.path("modelName").asText()).isEqualTo("fixture-model");assertThat(run.path("approval").path("status").asText()).isEqualTo("PENDING");
-            assertThat(db.queryForObject("SELECT status FROM incident WHERE id=?",String.class,INCIDENT)).isEqualTo("OPEN");
-        }finally{model.stop(0);}
     }
 }
