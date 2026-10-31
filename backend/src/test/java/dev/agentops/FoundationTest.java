@@ -27,8 +27,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties="agentops.monitoring.enabled=false")
 @org.springframework.test.annotation.DirtiesContext(classMode=org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS)
-@Import(SessionRaceTestConfiguration.class)
+@Import({SessionRaceTestConfiguration.class, FoundationTest.DnsFixtures.class})
 class FoundationTest {
+    @org.springframework.boot.test.context.TestConfiguration(proxyBeanMethods=false)
+    static class DnsFixtures {
+        @org.springframework.context.annotation.Bean @org.springframework.context.annotation.Primary
+        dev.agentops.targets.TargetUrlPolicy fixturePolicy() {
+            return new dev.agentops.targets.TargetUrlPolicy(host -> {
+                if (!host.equals("example.com")) throw new java.net.UnknownHostException();
+                return new java.net.InetAddress[]{java.net.InetAddress.getByName("93.184.216.34")};
+            });
+        }
+    }
     static final UUID ADMIN = UUID.fromString("10000000-0000-0000-0000-000000000001");
     static final UUID READER = UUID.fromString("10000000-0000-0000-0000-000000000002");
     static final UUID OTHER = UUID.fromString("10000000-0000-0000-0000-000000000003");

@@ -1,6 +1,6 @@
 # 你的 Dawnwatch：IDEA 启动与验收指南
 
-更新日期：2026-10-25。适用版本：Dawnwatch G7 页面托管 DeepSeek 配置与用量审计、G6核心自动验收、Dark-first 工作空间及可选 Kuma，业务库迁移至 V7。本文按你的 Windows、中文 IDEA 和项目位置编写；以后修改启动配置、端口或验收流程时同步更新本文。
+更新日期：2026-10-31。适用版本：Dawnwatch G8 离线诊断质量中心、G7 页面托管 DeepSeek 配置与用量审计、G6核心自动验收、Dark-first 工作空间及可选 Kuma，业务库迁移至 V7。本文按你的 Windows、中文 IDEA 和项目位置编写；以后修改启动配置、端口或验收流程时同步更新本文。
 
 本轮只更换产品展示名：IDEA 仍使用 `AgentOpsApplication` 和原 artifactId/JAR，数据库、已有账号、环境变量、端口与本地目录保持兼容。Compose 逻辑项目名改为 `dawnwatch`，数据卷默认保留原物理名称；已有 Compose 用户启动前必须先阅读[改名与数据卷兼容说明](docs/12-本地部署运维与CI-CD.md)。
 
@@ -592,3 +592,31 @@ CSV字段中，`annotationStatus` 用PENDING/APPROVED，批准必须填写 `anno
 实际报告与空白人工评分包位于 `.cache/model-evaluation/timeout-revalidation-20261025/review-package/`：先打开 `reports.md` 阅读报告，再按14.6说明填写 `review.csv`。当前只有1/30份报告、0条人工标注和0条质量评分；最终离线评分文件 `.cache/model-evaluation/timeout-revalidation-20261025/score.json` 为INCOMPLETE。不能把单场景护栏接受写成模型准确率或质量PASS。正式脱敏摘要见 `docs/verification/deepseek-timeout-revalidation-2026-10-25.json`。本节只记录一次已结束的验收，不改变日常启动、数据库、端口、环境变量或默认mock入口。
 
 现有启动命令、环境变量、端口和数据库要求不变，新增提示与诊断在下次正常启动Python或受控入口时生效。不要重跑已使用的pilot目录；如要再次付费验证，应先明确新的范围与预算。完整记录见 `docs/verification/deepseek-risk-diagnostics-2026-10-24.json`。
+
+### 14.9 诊断质量中心离线验收（2026-10-31）
+
+使用原有日常启动命令，或运行 ` .\scripts\demo.ps1` 启动临时 mock 环境。管理员登录后进入 **AI 故障诊断 → 诊断质量中心**（`/admin/quality`）。无需填写模型 Key，也不会请求 DeepSeek。
+
+页面自带2026-10-24五场景试评测的30场景离线目录：2次真实历史请求、1份接受报告、1次风险拒绝、0条人工评分，4561个已知Token。其余场景没有请求回执，不伪装成失败或成功。历史拒绝报告原文没有保存，因此“回执失败”和“无报告可校验”可以同时出现。本包不包含随后独立的超时复验，不把不同输入hash的结果混为同一批。
+
+1. 搜索“503”，核对报告、检查与运行手册证据；切换“失败 / 拒绝”，查看探针超时的 `AGENT_RISK_UNDERESTIMATED`。无接受报告时不能填写报告评分。
+2. 核对相关证据，填写实际金标准复核人并确认金标准；阅读报告后按实际判断填写评分人、事实与推断区分、不确定性和不安全建议。建议可操作性与备注是补充记录，不改变既有评分公式。
+3. 点击“导出人评”，保留下载的 `dawnwatch-quality-reviews.json`。草稿只保存在当前页面内存，刷新、退出或离开前务必导出；离开有未导出草稿会提示。跨场景切换保留本页草稿。
+4. “导入人评”恢复同批JSON文件；旧输入/报告hash、外来场景、无报告评分、超出1–5的分数会拒绝，原页面数据保留。此操作不认证审阅人身份，不能替代正式审批审计。
+5. 用现有CLI计算正式离线结果（示例路径均相对项目根目录；先把下载的人评复制到指定项目内目录）：
+
+```powershell
+.\agent-service\.venv\Scripts\python.exe .\agent-service\evaluate.py score --dataset .cache/model-evaluation/pilot-20261024-live/dataset.json --responses .cache/model-evaluation/pilot-20261024-live/responses.json --reviews .cache/model-evaluation/pilot-20261024-live/dawnwatch-quality-reviews.json --output .cache/model-evaluation/pilot-20261024-live/score-new.json
+```
+
+上述pilot路径仅适用于已保留原批次材料的本地目录；全新克隆先按14.5生成新数据集。未满30份报告和人工评分时维持INCOMPLETE，退出码2是未完成而非成功。
+
+其他批次先导出工作台包，再在页面点击“导入评测包”。以下只读取离线文件，不调用模型：
+
+```powershell
+.\agent-service\.venv\Scripts\python.exe .\agent-service\evaluate.py workbench --dataset .cache/model-evaluation/review-01/dataset.json --responses .cache/model-evaluation/review-01/responses.json --reviews .cache/model-evaluation/review-01/reviews.json --output .cache/model-evaluation/review-01/workbench.json
+```
+
+若已有对应的安全调用回执，可另加 `--receipts` 指向该JSON，只有inputHash匹配的记录才展示请求/Token/费用。不匹配或缺失保持未知；导入来源未经认证，费用是原回执估算而非当前单价或账单。已有输出文件不覆盖。
+
+本轮无需新增依赖、环境变量、端口或数据库迁移。完整回归入口仍为 ` .\scripts\acceptance.ps1`，Python Test与CI已纳入工作台导出回归。浏览器验收期间避免同时运行生产构建，以免Vite重载清除内存登录和人评草稿。
